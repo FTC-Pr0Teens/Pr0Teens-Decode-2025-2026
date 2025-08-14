@@ -57,7 +57,6 @@ public class SampleAutoOpMode extends LinearOpMode {
                 default:
                     break;
             }
-
         }
 
     }
