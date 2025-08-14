@@ -260,7 +260,7 @@ public class MecanumSubsystem {
         globalThetaController.setConstant(kptheta, kdtheta, kitheta);
     }
 
-    public void
+
 
     // stop all motors
     public void stop(boolean run){
