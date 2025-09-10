@@ -17,9 +17,9 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     private ElapsedTime resetTimer;
 
-    //OpModes should create the hardware object
     private Hardware hw;
 
+    double heading;
     enum ROBOT_STATE{
         IDLE, SLOW
     }
@@ -40,7 +40,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            mecanumCommand.handleMovement(
+            heading = mecanumCommand.fieldOrientedMove(
                     gamepad1.left_stick_y,
                     gamepad1.left_stick_x,
                     gamepad1.right_stick_x
@@ -57,6 +57,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     public void processTelemetry(){
         //add telemetry messages here
         telemetry.addData("resetTimer: ",  resetTimer.milliseconds());
+        telemetry.addData("heading: ",  heading);
         telemetry.addLine("---------------------------------");
 
         telemetry.update();

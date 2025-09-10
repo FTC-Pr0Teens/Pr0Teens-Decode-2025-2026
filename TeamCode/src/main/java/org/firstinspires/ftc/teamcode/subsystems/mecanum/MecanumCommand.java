@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.mecanum;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
-
-
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -13,9 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * subsystem interactions and provides high-level movement commands.
  */
 public class MecanumCommand {
-
-
-
     // PID controllers for x, y, and heading
     private PIDCore xController;
     private PIDCore yController;
@@ -115,18 +110,6 @@ public class MecanumCommand {
     }
 
     /**
-     * Wrapper for field-oriented movement for TeleOp modes using PinPoint heading.
-     *
-     * @param vertical   Forward/backward input (-1 to 1).
-     * @param horizontal Left/right strafe input (-1 to 1).
-     * @param rotational Rotation input (-1 to 1).
-     */
-    public void fieldOrientedMove(double vertical, double horizontal, double rotational) {
-        mecanumSubsystem.fieldOrientedMove(vertical, horizontal, rotational, pinPointOdoSubsystem.getHeading());
-    }
-
-
-    /**
      * Moves the robot in global coordinates using partial control (drive + rotation).
      * Converts global X/Y commands to local robot-oriented movement based on heading.
      * @param vertical   Global Y-axis movement (forward/back).
@@ -211,11 +194,17 @@ public class MecanumCommand {
 
 
     //teleop
-    public void handleMovement(double leftStickY, double leftStickX, double rightStickX) {
-
-        fieldOrientedMove(-leftStickY, leftStickX, rightStickX);
+    /**
+     * field-oriented movement for TeleOp modes using PinPoint heading.
+     *
+     * @param vertical   Forward/backward input (-1 to 1).
+     * @param horizontal Left/right strafe input (-1 to 1).
+     * @param rotational Rotation input (-1 to 1).
+     */
+    public double fieldOrientedMove(double vertical, double horizontal, double rotational) {
+        mecanumSubsystem.fieldOrientedMove(- vertical, horizontal, rotational, pinPointOdoSubsystem.getHeading());
+        return pinPointOdoSubsystem.getHeading();
     }
-
 
     public void motorProcess() {
         mecanumSubsystem.fieldOrientedMoveExponential(0,5,0,0);

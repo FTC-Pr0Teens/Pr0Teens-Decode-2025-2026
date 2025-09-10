@@ -8,6 +8,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 class MecanumSubsystem {
     //rf: right front/forward
     //rb: right back
@@ -171,7 +174,8 @@ class MecanumSubsystem {
         double rbVelTemp = rbVelMain + rbVelAdjustment1;
 
         // normalize vectors (between 0 to 1)
-        double max = maxDouble(Math.abs(lfVelTemp), Math.abs(lbVelTemp), Math.abs(rfVelTemp), Math.abs(rbVelTemp));
+        double max = maxDouble( Math.abs(lfVelTemp), Math.abs(lbVelTemp), Math.abs(rfVelTemp), Math.abs(rbVelTemp) );
+        //double max = Collections.max(Arrays.asList(tempVels));
         if (max > 1) {
             lfVelTemp /= max;
             lbVelTemp /= max;
@@ -311,7 +315,7 @@ class MecanumSubsystem {
         rightBackMotorOutput *= POWER_SCALE_FACTOR;
         leftBackMotorOutput *= POWER_SCALE_FACTOR;
 
-        setPowers(rightBackMotorOutput,leftBackMotorOutput,rightFrontMotorOutput,leftFrontMotorOutput);
+        setPowers(rightFrontMotorOutput,leftBackMotorOutput,rightBackMotorOutput,leftFrontMotorOutput);
     }
 
     public void setPowers (double x1, double x2, double y1, double y2){
