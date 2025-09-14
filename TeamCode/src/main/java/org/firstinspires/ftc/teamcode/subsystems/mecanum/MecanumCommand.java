@@ -202,7 +202,7 @@ public class MecanumCommand {
      * @param rotational Rotation input (-1 to 1).
      */
     public double fieldOrientedMove(double vertical, double horizontal, double rotational) {
-        mecanumSubsystem.fieldOrientedMove(- vertical, horizontal, rotational, pinPointOdoSubsystem.getHeading());
+        mecanumSubsystem.fieldOrientedMove(vertical, horizontal, rotational, pinPointOdoSubsystem.getHeading());
         return pinPointOdoSubsystem.getHeading();
     }
 
