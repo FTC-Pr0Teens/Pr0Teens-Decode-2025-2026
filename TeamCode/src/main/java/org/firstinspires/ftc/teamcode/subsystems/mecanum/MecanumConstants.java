@@ -14,8 +14,8 @@ public class MecanumConstants {
     public static double kdy = 0.00225;
     public static double kiy = 0.0;
 
-    public static double kptheta = 1.7;
-    public static double kdtheta = 0.023;
+    public static double kptheta = 1.2;
+    public static double kdtheta = 0.01;
     public static double kitheta = 0.0;
 
     // --- Cascade PID Constants (Position Layer) ---

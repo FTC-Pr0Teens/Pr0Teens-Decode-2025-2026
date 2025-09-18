@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 
 
@@ -13,6 +14,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
+    private LiftCommand liftCommand;
     private ElapsedTime timer;
 
     private ElapsedTime resetTimer;
@@ -30,6 +32,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
+        liftCommand = new LiftCommand(hw);
         resetTimer = new ElapsedTime();
         while (opModeInInit()){
             telemetry.update();
@@ -42,8 +45,8 @@ public class SampleTeleOpMode extends LinearOpMode {
         while (opModeIsActive()) {
             heading = mecanumCommand.fieldOrientedMove(
                     gamepad1.left_stick_y,
-                    gamepad1.left_stick_x,
-                    gamepad1.right_stick_x
+                   - gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x
             );
 
             processTelemetry();
@@ -51,6 +54,32 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.start){
                 mecanumCommand.resetPinPointOdometry();
             }
+            if(gamepad1.a){
+                liftCommand.handleIntake();
+            }
+            if(gamepad1.b){
+                liftCommand.stopintake();
+            }
+
+            if(gamepad1.right_trigger > 0.1){
+                liftCommand.out();
+            }
+            if(gamepad1.left_trigger > 0.1){
+                liftCommand.outstop();
+            }
+            if(gamepad1.dpad_up){
+                liftCommand.turret();
+            }
+            if(gamepad1.dpad_down){
+                liftCommand.turretstop();
+            }
+        if(gamepad1.y){
+    liftCommand.push();
+}
+
+        if(gamepad1.x){
+            liftCommand.pull();
+        }
         }
 
     }

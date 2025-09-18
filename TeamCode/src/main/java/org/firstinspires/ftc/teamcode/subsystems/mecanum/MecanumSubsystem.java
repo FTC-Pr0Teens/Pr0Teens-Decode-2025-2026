@@ -274,10 +274,10 @@ class MecanumSubsystem {
     }
 
     // stop all motors
-    public void stop(boolean run){
-        if (run){
+    public void stop(){
+
             setPowers(0,0,0,0);
-        }
+
     }
 
     // TeleOp functions

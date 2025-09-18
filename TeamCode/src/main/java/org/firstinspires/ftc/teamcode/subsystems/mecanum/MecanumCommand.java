@@ -92,10 +92,14 @@ public class MecanumCommand {
      * Limits motion based on the configured {@code velocity}.
      */
     public void processPIDUsingPinpoint() {
+        if (!positionNotReachedYet()) {
+            stop(); // <-- stop motors once target is reached
+            return;
+        }
+
         ex = mecanumSubsystem.globalXControllerOutputPositional(xFinal, pinPointOdoSubsystem.getX());
         ey = mecanumSubsystem.globalYControllerOutputPositional(yFinal, pinPointOdoSubsystem.getY());
         etheta = mecanumSubsystem.globalThetaControllerOutputPositional(thetaFinal, pinPointOdoSubsystem.getHeading());
-
 
         double max = Math.max(Math.abs(ex), Math.abs(ey));
         if (max > velocity) {
@@ -105,10 +109,8 @@ public class MecanumCommand {
             etheta *= scalar;
         }
 
-        moveGlobalPartialPinPoint( ex, ey, etheta);
-
+        moveGlobalPartialPinPoint(ex, ey, etheta);
     }
-
     /**
      * Moves the robot in global coordinates using partial control (drive + rotation).
      * Converts global X/Y commands to local robot-oriented movement based on heading.
@@ -207,7 +209,8 @@ public class MecanumCommand {
     }
 
     public void motorProcess() {
-        mecanumSubsystem.fieldOrientedMoveExponential(0,5,0,0);
+        mecanumSubsystem.motorProcess();
+
     }
 
 
@@ -215,7 +218,8 @@ public class MecanumCommand {
         pinPointOdoSubsystem.deadReckoning();
     }
     public void stop(){
-        mecanumSubsystem.setPowers(0,0,0,0);
+        mecanumSubsystem.stop();
+
     }
 
 }
