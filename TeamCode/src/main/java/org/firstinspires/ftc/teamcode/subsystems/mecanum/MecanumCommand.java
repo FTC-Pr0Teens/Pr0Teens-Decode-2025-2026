@@ -33,13 +33,12 @@ public class MecanumCommand {
     private double etheta = 0;
 
 
-
     /**
      * Creates a new MecanumCommand instance.
      *
-     * @param hw     Hardware configuration object for accessing devices.
+     * @param hw Hardware configuration object for accessing devices.
      */
-    public MecanumCommand( Hardware hw) {
+    public MecanumCommand(Hardware hw) {
         this.hw = hw;
         this.mecanumSubsystem = new MecanumSubsystem(hw);
         this.pinPointOdoSubsystem = new PinPointOdometrySubsystem(hw);
@@ -111,20 +110,22 @@ public class MecanumCommand {
 
         moveGlobalPartialPinPoint(ex, ey, etheta);
     }
+
     /**
      * Moves the robot in global coordinates using partial control (drive + rotation).
      * Converts global X/Y commands to local robot-oriented movement based on heading.
+     *
      * @param vertical   Global Y-axis movement (forward/back).
      * @param horizontal Global X-axis movement (strafe).
      * @param rotational Rotation command.
      */
     public void moveGlobalPartialPinPoint(double vertical, double horizontal, double rotational) {
 
-            //might have to change this because Gobilda Odommetry strafing left is POSITIVE while this works for strafing right is Positive
-            double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
-            double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
-            double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
-            mecanumSubsystem.partialMove( localVertical, localHorizontal, rotational);
+        //might have to change this because Gobilda Odommetry strafing left is POSITIVE while this works for strafing right is Positive
+        double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
+        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
+        double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
+        mecanumSubsystem.partialMove(localVertical, localHorizontal, rotational);
     }
 
     public void resetPinPointOdometry() {
@@ -133,16 +134,16 @@ public class MecanumCommand {
 
     public boolean moveToPos(double x, double y, double theta) {
         elapsedTime.reset();
-        setFinalPosition( 30, x, y, theta);
+        setFinalPosition(30, x, y, theta);
         return positionNotReachedYet();
     }
 
     public void setFinalPosition(double velocity, double x, double y, double theta) {
 
-            this.xFinal = x;
-            this.yFinal = y;
-            this.thetaFinal = theta;
-            this.velocity = velocity;
+        this.xFinal = x;
+        this.yFinal = y;
+        this.thetaFinal = theta;
+        this.velocity = velocity;
 
     }
 
@@ -174,28 +175,33 @@ public class MecanumCommand {
         return getThetaDifferencePinPoint() < 0.07;
     }
 
-    public double getOdoX(){
+    public double getOdoX() {
         return pinPointOdoSubsystem.getX();
     }
-    public double getOdoY(){
+
+    public double getOdoY() {
         return pinPointOdoSubsystem.getY();
     }
-    public double getOdoHeading(){
+
+    public double getOdoHeading() {
         return pinPointOdoSubsystem.getHeading();
     }
-    public boolean isThetaPassed(){
+
+    public boolean isThetaPassed() {
         return getThetaDifferencePinPoint() < 0.22;
     }
 
-    public boolean isXPassed(){
+    public boolean isXPassed() {
         return getXDifferencePinPoint() < 10;
     }
-    public boolean isYPassed(){
+
+    public boolean isYPassed() {
         return getYDifferencePinPoint() < 10;
     }
 
 
     //teleop
+
     /**
      * field-oriented movement for TeleOp modes using PinPoint heading.
      *
@@ -217,11 +223,23 @@ public class MecanumCommand {
     public void deadReckoning() {
         pinPointOdoSubsystem.deadReckoning();
     }
-    public void stop(){
+
+    public void stop() {
         mecanumSubsystem.stop();
 
     }
 
+    public void apriltrack(double xError, double yError, double yawError) {
+        double kP = 0.01; // example gain, tune these
+        double strafe = kP * xError;
+        double forward = kP * yError;
+        double turn = kP * yawError;
+
+        mecanumSubsystem.partialMove(strafe, forward, turn);
+
+    }
 }
+
+
 
 
