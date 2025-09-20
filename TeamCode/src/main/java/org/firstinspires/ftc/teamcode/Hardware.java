@@ -32,6 +32,7 @@ public class Hardware {
     public final CRServo turret;
     public final CRServo intake;
     public final Servo push;
+    private final Servo shooteraim;
 
     // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
@@ -51,6 +52,7 @@ public class Hardware {
         this.intake = hwMap.get(CRServo.class, Specifications.INTAKE);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.push = hwMap.get(Servo.class, Specifications.push);
+        this.shooteraim = hwMap.get(Servo.class, Specifications.shooteraim);
 
 
 

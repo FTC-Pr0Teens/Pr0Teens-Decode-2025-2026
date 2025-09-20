@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.util.pidcore;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.util.VelAccelPair;
 
 /**
- * PIDCore class implements a PID controller with additional features such as feedforward control,
- * velocity PID, and integral activation control.
+ * Enhanced PIDCore class with bug fixes and improvements for FTC robotics applications
+ * Supports both positional and velocity PID control with advanced features
  */
 public class PIDCore {
     // Proportional, Derivative, Integral gains for position control
     private double Kp;
     private double Kd;
     private double Ki;
-    private double lastTime = 0;
 
     // Proportional, Derivative, Integral gains for velocity control
     private double KpVel;
@@ -24,56 +22,40 @@ public class PIDCore {
     private double Ka;
     private double Kv;
     private double Kg;
-
-    // Change in error value since last calculation
-    private double errorChange;
-
-    // Change in time since last calculation
-    private double timeChange;
-
-    // Feedforward gain
-    private double Kf;
+    private double Kf; // Feedforward gain
 
     // Timer to track elapsed time between PID calculations
     private ElapsedTime timer;
-
-    // Timer specifically for integral calculations
     private ElapsedTime integralTimer;
 
-    // Current error between setpoint and feedback
-    private double error;
-
-    // Derivative term for positional PID
-    private double derivative;
-
-    // Derivative term for velocity PID
-    private double velocityDerivative;
-
-    // Sum of errors for integral term in position control
-    private double integralSum = 0;
-
-    // Temporary integral sum variable (not used in current code)
-    private double tempIntegralSum = 0;
-
-    // Feedforward output value
-    private double feedForward;
-
-    // Last error value, used to calculate derivative term
+    // PID State Variables
+    private double error = 0;
     private double lastError = 0;
-
-    // Last velocity error value, used for velocity PID derivative calculation
     private double lastVelError = 0;
+    private double integralSum = 0;
+    private double derivative = 0;
+    private double velocityDerivative = 0;
 
-    // Output values from positional and velocity PID calculations
+    // Output tracking
     private double outputPositionalValue = 0;
     private double outputVelocityValue = 0;
+    private double feedForward = 0;
 
-    // Flag to activate or deactivate integral term in PID
+    // Control flags
     private boolean activateIntegral = false;
+
+    // Safety limits
+    private double integralLimit = 1000.0; // Prevent integral windup
+    private double outputLimit = 1.0;      // Limit output magnitude
+    private double deadband = 0.0;         // Ignore small errors
+
+    // Time tracking
+    private double lastTime = 0;
+    private double timeChange = 0;
+    private double errorChange = 0;
 
     /**
      * Constructor initializing basic PID gains (Kp, Kd, Ki).
-     * Also initializes timers for elapsed time and integral timing.
      */
     public PIDCore(double kp, double kd, double ki) {
         this.Kp = kp;
@@ -81,9 +63,7 @@ public class PIDCore {
         this.Ki = ki;
         timer = new ElapsedTime();
         integralTimer = new ElapsedTime();
-        integralTimer.startTime();
-        integralTimer.reset();
-        timer.reset();
+        reset();
     }
 
     /**
@@ -98,412 +78,241 @@ public class PIDCore {
         this.Kg = kg;
         timer = new ElapsedTime();
         integralTimer = new ElapsedTime();
-        integralTimer.startTime();
-        integralTimer.reset();
-        timer.reset();
+        reset();
     }
 
     /**
      * Constructor initializing PID gains and feedforward gain.
-     * Timer initialized with nanosecond precision.
      */
-    public  PIDCore(double kp, double kd, double ki, double kf) {
-        Kp = kp;
-        Kd = kd;
-        Ki = ki;
-        Kf = kf;
+    public PIDCore(double kp, double kd, double ki, double kf) {
+        this.Kp = kp;
+        this.Kd = kd;
+        this.Ki = ki;
+        this.Kf = kf;
         timer = new ElapsedTime();
-        timer.startTimeNanoseconds();
-        timer.reset();
-    }
-
-    // Getter for derivative gain Kd
-    public double getKd(){
-        return Kd;
-    }
-
-    // Getter for proportional gain Kp
-    public double getKp(){
-        return Kp;
-    }
-
-    // Getter for gravity feedforward constant Kg
-    public double getKg(){
-        return Kg;
+        integralTimer = new ElapsedTime();
+        reset();
     }
 
     /**
      * Constructor initializing position PID gains, velocity PID gains, and feedforward gain.
-     * Timer initialized with nanosecond precision.
      */
     public PIDCore(double kp, double kd, double ki, double kpVel, double kdVel, double kiVel, double kf) {
-        Kp = kp;
-        Kd = kd;
-        Ki = ki;
-        KpVel = kpVel;
-        KdVel = kdVel;
-        KiVel = kiVel;
-        Kf = kf;
+        this.Kp = kp;
+        this.Kd = kd;
+        this.Ki = ki;
+        this.KpVel = kpVel;
+        this.KdVel = kdVel;
+        this.KiVel = kiVel;
+        this.Kf = kf;
         timer = new ElapsedTime();
-        timer.startTimeNanoseconds();
-        timer.reset();
+        integralTimer = new ElapsedTime();
+        reset();
     }
 
     /**
-     * Set position PID constants.
+     * FIXED: Reset method to properly initialize PID state
      */
+    public void reset() {
+        timer.reset();
+        integralTimer.reset();
+        lastTime = 0;
+        lastError = 0;
+        lastVelError = 0;
+        integralSum = 0;
+        derivative = 0;
+        velocityDerivative = 0;
+        error = 0;
+        outputPositionalValue = 0;
+        outputVelocityValue = 0;
+        feedForward = 0;
+    }
+
+
+    public double outputPositional(double setPoint, double feedback) {
+        error = setPoint - feedback;
+
+        // Apply deadband
+        if (Math.abs(error) < deadband) {
+            error = 0;
+        }
+
+        double currentTime = timer.seconds();
+        double deltaTime = currentTime - lastTime;
+        if (deltaTime <= 0) {
+            deltaTime = 0.001;
+        }
+
+
+        derivative = (error - lastError) / deltaTime;
+
+
+        if (activateIntegral && Math.abs(integralSum) < integralLimit) {
+            integralSum += error * deltaTime;
+
+            if (Math.abs(integralSum) > integralLimit) {
+                integralSum = integralLimit * Math.signum(integralSum);
+            }
+        } else if (!activateIntegral) {
+            integralSum = 0;
+        }
+
+
+        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
+
+        if (Math.abs(outputPositionalValue) > outputLimit) {
+            outputPositionalValue = outputLimit * Math.signum(outputPositionalValue);
+        }
+
+
+        lastError = error;
+        lastTime = currentTime;
+        errorChange = error - lastError;
+        timeChange = deltaTime;
+
+        return outputPositionalValue;
+    }
+
+
+    public double outputVelocity(double setVelocity, double feedback) {
+        error = setVelocity - feedback;
+
+        double currentTime = timer.seconds();
+        double deltaTime = currentTime - lastTime;
+        if (deltaTime <= 0) {
+            deltaTime = 0.001;
+        }
+
+
+        integralSum += error * deltaTime;
+        if (Math.abs(integralSum) > integralLimit) {
+            integralSum = integralLimit * Math.signum(integralSum);
+        }
+
+        velocityDerivative = (error - lastVelError) / deltaTime;
+
+        outputVelocityValue = (error * KpVel) + (velocityDerivative * KdVel) + (integralSum * KiVel);
+
+        if (Kf != 0) {
+            outputVelocityValue += Kf * feedback;
+        }
+
+        lastVelError = error;
+        lastTime = currentTime;
+
+        return outputVelocityValue;
+    }
+
+
+    public double outputVelocity(double setVelocity, double feedback, double power) {
+        return power + outputVelocity(setVelocity, feedback);
+    }
+
+    public double outputFeedForward(double setPoint, double feedback, VelAccelPair velAccelPair) {
+
+        double pidOutput = outputPositional(setPoint, feedback);
+
+
+        feedForward = 0;
+        if (Ka != 0) feedForward += Ka * velAccelPair.getAcceleration();
+        if (Kv != 0) feedForward += Kv * velAccelPair.getVelocity();
+        if (Kg != 0) feedForward += Kg;
+
+        return pidOutput + feedForward;
+    }
+
+    public double cascadeOutput(double setPoint, double feedback, double setVelocity, double feedbackVelocity) {
+        outputPositionalValue = outputPositional(setPoint, feedback);
+        outputVelocityValue = outputVelocity(setVelocity, feedbackVelocity);
+        return outputPositionalValue + outputVelocityValue;
+    }
+
+    // CONFIGURATION METHODS
     public void setConstant(double kp, double kd, double ki) {
         this.Kp = kp;
         this.Kd = kd;
         this.Ki = ki;
     }
 
-    /**
-     * Set position PID constants and feedforward gain.
-     */
-    public void setConstant(double kp, double kd, double ki, double kf){
+    public void setConstant(double kp, double kd, double ki, double kf) {
         this.Kp = kp;
         this.Kd = kd;
         this.Ki = ki;
         this.Kf = kf;
     }
 
-    /**
-     * Reset the integral sum to zero.
-     */
-    public void integralReset(){
-        integralSum = 0;
+    public void setIntegralLimit(double limit) {
+        this.integralLimit = Math.abs(limit);
     }
 
-    /**
-     * Calculate positional PID output with sign swap logic for integral reset.
-     * @param setPoint target value
-     * @param feedback current value
-     * @return control output
-     */
-    public double outputPositionalSignSwap(double setPoint, double feedback){
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.time();
-        // Reset integral sum if sign of error changes
-        if(Math.signum(integralSum) != Math.signum(error)){
-            integralSum = 0;
-            integralSum += error * timer.seconds();
-        }
-        else{
-            integralSum += error * timer.seconds();
-        }
-        lastError = error;
-        timer.reset();
-        outputPositionalValue = (error * Kp) + (derivative * Kd) /*+(integralSum * Ki)*/;
-
-        return (error * Kp) + (derivative * Kd);
+    public void setOutputLimit(double limit) {
+        this.outputLimit = Math.abs(limit);
     }
 
-    /**
-     * Calculate PID output including feedforward terms.
-     * @param setPoint target value
-     * @param feedback current value
-     * @param velAccelPair velocity and acceleration feedforward inputs
-     * @return control output with feedforward
-     */
-    public double outputFeedForward(double setPoint, double feedback, VelAccelPair velAccelPair){
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.time();
-        // Reset integral sum if sign changes or error is small (<20)
-        if(Math.signum(integralSum) != Math.signum(error) || Math.abs(error) < 20){
-            integralSum = 0;
-            integralSum += error * timer.seconds();
-        }
-        else{
-            integralSum += error * timer.seconds();
-        }
-        lastError = error;
-        timer.reset();
-        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-        // Feedforward based on acceleration, velocity and gravity constants
-        feedForward = Ka*velAccelPair.getAcceleration() + Kv*velAccelPair.getVelocity() + Kg;
-
-        return (error * Kp) + (derivative * Kd) + (integralSum * Ki) + feedForward;
+    public void setDeadband(double deadband) {
+        this.deadband = Math.abs(deadband);
     }
 
-    /**
-     * Get the last calculated feedforward output.
-     * @return feedforward output
-     */
-    public double getFeedForwardOutput(){
-        return feedForward;
-    }
-
-    /**
-     * Calculate positional PID output with integral control, only active if integral enabled.
-     * @param setPoint target value
-     * @param feedback current value
-     * @return control output
-     */
-    public double outputPositionalIntegralControl(double setPoint, double feedback){
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.milliseconds();
-        if(activateIntegral){
-            integralSum += error * timer.seconds();
-        }
-        else{
-            integralSum = 0;
-        }
-        lastError = error;
-        timer.reset();
-        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-
-        return (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-    }
-
-    /**
-     * Calculates positional PID output. Marked as "do not touch".
-  //   * Adds integral term if enabled.
-     /* @param setPoint target value
-  /   * @param feedback current value
-     * @return control output
-     */
-// Call this once before using the PID (e.g., in init or start)
-    public void reset() {
-        timer.reset();
-        lastTime = 0;
-        lastError = 0;
-        integralSum = 0;
-    }
-
-
-    public double outputPositional(double setPoint, double feedback) {
-        timer.reset();
-        error = setPoint - feedback;
-        timeChange = timer.milliseconds();
-        if(activateIntegral){
-            integralSum += error * timer.seconds();
-        }
-        else{
-            integralSum = 0;
-        }
-        errorChange = (error - lastError);
-        derivative = (error - lastError) / timer.milliseconds();
-        lastError = error;
-        return (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-    }
-
-
-    /**
-     * Get the elapsed time in milliseconds since last derivative calculation.
-     */
-    public double getDerivativeTimer(){
-        return timer.milliseconds();
-    }
-
-    /**
-     * Calculate positional PID output with feedforward constant.
-     * @param setPoint target value
-     * @param feedback current value
-     * @return control output with feedforward
-     */
-    public double outputPositionalFeedForward(double setPoint, double feedback){
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.time();
-        lastError = error;
-        timer.reset();
-
-        outputPositionalValue = (error * Kp) + (derivative * Kd);
-        return (error * Kp) + (derivative * Kd) + Kf;
-    }
-
-    /**
-     * Another positional PID output calculation without integral.
-     * @param setPoint target value
-     * @param feedback current value
-     * @return control output
-     */
-    public double outputPositional2(double setPoint, double feedback) {
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.time();
-        lastError = error;
-        timer.reset();
-
-        outputPositionalValue = (error * Kp) + (derivative * Kd);
-        return (error * Kp) + (derivative * Kd);
-    }
-
-    /**
-     * Positional PID output calculation with integral term capped to prevent windup.
-     * @param setPoint target value
-     * @param feedback current value
-     * @param integralCap maximum magnitude allowed for integral sum
-     * @return control output
-     */
-    public double outputPositionalCapped(double setPoint, double feedback, double integralCap){
-        error = setPoint - feedback;
-        derivative = (error - lastError) / timer.time();
-        integralSum += error * timer.seconds();
-        if(Math.abs(integralSum) > integralCap){
-            integralSum = integralCap * Math.signum(integralSum);
-        }
-        lastError = error;
-        timer.reset();
-        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-
-        return (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-    }
-
-    /**
-     * Positional PID output with only the error provided.
-     * @param error the current error value
-     * @return control output
-     */
-    public double outputPID(double error) {
-        this.error = error;
-        derivative = (error - lastError) / timer.time();
-        lastError = error;
-        timer.reset();
-
-        return (error * Kp) + (derivative * Kd);
-    }
-
-    /**
-     * Positional PID output with filtering (same as outputPositional with error).
-     * @param error current error
-     * @return control output
-     */
-
-    /**
-     * Enable the integral term in the PID controller.
-     */
-    public void activateIntegral(){
+    public void activateIntegral() {
         activateIntegral = true;
     }
 
-    /**
-     * Disable the integral term in the PID controller.
-     */
-    public void deactivateIntegral(){
+    public void deactivateIntegral() {
         activateIntegral = false;
+        integralSum = 0; // Clear integral when deactivated
     }
 
-    /**
-     * Velocity PID output calculation.
-     * @param setVelocity desired velocity
-     * @param feedback current velocity
-     * @return control output for velocity PID
-     */
-    public double outputVelocity(double setVelocity, double feedback){
-        error = setVelocity - feedback;
-        integralSum += error * timer.time();
-        velocityDerivative = (error - lastVelError);
-        lastVelError = error;
-        timer.reset();
-
-        return (error * KpVel) + (derivative * KdVel) + (integralSum * KiVel) + (Kf*feedback);
+    public void integralReset() {
+        integralSum = 0;
     }
 
-    /**
-     * Velocity PID output calculation with a power base value.
-     * @param setVelocity desired velocity
-     * @param feedback current velocity
-     * @param power base power value added to output
-     * @return control output
-     */
-    public double outputVelocity(double setVelocity, double feedback, double power){
-        error = setVelocity - feedback;
-        integralSum += error * timer.time();
-        derivative = (error - lastVelError);
-        lastVelError = error;
-        timer.reset();
+    // GETTER METHODS
+    public double getKp() { return Kp; }
+    public double getKd() { return Kd; }
+    public double getKi() { return Ki; }
+    public double getKg() { return Kg; }
+    public double getError() { return error; }
+    public double getLastError() { return lastError; }
+    public double getDerivative() { return derivative; }
+    public double getIntegralSum() { return integralSum; }
+    public double getOutputPositionalValue() { return outputPositionalValue; }
+    public double getOutputVelocityValue() { return outputVelocityValue; }
+    public double getFeedForwardOutput() { return feedForward; }
+    public boolean getActiveIntegral() { return activateIntegral; }
+    public double getErrorChange() { return errorChange; }
+    public double getChangeInTime() { return timeChange; }
+    public double getVelocityDerivative() { return velocityDerivative; }
+    public double getDerivativeTimer() { return timer.milliseconds(); }
 
-        return power + (error * KpVel) + (derivative * KdVel) + (integralSum * KiVel);
+    // LEGACY METHODS (for backward compatibility)
+    public double outputPositional2(double setPoint, double feedback) {
+        return outputPositional(setPoint, feedback);
     }
 
-    /**
-     * Get the current integral sum value.
-     */
-    public double getIntegralSum(){
-        return integralSum;
+    public double outputPositionalFeedForward(double setPoint, double feedback) {
+        double pidOutput = outputPositional(setPoint, feedback);
+        return pidOutput + Kf;
     }
 
-    /**
-     * Get whether the integral term is currently active.
-     */
-    public boolean getActiveIntegral(){
-        return activateIntegral;
+    public double outputPositionalCapped(double setPoint, double feedback, double integralCap) {
+        double oldLimit = integralLimit;
+        setIntegralLimit(integralCap);
+        double result = outputPositional(setPoint, feedback);
+        setIntegralLimit(oldLimit);
+        return result;
     }
 
-    /**
-     * Cascade control output combining position and velocity PID outputs.
-     * @param setPoint target position
-     * @param feedback current position
-     * @param setVelocity target velocity
-     * @param feedbackVelocity current velocity
-     * @return combined output value
-     */
-    public double cascadeOutput(double setPoint, double feedback, double setVelocity, double feedbackVelocity){
-        outputPositionalValue = outputPositional(setPoint, feedback);
-        outputVelocityValue = outputVelocity(setVelocity, feedbackVelocity);
-        return outputPositionalValue + outputVelocityValue;
-    }
+    public double outputPID(double error) {
+        this.error = error;
+        double currentTime = timer.seconds();
+        double deltaTime = currentTime - lastTime;
+        if (deltaTime <= 0) deltaTime = 0.001;
 
-    /**
-     * Get the current derivative term from position PID.
-     */
-    public double getDerivative(){
-        return derivative;
-    }
+        derivative = (error - lastError) / deltaTime;
 
-    /**
-     * Get the integral gain Ki.
-     */
-    public double getKi(){
-        return Ki;
-    }
+        lastError = error;
+        lastTime = currentTime;
 
-    /**
-     * Get the current velocity derivative term.
-     */
-    public double getVelocityDerivative(){
-        return velocityDerivative;
-    }
-
-    /**
-     * Get the current error value.
-     */
-    public double getError(){
-        return error;
-    }
-
-    /**
-     * Get the last error value.
-     */
-    public double getLastError(){
-        return lastError;
-    }
-
-    /**
-     * Get the change in error since last update.
-     */
-    public double getErrorChange(){
-        return errorChange;
-    }
-
-    /**
-     * Get the elapsed time change since last update.
-     */
-    public double getChangeInTime(){
-        return timeChange;
-    }
-
-    /**
-     * Get the last calculated output from positional PID.
-     */
-    public double getOutputPositionalValue(){
-        return outputPositionalValue;
-    }
-
-    /**
-     * Get the last calculated output from velocity PID.
-     */
-    public double getOutputVelocityValue(){
-        return outputVelocityValue;
+        return (error * Kp) + (derivative * Kd);
     }
 }

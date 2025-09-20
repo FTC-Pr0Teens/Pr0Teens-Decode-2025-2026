@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.subsystems.mecanum;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
+
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -15,10 +19,12 @@ public class MecanumCommand {
     private PIDCore xController;
     private PIDCore yController;
     private PIDCore thetaController;
+    private final PIDCore autoAimController;
 
     // create a class to consolidate subsystems
     private MecanumSubsystem mecanumSubsystem;
     private PinPointOdometrySubsystem pinPointOdoSubsystem;
+
 
     // hardware is owned by test and pass down to subsystems
     private Hardware hw;
@@ -26,11 +32,17 @@ public class MecanumCommand {
     private ElapsedTime elapsedTime;
     public double xFinal, yFinal, thetaFinal;
     public double velocity;
-
+    Limelight3A limelight;
 
     private double ex = 0;
     private double ey = 0;
     private double etheta = 0;
+
+    private static final double aakp = 0.02;
+    private static final double aakd = 0.005;
+    private static final double aaki = 0.001;
+    private static final double aat = 2.0;
+
 
 
     /**
@@ -46,6 +58,9 @@ public class MecanumCommand {
         xFinal = pinPointOdoSubsystem.getX();
         yFinal = pinPointOdoSubsystem.getY();
         thetaFinal = pinPointOdoSubsystem.getHeading();
+
+        autoAimController = new PIDCore(aakp, aakd, aaki);
+
         velocity = 0;
         turnOffInternalPID();
     }
@@ -236,7 +251,64 @@ public class MecanumCommand {
         double turn = kP * yawError;
 
         mecanumSubsystem.partialMove(strafe, forward, turn);
+    }
 
+
+    public double getYawError() {
+        if (limelight == null) return 0.0;
+
+        LLResult result = limelight.getLatestResult();
+        if (hasValidTarget()) {
+            return result.getFiducialResults().get(0).getTargetXDegrees();
+        }
+        return 0.0;
+    }
+
+    private double getXError(LLResult result) {
+
+        return result.getFiducialResults().get(0).getTargetXPixels();
+    }
+
+    private double getYError(LLResult result) {
+
+        return result.getFiducialResults().get(0).getTargetYPixels();
+    }
+    private double getYawValue () {
+        LLResult result = limelight.getLatestResult();
+
+        if (result != null && result.isValid()) {
+
+            LLResultTypes.FiducialResult[] fiducialResults = result.getFiducialResults().toArray(new LLResultTypes.FiducialResult[0]);
+
+            if (fiducialResults != null && fiducialResults.length > 0) {
+
+                return fiducialResults[0].getTargetXDegrees();
+            }
+
+        }
+        return 0;
+    }
+    public boolean hasValidTarget() {
+        if (limelight == null) return false;
+
+        LLResult result = limelight.getLatestResult();
+        return result != null && result.isValid() &&
+                result.getFiducialResults() != null &&
+                result.getFiducialResults().size() > 0;
+    }
+    public void autoAimMove(double vertical, double horizontal) {
+        double rotational = 0;
+
+        if (hasValidTarget()) {
+
+            double yawError = getYawError();
+            rotational = autoAimController.outputPositional(0, yawError);
+
+            rotational = Math.max(-0.5, Math.min(0.5, rotational));
+        }
+
+
+        mecanumSubsystem.fieldOrientedMove(vertical, horizontal, rotational, pinPointOdoSubsystem.getHeading());
     }
 }
 

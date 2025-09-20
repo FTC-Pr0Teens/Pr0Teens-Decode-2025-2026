@@ -46,6 +46,7 @@ public class Specifications {
     public static final String INTAKE= "intake";
     public static final String TURRET = "turret";
     public static final String PITCH = "pitch";
+    public static final String shooteraim = "aim";
 
 
 

@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 @TeleOp(name = "move center")
     public class movmentcenter extends LinearOpMode {
 
+
         Limelight3A limelight;
         private TelemetryPacket packet;
         private FtcDashboard dash;
@@ -25,11 +26,6 @@ import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
         private PIDCore pidCore;
 
 
-
-
-        private static final double YAW_TOLERANCE = 2.0;
-        private static final double X_TOLERANCE = 2.0;
-        private static final double Y_TOLERANCE = 2.0;
 
 
 
@@ -56,6 +52,7 @@ import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
             while (opModeIsActive()) {
 
 
+
                 LLResult result = limelight.getLatestResult();
 
 
@@ -78,34 +75,7 @@ import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
         }
 
 
-    private double getYawError(LLResult result) {
-        return result.getFiducialResults().get(0).getTargetXDegrees();
-    }
 
-    private double getXError(LLResult result) {
-
-        return result.getFiducialResults().get(0).getTargetXPixels();
-    }
-
-    private double getYError(LLResult result) {
-
-        return result.getFiducialResults().get(0).getTargetYPixels();
-    }
-    private double getYawValue () {
-        LLResult result = limelight.getLatestResult();
-
-        if (result != null && result.isValid()) {
-
-            LLResultTypes.FiducialResult[] fiducialResults = result.getFiducialResults().toArray(new LLResultTypes.FiducialResult[0]);
-
-            if (fiducialResults != null && fiducialResults.length > 0) {
-
-                return fiducialResults[0].getTargetXDegrees();
-            }
-
-        }
-        return 0;
-    }
 
 
 }
