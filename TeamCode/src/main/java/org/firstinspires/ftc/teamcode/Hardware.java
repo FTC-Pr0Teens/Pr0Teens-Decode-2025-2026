@@ -20,44 +20,41 @@ public class Hardware {
     //    // Motors
 
     private Limelight3A limelight;
-    public final DcMotorEx lf;
-    public final DcMotorEx rf;
-    public final DcMotorEx lb;
-    public final DcMotorEx rb;
-
-    // Servos
-    public final DcMotorEx lout;
-    public final DcMotorEx rout;
-
-    public final CRServo turret;
-    public final CRServo intake;
-    public final Servo push;
-    private final Servo shooteraim;
+//    public final DcMotorEx lf;
+//    public final DcMotorEx rf;
+//    public final DcMotorEx lb;
+//    public final DcMotorEx rb;
+//
+//    // Servos
+//    public final DcMotorEx lout;
+//    public final DcMotorEx rout;
+//
+//    public final CRServo turret;
+//    public final CRServo intake;
+//    public final Servo push;
+    public final DcMotorEx shooter;
 
     // Odometry
-    public final GoBildaPinpointDriver pinPointOdo;
+//    public final GoBildaPinpointDriver pinPointOdo;
 
     public Hardware(HardwareMap hwMap) {
 
 //
+//
+//        this.rf = hwMap.get(DcMotorEx.class, Specifications.FTRT_MOTOR); //rightforward
+//        this.lf = hwMap.get(DcMotorEx.class, Specifications.FTLF_MOTOR); //leftforward
+//        this.lb = hwMap.get(DcMotorEx.class, Specifications.BKLF_MOTOR); //leftback
+//        this.rb = hwMap.get(DcMotorEx.class, Specifications.BKRT_MOTOR); //rightback
 
-        this.rf = hwMap.get(DcMotorEx.class, Specifications.FTRT_MOTOR); //rightforward
-        this.lf = hwMap.get(DcMotorEx.class, Specifications.FTLF_MOTOR); //leftforward
-        this.lb = hwMap.get(DcMotorEx.class, Specifications.BKLF_MOTOR); //leftback
-        this.rb = hwMap.get(DcMotorEx.class, Specifications.BKRT_MOTOR); //rightback
 
-        this.lout = hwMap.get(DcMotorEx.class, Specifications.LOUT); //leftback
-        this.rout = hwMap.get(DcMotorEx.class, Specifications.ROUT);
-
-        this.intake = hwMap.get(CRServo.class, Specifications.INTAKE);
-        this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-        this.push = hwMap.get(Servo.class, Specifications.push);
-        this.shooteraim = hwMap.get(Servo.class, Specifications.shooteraim);
+//        this.intake = hwMap.get(CRServo.class, Specifications.INTAKE);
+//        this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
+        this.shooter = hwMap.get(DcMotorEx.class, Specifications.shooter);
 
 
 
-
-        this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
+//
+//        this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
     }
 
@@ -67,6 +64,8 @@ public class Hardware {
         }
         return instance;
     }
+
+
 }
 
 

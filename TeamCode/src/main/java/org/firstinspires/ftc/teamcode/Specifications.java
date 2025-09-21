@@ -46,7 +46,7 @@ public class Specifications {
     public static final String INTAKE= "intake";
     public static final String TURRET = "turret";
     public static final String PITCH = "pitch";
-    public static final String shooteraim = "aim";
+    public static final String shooter = "shooter";
 
 
 
@@ -54,10 +54,6 @@ public class Specifications {
     public static final String FTRT_MOTOR = "rf";
     public static final String BKLF_MOTOR = "lb";
     public static final String BKRT_MOTOR = "rb";
-
-    public static final String LOUT = "lout";
-    public static final String ROUT = "rout";
-    public static final String push = "push";
 
     public static final String LIME_LIGHT = "lime";
 
