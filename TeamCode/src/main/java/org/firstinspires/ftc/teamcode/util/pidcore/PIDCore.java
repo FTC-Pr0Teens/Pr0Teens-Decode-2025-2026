@@ -303,16 +303,23 @@ public class PIDCore {
     }
 
     public double outputPID(double error) {
+//        this.error = error;
+//        double currentTime = timer.seconds();
+//        double deltaTime = currentTime - lastTime;
+//        if (deltaTime <= 0) deltaTime = 0.001;
+//
+//        derivative = (error - lastError) / deltaTime;
+//
+//        lastError = error;
+//        lastTime = currentTime;
+//
+//        return (error * Kp) + (derivative * Kd);
         this.error = error;
-        double currentTime = timer.seconds();
-        double deltaTime = currentTime - lastTime;
-        if (deltaTime <= 0) deltaTime = 0.001;
-
-        derivative = (error - lastError) / deltaTime;
-
+        derivative = (error - lastError) / timer.time();
         lastError = error;
-        lastTime = currentTime;
+        timer.reset();
 
         return (error * Kp) + (derivative * Kd);
+
     }
 }
