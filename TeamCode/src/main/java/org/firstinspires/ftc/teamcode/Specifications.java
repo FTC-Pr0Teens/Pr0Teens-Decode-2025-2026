@@ -37,16 +37,10 @@ public class Specifications {
 
 
 
-
-    public static final String INTAKE_LEFT = "lintake";
-    public static final String INTAKE_RIGHT = "rintake";
-    public static final String RIGHT_OUTPUT_ARM = "rarm";
-
-    public static final String EXTENSION_ARM_LEFT = "llinkage";
     public static final String INTAKE= "intake";
     public static final String TURRET = "turret";
-    public static final String PITCH = "pitch";
-    public static final String shooter = "shooter";
+
+    public static final String SHOOTER = "shooter";
 
 
 

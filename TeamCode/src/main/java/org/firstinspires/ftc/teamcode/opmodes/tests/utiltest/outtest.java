@@ -33,16 +33,15 @@ public class outtest extends  LinearOpMode {
 
 
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
-        hw = Hardware.getInstance(hardwareMap);
-        outtakeCommand = new OuttakeCommand(hw);
+
 
 
         waitForStart();
         while (opModeIsActive()) {
-            double curretVel = hw.shooter.getVelocity();
+            double curretVel = shooter.getVelocity();
             double targetVel = 3000;
             if(gamepad1.a){
-            hw.shooter.setPower(outputPositional(3000, curretVel));
+           shooter.setPower(outputPositional(3000, curretVel));
             }
             packet.put("Target Velocity", targetVel);
             packet.put("Actual Velocity", curretVel);
@@ -71,8 +70,8 @@ public class outtest extends  LinearOpMode {
          double timeChange = 0;
          double errorChange = 0;
 
-         double Kd = 0.002;
-         double Kp = 0.03;
+         double Kd = 0.0;
+         double Kp = 0.02;
          double Ki = 0.00;
         // Output tracking
          double outputPositionalValue = 0;
