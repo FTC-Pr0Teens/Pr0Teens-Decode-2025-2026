@@ -1,85 +1,137 @@
-//package org.firstinspires.ftc.teamcode.opmodes.tests;
-//
-//
-//import com.acmerobotics.dashboard.FtcDashboard;
-//import com.acmerobotics.dashboard.config.Config;
-//import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//import com.qualcomm.robotcore.util.ElapsedTime;
-//
-//import org.firstinspires.ftc.teamcode.Hardware;
-//import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-//
-//
-//
-//@Config
-//@Autonomous (name = "Sample Auto")
-//public class SampleAutoOpMode extends LinearOpMode {
-//    private MecanumCommand mecanumCommand;
-//    private TelemetryPacket packet;
-//    private FtcDashboard dash;
-//
-//    @Override
-//    public void runOpMode() throws InterruptedException {
-//        Hardware hw = Hardware.getInstance(hardwareMap);
-//        mecanumCommand = new MecanumCommand(hw);
-//
-//
-//        dash = FtcDashboard.getInstance();
-//        //telemetry = dash.getTelemetry();
-//        packet = new TelemetryPacket();
-//
-//        telemetry.addData("Hello","Hello");
-//
-//        telemetry.update();
-//        waitForStart();
+package org.firstinspires.ftc.teamcode.opmodes.tests;
+
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
+import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
+
+
+@Config
+@Autonomous (name = "Sample Auto")
+public class SampleAutoOpMode extends LinearOpMode {
+    private MecanumCommand mecanumCommand;
+    enum AUTO_STATE {
+        HANG_ONE,
+        PICKUP_ZERO,
+        SUBMERSIBLE_PICKUP,
+        PICKUP_FIRST,
+
+    }
+    AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
+    public static double kpx = 0.055;
+    public static double kpy = 0.082;
+    public static double kdx = 0.002;
+    public static double kdy = 0.0017;
+    public static double kpTheta = 1.3;
+    public static double kdTheta = 0.022;
+    public static double kix = 650;
+    public static double kiy = 500;
+    public static double kitheta = 40000;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        Hardware hw = Hardware.getInstance(hardwareMap);
+        mecanumCommand = new MecanumCommand(hw);
+
+        mecanumCommand.setConstants(kpx, kdx, kix,
+                kpy, kdy, kiy,
+                kpTheta, kdTheta, kitheta);
+
+        ElapsedTime timer = new ElapsedTime();
+        boolean paused = false;
+        boolean submersibleTargetSet = false;
+
+        waitForStart();
+        while (opModeIsActive()) {
+            telemetry.addLine("for sydney wong");
+            mecanumCommand.motorProcess();
+            mecanumCommand.processOdometry();
+            switch (autoState) {
+
+                case HANG_ONE:
+                    mecanumCommand.moveToPos(20, -100, 0);  // set target
+                    if (!mecanumCommand.positionNotReachedYet()) {
+                        autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
+                    }
+                    break;
+                case PICKUP_ZERO:
+                    mecanumCommand.stop();
+                    sleep(1000);
+                    autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
+                    break;
+
+                case SUBMERSIBLE_PICKUP:
+                    if (!submersibleTargetSet) {  // flag variable
+                        kpx = 0.05; kpy = 0.1;
+                        kdx = 0.0017; kdy = 0.0017;
+                        kix = 650; kiy = 1100; kitheta = 40000;
+                        kpTheta = 1.6; kdTheta = 0.035;
+                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
+                        mecanumCommand.moveToPos(-20, -60, 0.2);
+                        submersibleTargetSet = true;
+                    }
+
+                    if (!mecanumCommand.positionNotReachedYet()) {
+                        autoState = AUTO_STATE.PICKUP_FIRST;
+                    }
+                    break;
+
+                case PICKUP_FIRST:
+
+                    mecanumCommand.stop();
+
+                    break;
+                default:
+                    mecanumCommand.stop();
+                    break;
+
+
+            }
+            updateTelemetry();
+        }
+    }
+
 //        while (opModeIsActive()) {
+//            mecanumCommand.processOdometry();
 //
+//            telemetry.addLine("chaewon");
 //
-//mecanumCommand.setFinalPosition(0,0,5,0);
-//            if(mecanumCommand.positionNotReachedYet()) {
-//                mecanumCommand.processPIDUsingPinpoint();
-//                telemetry.addData("Hello", "Hello");
+//            if (mecanumCommand.positionNotReachedYet()) {
+//                mecanumCommand.moveToPos(0,15,0);
+//                mecanumCommand.motorProcess();
 //
-//            }
-//            else {
-//                stopRobot();
+//            } else {
+//                mecanumCommand.stop();
 //            }
 //
 //            // run processes
 //            updateTelemetry();
-//            mecanumCommand.motorProcess();
-//
-//
 //        }
 //
 //    }
-//
-//
-//    public void updateTelemetry() {
-//        packet.put("x: ", mecanumCommand.getOdoX());
-//        packet.put("y: ", mecanumCommand.getOdoY());
-//        packet.put("theta: ", mecanumCommand.getOdoHeading());
-//        telemetry.addData("x: ", mecanumCommand.getOdoX());
-//        telemetry.addData("y: ", mecanumCommand.getOdoY());
-//        telemetry.addData("Theta: ", mecanumCommand.getOdoHeading());
-//
-//        telemetry.update();
-//    }
-//
-//
-//
-//    private void stopRobot() {
-//        mecanumCommand.stop();
-//    }
-//
-//
-//    public void processPinPoint() {
-//        mecanumCommand.deadReckoning();
-//
-//    }
-//
-//    }
-//
-//
+
+
+    public void updateTelemetry() {
+        telemetry.addData("x: ", mecanumCommand.getOdoX());
+        telemetry.addData("y: ", mecanumCommand.getOdoY());
+        telemetry.addData("Theta: ", mecanumCommand.getOdoHeading());
+
+
+
+
+        telemetry.update();
+    }
+
+
+}
+
+
+
+
