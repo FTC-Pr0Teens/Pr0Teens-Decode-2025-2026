@@ -38,11 +38,7 @@ public class Specifications {
 
 
 
-    public static final String INTAKE_LEFT = "lintake";
-    public static final String INTAKE_RIGHT = "rintake";
-    public static final String RIGHT_OUTPUT_ARM = "rarm";
-
-    public static final String EXTENSION_ARM_LEFT = "llinkage";
+;
     public static final String INTAKE= "intake";
     public static final String TURRET = "turret";
     public static final String PITCH = "pitch";
@@ -61,8 +57,7 @@ public class Specifications {
 
     public static final String PIN_POINT_ODOMETRY = "odo";
 
-//    public static final String HANGING_MOTOR = "hangingMotor";
-//    public static final String HANGING_MOTOR_AUX = "hangingMotorAux";
+
 
     public static final String COLOR_SENSOR = "colorSensor";
 
