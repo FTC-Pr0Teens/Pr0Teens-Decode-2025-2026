@@ -40,7 +40,7 @@ public class logiapril extends LinearOpMode {
 
 
         if (USE_WEBCAM) {
-            setManualExposure(300, 300); // Adjust these values
+            setManualExposure(225,67); // Adjust these values
         }
 
         telemetry.addData("Camera", "Preview on DS + Dashboard");
@@ -127,7 +127,6 @@ public class logiapril extends LinearOpMode {
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
 
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 30);
     }
 
     private void setManualExposure(int exposureMS, int gain) {

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.lift;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import  com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -28,7 +28,7 @@ class LiftSubsystem {
 
     }
 
-    public void turret() {
+    public void    turret() {
         hw.turret.setPower(1.0);
 
     }

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 @Autonomous (name = "Sample Auto")
 public class SampleAutoOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
+    private LiftCommand liftCommand;
     enum AUTO_STATE {
         HANG_ONE,
         PICKUP_ZERO,
@@ -25,10 +27,10 @@ public class SampleAutoOpMode extends LinearOpMode {
 
     }
     AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
-    public static double kpx = 0.055;
-    public static double kpy = 0.082;
-    public static double kdx = 0.002;
-    public static double kdy = 0.0017;
+    public static double kpx = 0.04;
+    public static double kpy = 0.067;
+    public static double kdx = 0.00367;
+    public static double kdy = 0.00167;
     public static double kpTheta = 1.3;
     public static double kdTheta = 0.022;
     public static double kix = 650;
@@ -39,6 +41,7 @@ public class SampleAutoOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Hardware hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
+        liftCommand = new LiftCommand(hw);
 
         mecanumCommand.setConstants(kpx, kdx, kix,
                 kpy, kdy, kiy,
@@ -56,7 +59,8 @@ public class SampleAutoOpMode extends LinearOpMode {
             switch (autoState) {
 
                 case HANG_ONE:
-                    mecanumCommand.moveToPos(20, -100, 0);  // set target
+                    mecanumCommand.moveToPos(40, 0, 0);// set target
+                    liftCommand.turret();
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
@@ -64,6 +68,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     sleep(1000);
+                    liftCommand.turretstop();
                     autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
                     break;
 
@@ -74,7 +79,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                         kix = 650; kiy = 1100; kitheta = 40000;
                         kpTheta = 1.6; kdTheta = 0.035;
                         mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
-                        mecanumCommand.moveToPos(-20, -60, 0.2);
+                        mecanumCommand.moveToPos(0, 0, 0);
                         submersibleTargetSet = true;
                     }
 
