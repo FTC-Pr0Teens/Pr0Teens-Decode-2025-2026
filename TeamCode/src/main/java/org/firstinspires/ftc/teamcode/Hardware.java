@@ -45,7 +45,7 @@ public class Hardware {
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.turret = hwMap.get(DcMotorEx.class, Specifications.TURRET);
-        this.shooter = hwMap.get(DcMotorEx.class, Specifications.shooter);
+        this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
 
 
 

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
+import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 
@@ -19,6 +20,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     // Current pose estimates (in cm or degrees as appropriate)
     private MecanumCommand mecanumCommand;
+    private LiftCommand liftCommand;
 
     private ElapsedTime timer;
 
@@ -37,6 +39,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
+        liftCommand = new LiftCommand(hw);
 
 //        liftCommand = new LiftCommand(hw);
         resetTimer = new ElapsedTime();
@@ -57,6 +60,16 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.start){
                 mecanumCommand.resetPinPointOdometry();
             }
+            if(gamepad1.left_bumper == true) {
+                liftCommand.handleIntake();
+
+
+            }
+            if (gamepad1.left_bumper == false){
+                liftCommand.stopintake();
+            }
+
+
         }
 
     }
