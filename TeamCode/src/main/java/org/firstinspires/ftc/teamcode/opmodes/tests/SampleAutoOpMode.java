@@ -68,18 +68,22 @@ public class SampleAutoOpMode extends LinearOpMode {
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     liftCommand.stopintake();
+                    liftCommand.turn();
+                    liftCommand.handleIntake();
+
                     sleep(1000);
                     autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
                     break;
 
                 case SUBMERSIBLE_PICKUP:
                     if (!submersibleTargetSet) {  // flag variable
-                        kpx = 0.05; kpy = 0.1;
-                        kdx = 0.0017; kdy = 0.0017;
-                        kix = 650; kiy = 1100; kitheta = 40000;
-                        kpTheta = 1.6; kdTheta = 0.035;
-                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
+//                        kpx = 0.05; kpy = 0.1;
+//                        kdx = 0.0017; kdy = 0.0017;
+//                        kix = 650; kiy = 1100; kitheta = 40000;
+//                        kpTheta = 1.6; kdTheta = 0.035;
+//                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
                         mecanumCommand.moveToPos(0, 0, 0);
+                        liftCommand.stopintake();
                         submersibleTargetSet = true;
                     }
 

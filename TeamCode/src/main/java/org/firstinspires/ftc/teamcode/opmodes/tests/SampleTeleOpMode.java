@@ -68,6 +68,12 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.left_bumper == false){
                 liftCommand.stopintake();
             }
+            if(gamepad1.a){
+                liftCommand.turn();
+            }
+            if(gamepad1.b){
+                liftCommand.stopturn();
+            }
 
 
         }

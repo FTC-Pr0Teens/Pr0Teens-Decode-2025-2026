@@ -1,138 +1,84 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests.utiltest;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.Hardware;
-
-@TeleOp(name = "center")
+@Autonomous(name="AprilTag Follow (Robot Rotate)", group="Vision")
 public class autocenter extends LinearOpMode {
 
-    Limelight3A limelight;
-    private TelemetryPacket packet;
-    private FtcDashboard dash;
-    private DcMotor leftFront;
-    private DcMotor leftRear;
-    private DcMotor rightFront;
-    private DcMotor rightRear;
-    private ElapsedTime timer;
-
-
-    private static final double KP = 0.03;
-    private static final double KI = 0.0;
-    private static final double KD = 0.006;
-
-    private static final double YAW_TOLERANCE = 2.0;
-    private static final double MAX_TURN_POWER = 0.5;
-
-
-    private double previousError = 0;
-    private double integralSum = 0;
-
+    private Limelight3A limelight;
+    private DcMotor frontLeft, frontRight, backLeft, backRight;
 
     @Override
-
-
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
+        // Initialize Limelight
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        Hardware hw = new Hardware(hardwareMap);
-        timer = new ElapsedTime();
-
-
-        leftFront = hardwareMap.get(DcMotor.class, "lf");
-        rightFront = hardwareMap.get(DcMotor.class, "rf");
-        leftRear = hardwareMap.get(DcMotor.class, "lb");
-        rightRear = hardwareMap.get(DcMotor.class, "rb");
-
-
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightRear.setDirection(DcMotor.Direction.FORWARD);
-
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
-
         limelight.pipelineSwitch(6);
+
+        // Initialize drive motors
+        frontLeft = hardwareMap.get(DcMotor.class, "lf");
+        frontRight = hardwareMap.get(DcMotor.class, "rf");
+        backLeft = hardwareMap.get(DcMotor.class, "lb");
+        backRight = hardwareMap.get(DcMotor.class, "rb");
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         waitForStart();
+
         limelight.start();
 
         while (opModeIsActive()) {
-            double yawError = getYawValue();
+            LLStatus status = limelight.getStatus();
+            telemetry.addData("Name", "%s", status.getName());
+            telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+                    status.getTemp(), status.getCpu(), (int) status.getFps());
+            telemetry.addData("Pipeline", "Index: %d, Type: %s",
+                    status.getPipelineIndex(), status.getPipelineType());
 
-            if (limelight.getLatestResult().isValid() && Math.abs(yawError) > YAW_TOLERANCE) {
-                turnRobot(yawError);
+            LLResult result = limelight.getLatestResult();
+            if (result != null && result.isValid()) {
+                double tx = result.getTx(); // Horizontal offset in degrees
+                double ty = result.getTy(); // Vertical offset
+
+                double turnPower = 0.0;
+
+                // Simple proportional control (turn toward tag)
+                if (tx > 3) {
+                    turnPower = 0.15;  // turn right
+                } else if (tx < -3) {
+                    turnPower = -0.15; // turn left
+                } else {
+                    turnPower = 0.0;   // centered
+                }
+
+                // Apply turn to all motors
+                frontLeft.setPower(turnPower);
+                backLeft.setPower(turnPower);
+                frontRight.setPower(-turnPower);
+                backRight.setPower(-turnPower);
+
+                telemetry.addData("Target X", tx);
+                telemetry.addData("Target Y", ty);
+                telemetry.addData("Turn Power", turnPower);
             } else {
+                // Stop moving if no tag detected
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
 
-                stopMotors();
+                telemetry.addData("Limelight", "No Targets");
             }
 
-
-            telemetry.addData("Target Valid", limelight.getLatestResult().isValid());
-            telemetry.addData("Yaw Error", "%.2f degrees", yawError);
-            telemetry.addData("Status", Math.abs(yawError) <= YAW_TOLERANCE ? "Aligned" : "Correcting");
             telemetry.update();
         }
     }
-
-        private double getYawValue () {
-            LLResult result = limelight.getLatestResult();
-
-            if (result != null && result.isValid()) {
-
-                LLResultTypes.FiducialResult[] fiducialResults = result.getFiducialResults().toArray(new LLResultTypes.FiducialResult[0]);
-
-                if (fiducialResults != null && fiducialResults.length > 0) {
-
-                    return fiducialResults[0].getTargetXDegrees();
-                }
-
-            }
-            return 0;
-        }
-
-
-
-        private void turnRobot ( double error){
-            double deltaTime = timer.seconds();
-            timer.reset();
-
-            integralSum += error * deltaTime;
-            double derivative = (error - previousError) / deltaTime;
-
-
-            double turnPower = (KP * error) + (KI * integralSum) + (KD * derivative);
-
-
-            turnPower = Math.max(-MAX_TURN_POWER, Math.min(MAX_TURN_POWER, turnPower));
-
-
-            leftFront.setPower(turnPower);
-            leftRear.setPower(turnPower);
-            rightFront.setPower(-turnPower);
-            rightRear.setPower(-turnPower);
-
-            previousError = error;
-        }
-
-        private void stopMotors () {
-            leftFront.setPower(0);
-            leftRear.setPower(0);
-            rightFront.setPower(0);
-            rightRear.setPower(0);
-
-            integralSum = 0;
-            previousError = 0;
-        }
-    }
-
+}

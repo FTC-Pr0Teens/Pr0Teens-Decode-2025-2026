@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.lift;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -14,6 +15,7 @@ class LiftSubsystem {
 
     public LiftSubsystem(Hardware hw) {
         this.hw = hw;
+
 
     }
 
@@ -28,6 +30,15 @@ class LiftSubsystem {
         hw.intake.setPower(0.0);
 
     }
+    public void turretTurn() {
+        hw.turret.setPosition(0.5);
+    }
+    public void turret2() {
+        hw.turret.setPosition(0.0);
+    }
+
+
+
 }
 
 

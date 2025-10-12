@@ -31,6 +31,9 @@ public class LiftCommand {
         liftSubsystem.intake();
     }
 
+    public void turn(){ liftSubsystem.turretTurn();}
+    public void stopturn(){ liftSubsystem.turret2();}
+
 
 
 
