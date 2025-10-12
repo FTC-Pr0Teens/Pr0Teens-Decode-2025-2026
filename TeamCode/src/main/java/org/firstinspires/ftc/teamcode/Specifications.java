@@ -38,14 +38,8 @@ public class Specifications {
 
     // subsystem name
 
-    public static final String CLAW_SERVO = "claw";
-    public static final String LEFT_OUTPUT_ARM = "larm";
-    public static final String RIGHT_OUTPUT_ARM = "rarm";
 
-    public static final String EXTENSION_ARM_LEFT = "llinkage";
-    public static final String EXTENSION_ARM_RIGHT = "rlinkage";
-    public static final String ROLL = "roll";
-    public static final String PITCH = "pitch";
+
 
 
 
@@ -53,6 +47,8 @@ public class Specifications {
     public static final String FTRT_MOTOR = "rf";
     public static final String BKLF_MOTOR = "lb";
     public static final String BKRT_MOTOR = "rb";
+    public static final String INTAKE = "intake";
+    public static final String SORTER = "sorter";
 
     public static final String LIME_LIGHT = "lime";
 
