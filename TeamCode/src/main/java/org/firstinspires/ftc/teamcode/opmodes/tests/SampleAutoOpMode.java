@@ -103,24 +103,6 @@ public class SampleAutoOpMode extends LinearOpMode {
         }
     }
 
-//        while (opModeIsActive()) {
-//            mecanumCommand.processOdometry();
-//
-//            telemetry.addLine("chaewon");
-//
-//            if (mecanumCommand.positionNotReachedYet()) {
-//                mecanumCommand.moveToPos(0,15,0);
-//                mecanumCommand.motorProcess();
-//
-//            } else {
-//                mecanumCommand.stop();
-//            }
-//
-//            // run processes
-//            updateTelemetry();
-//        }
-//
-//    }
 
 
     public void updateTelemetry() {
