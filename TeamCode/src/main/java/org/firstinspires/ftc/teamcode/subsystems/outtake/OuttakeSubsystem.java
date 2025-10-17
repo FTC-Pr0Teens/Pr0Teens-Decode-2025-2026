@@ -79,8 +79,6 @@ public class OuttakeSubsystem {
 
      error = targetRPM - curretRPM;
 
-
-
         double currentTime = timer.seconds();
         double deltaTime = currentTime - lastTime;
         if (deltaTime <= 0) {

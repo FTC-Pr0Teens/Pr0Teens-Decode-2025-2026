@@ -70,13 +70,7 @@ public class MecanumCommand {
 
         moveGlobalPartialPinPoint( ex, ey, etheta);
     }
-
-        /**
-         * FIXED: Properly converts GLOBAL coordinate commands to LOCAL robot coordinates
-         * @param globalX Global X-axis movement command (field coordinate)
-         * @param globalY Global Y-axis movement command (field coordinate)
-         * @param rotational Rotation command (same in both coordinate systems)
-         */
+    
         public void moveGlobalPartialPinPoint(double vertical, double horizontal, double rotational) {
             double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
             double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
@@ -185,14 +179,6 @@ public class MecanumCommand {
             telemetry.addData("PID etheta", etheta);
         }
     }
-
-    /**
-     * field-oriented movement for TeleOp modes using PinPoint heading.
-     *
-     * @param vertical   Forward/backward input (-1 to 1).
-     * @param horizontal Left/right strafe input (-1 to 1).
-     * @param rotational Rotation input (-1 to 1).
-     */
 
 
 
