@@ -22,17 +22,16 @@ public class SampleAutoOpMode extends LinearOpMode {
     enum AUTO_STATE {
         HANG_ONE,
         PICKUP_ZERO,
-        SUBMERSIBLE_PICKUP,
         PICKUP_FIRST,
 
     }
     AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
-    public static double kpx = 0.04;
-    public static double kpy = 0.067;
-    public static double kdx = 0.00367;
+    public static double kpx = 0.0267;
+    public static double kpy = 0.0267;
+    public static double kdx = 0.00167;
     public static double kdy = 0.00167;
     public static double kpTheta = 1.3;
-    public static double kdTheta = 0.022;
+    public static double kdTheta = 0.056;
     public static double kix = 650;
     public static double kiy = 500;
     public static double kitheta = 40000;
@@ -56,37 +55,37 @@ public class SampleAutoOpMode extends LinearOpMode {
             telemetry.addLine("for sydney wong");
             mecanumCommand.motorProcess();
             mecanumCommand.processOdometry();
+            mecanumCommand.processPIDUsingPinpoint();
             switch (autoState) {
 
                 case HANG_ONE:
-                    mecanumCommand.moveToPos(40, 0, 0);// set target
+                    mecanumCommand.moveToPos(50, -50, Math.PI);
                     liftCommand.turret();
                     if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
+                        autoState = AUTO_STATE.PICKUP_ZERO;
                     }
                     break;
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     sleep(1000);
                     liftCommand.turretstop();
-                    autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
+                    autoState = AUTO_STATE.PICKUP_FIRST;
                     break;
 
-                    case SUBMERSIBLE_PICKUP:
-                    if (!submersibleTargetSet) {  // flag variable
-                        kpx = 0.05; kpy = 0.1;
-                        kdx = 0.0017; kdy = 0.0017;
-                        kix = 650; kiy = 1100; kitheta = 40000;
-                        kpTheta = 1.6; kdTheta = 0.035;
-                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
-                        mecanumCommand.moveToPos(0, 0, 0);
-                        submersibleTargetSet = true;
-                    }
-
-                    if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.PICKUP_FIRST;
-                    }
-                    break;
+//                    case SUBMERSIBLE_PICKUP:
+//                    if (!submersibleTargetSet) {  // flag variable
+//                        kpx = 0.05; kpy = 0.1;
+//                        kdx = 0.0017; kdy = 0.0017;
+//                        kix = 650; kiy = 1100; kitheta = 40000;
+//                        kpTheta = 1.6; kdTheta = 0.035;
+//
+//                        submersibleTargetSet = true;
+//                    }
+//
+//                    if (!mecanumCommand.positionNotReachedYet()) {
+//                        autoState = AUTO_STATE.PICKUP_FIRST;
+//                    }
+//                    break;
 
                 case PICKUP_FIRST:
 

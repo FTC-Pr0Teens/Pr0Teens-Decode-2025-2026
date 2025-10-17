@@ -160,9 +160,10 @@ public class MecanumCommand {
         }
 
         public void motorProcess() {
-            processPIDUsingPinpoint();
+
             mecanumSubsystem.motorProcessNoEncoder();
         }
+
 
         public void deadReckoning() {
             pinPointOdoSubsystem.deadReckoning();
