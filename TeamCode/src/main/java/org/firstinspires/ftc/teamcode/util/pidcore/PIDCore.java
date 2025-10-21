@@ -49,7 +49,6 @@ public class PIDCore {
     private double outputLimit = 1.0;      // Limit output magnitude
     private double deadband = 0.0;         // Ignore small errors
 
-    // Time tracking
     private double lastTime = 0;
     private double timeChange = 0;
     private double errorChange = 0;

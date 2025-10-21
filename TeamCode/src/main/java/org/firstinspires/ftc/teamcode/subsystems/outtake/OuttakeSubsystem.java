@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.outtake;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
-import static org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeConstants.*;
 
 
 public class OuttakeSubsystem {
@@ -17,6 +16,10 @@ public class OuttakeSubsystem {
     private double integralSum = 0;
     private double timeChange = 0;
     private double errorChange = 0;
+    public static double Kd = 0.01;
+    public static double Kp = 0.03;
+    public static double Ki = 0.00 ;
+    private Hardware hw;
 
 
     // Output tracking
@@ -39,9 +42,11 @@ public class OuttakeSubsystem {
 //    public double ki = 0.01;
 
 
-    public OuttakeSubsystem(){
+    public OuttakeSubsystem(Hardware hw){
         pidCore = new PIDCore(OuttakeConstants.Kp, OuttakeConstants.Kd, OuttakeConstants.Ki);
         timer = new ElapsedTime();
+        outtakeConstants = new OuttakeConstants();
+        this.hw = hw;
 
     }
     /**
@@ -75,9 +80,9 @@ public class OuttakeSubsystem {
 
         }
 
-    public double outputPositional(double targetRPM, double curretRPM) {
+    public double outputPositional(double targetRPM, double currentRPM) {
 
-     error = targetRPM - curretRPM;
+     error = targetRPM - currentRPM;
 
 
 
@@ -102,7 +107,7 @@ public class OuttakeSubsystem {
         }
 
 
-        outputPositionalValue = (error * outtakeConstants.Kp) + (derivative * outtakeConstants.Kd) + (integralSum * outtakeConstants.Ki);
+        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
 
         if (Math.abs(outputPositionalValue) > outputLimit) {
             outputPositionalValue = outputLimit * Math.signum(outputPositionalValue);
@@ -115,6 +120,25 @@ public class OuttakeSubsystem {
         timeChange = deltaTime;
 
         return outputPositionalValue;
+    }
+    public double getDistance(double limelightHeight, double targetHeight, double limelightAngle, double ty) {
+        double angleToTargetDeg = limelightAngle + ty;
+        double angleToTargetRad = Math.toRadians(angleToTargetDeg);
+        return (targetHeight - limelightHeight) / Math.tan(angleToTargetRad);
+    }
+    public double getTargetRPM(double distance) {
+        double slope = 20;
+        double baseRPM = 4000;
+        return slope * distance + baseRPM;
+    }
+    public void aimAndShoot(DcMotor shooter, double distance, double currentRPM, double deltaTime) {
+        double targetRPM = getTargetRPM(distance);
+        double outputPower = outputPositional(targetRPM, currentRPM);
+
+        // Clip power to valid range
+        outputPower = Math.max(Math.min(outputPower, 1.0), 0.0);
+
+        shooter.setPower(outputPower);
     }
 
 

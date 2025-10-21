@@ -4,9 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
 
 public class LiftCommand {
     private LiftSubsystem liftSubsystem;
+    private OuttakeSubsystem outtakeSubsystem;
     private Hardware hw;
     private double power;
 
@@ -15,7 +17,9 @@ public class LiftCommand {
     public LiftCommand(Hardware hw) {
         this.hw = hw;
         this.liftSubsystem = new LiftSubsystem(hw);
+        this.outtakeSubsystem = new OuttakeSubsystem(hw);
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         elapsedTime = new ElapsedTime();
         this.power = 0;
 
@@ -32,7 +36,30 @@ public class LiftCommand {
     }
 
     public void turn(){ liftSubsystem.turretTurn();}
-    public void stopturn(){ liftSubsystem.turret2();}
+    public void turn2(){
+        liftSubsystem.turretTurn2();
+    }
+    public void turn3(){
+        liftSubsystem.turretTurn3();
+    }
+    public void shoot(){
+        double targetRPM = 5600;
+        double currentRPM = hw.shooter.getVelocity();
+        double output = outtakeSubsystem.outputPositional(targetRPM, currentRPM);
+        hw.shooter.setPower(output);
+
+    }
+    public void push(){
+        liftSubsystem.push();
+    }
+    public void pull(){
+        liftSubsystem.pull();
+    }
+    public void shootstop(){
+        liftSubsystem.shooterstop();
+    }
+
+
 
 
 

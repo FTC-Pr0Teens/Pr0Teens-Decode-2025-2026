@@ -60,20 +60,36 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.start){
                 mecanumCommand.resetPinPointOdometry();
             }
-            if(gamepad1.left_bumper == true) {
+            if(gamepad1.left_bumper) {
                 liftCommand.handleIntake();
 
 
             }
-            if (gamepad1.left_bumper == false){
+            if (!gamepad1.left_bumper){
                 liftCommand.stopintake();
             }
             if(gamepad1.a){
                 liftCommand.turn();
             }
             if(gamepad1.b){
-                liftCommand.stopturn();
+                liftCommand.turn2();
             }
+            if(gamepad1.x){
+                liftCommand.turn3();
+            }
+            if(gamepad1.right_bumper){
+                liftCommand.push();
+            }
+            if(gamepad1.dpad_up){
+                liftCommand.pull();
+            }
+           if(gamepad1.left_trigger > 0.1){
+                liftCommand.shoot();
+           }
+            if(gamepad1.right_trigger > 0.1){
+                liftCommand.shootstop();
+            }
+
 
 
         }

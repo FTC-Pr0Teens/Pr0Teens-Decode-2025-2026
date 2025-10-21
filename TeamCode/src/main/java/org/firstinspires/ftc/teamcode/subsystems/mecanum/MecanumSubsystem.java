@@ -63,7 +63,7 @@ class MecanumSubsystem {
 
         hw.lf.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.lb.setDirection(DcMotorSimple.Direction.REVERSE);
-        hw.rf.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.rf.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.rb.setDirection(DcMotorSimple.Direction.FORWARD);
 
 

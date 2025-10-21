@@ -14,7 +14,7 @@ public class OuttakeCommand {
         this.hw = hw;
 
 
-        this.outtakeSubsystem = new OuttakeSubsystem();
+        this.outtakeSubsystem = new OuttakeSubsystem(hw);
 
 
     }

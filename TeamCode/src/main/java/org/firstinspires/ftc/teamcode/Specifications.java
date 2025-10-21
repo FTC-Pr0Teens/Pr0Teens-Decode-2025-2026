@@ -40,9 +40,10 @@ public class Specifications {
 
 ;
     public static final String INTAKE= "intake";
-    public static final String TURRET = "turret";
+    public static final String TURN = "turn";
     public static final String PITCH = "pitch";
     public static final String SHOOTER = "shooter";
+    public static final String TURRET= "turret";
 
 
 
@@ -51,17 +52,20 @@ public class Specifications {
     public static final String BKLF_MOTOR = "lb";
     public static final String BKRT_MOTOR = "rb";
 
+
+    public static final String PUSHER = "push";
+
     public static final String LIME_LIGHT = "lime";
 
-    public static final String LIGHT = "light";
-
+//    public static final String LIGHT = "light";
+//
     public static final String PIN_POINT_ODOMETRY = "odo";
 
 
 
-    public static final String COLOR_SENSOR = "colorSensor";
-
-    public static final String LED = "led";
+//    public static final String COLOR_SENSOR = "colorSensor";
+//
+//    public static final String LED = "led";
 
 
     public static final int CVSmoothing = 30;

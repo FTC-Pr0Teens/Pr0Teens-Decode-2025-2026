@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.lift;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -15,6 +17,7 @@ class LiftSubsystem {
 
     public LiftSubsystem(Hardware hw) {
         this.hw = hw;
+
 
 
     }
@@ -30,12 +33,41 @@ class LiftSubsystem {
         hw.intake.setPower(0.0);
 
     }
+
     public void turretTurn() {
-        hw.turret.setPosition(0.5);
+        hw.turn.setPosition(0.0);
+
     }
-    public void turret2() {
-        hw.turret.setPosition(0.0);
+    public void turretTurn2() {
+        hw.turn.setPosition(0.18);
+
     }
+    public void turretTurn3() {
+        hw.turn.setPosition(0.36);
+
+    }
+    public void push() {
+        hw.pusher.setPosition(0.3);
+
+    }
+
+
+        public void shooter(double targetVelocity) {
+            hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            hw.shooter.setVelocityPIDFCoefficients(0.002, 0.0001, 0.0001, 12.0);
+            hw.shooter.setVelocity(targetVelocity);
+
+    }
+    public void shooterstop() {
+        hw.shooter.setVelocity(0);
+
+    }
+    public void pull() {
+        hw.pusher.setPosition(0.0);
+
+    }
+
+
 
 
 
