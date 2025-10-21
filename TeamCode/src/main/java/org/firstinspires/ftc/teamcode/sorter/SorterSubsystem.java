@@ -1,76 +1,57 @@
-package org.firstinspires.ftc.teamcode.opmodes.tests;
+package org.firstinspires.ftc.teamcode.sorter;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import java.util.ArrayList;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.sorter.SorterSubsystem;
 
-@TeleOp (name = "SortIntake (Blocks to Java)")
+import java.util.ArrayList;
 
-public class SorterTelop extends LinearOpMode {
-    Hardware hw = Hardware.getInstance(hardwareMap);
-    SorterSubsystem sorterSubsystem = new SorterSubsystem(0,0,0,hw);
+public class SorterSubsystem {
+    public ArrayList<String> order;
 
-    ArrayList<String> order = new ArrayList<>();
-    ArrayList<String> intake = new ArrayList<>();
+    public ArrayList<String> intake;
 
-    String firstColour;
-    String secondColour;
-    private int index;
-    double greenDetected = 0;
-    double purple1Detected = 0;
-    double purple2Detected = 0;
-    int length = intake.size();
+    private ColorSensor colourSensor;
+    private Servo turnTable;
+    double greenDetected;
 
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+    private String firstColour;
+    private String secondColour;
 
-        hw.colourSensor.enableLed(true);
+    public int index;
+    double purple1Detected;
+
+    double purple2Detected;
+
+    private Hardware hw;
+    private int length;
 
 
+    public  SorterSubsystem(int gD, int pD1, int pD2, Hardware hw) {
+        this.order = new ArrayList<>();
+        this.intake = new ArrayList<>();
+
+        this.hw = hw;
+
+        this.greenDetected = gD;
+        this.purple1Detected = pD1;
+        this.purple2Detected = pD2;
+        //length = intake.size();
+        length = 0;
+        this.colourSensor = hw.colourSensor;
+        this.turnTable = hw.turnTable;
 
 
-
-        waitForStart();
-        while (opModeIsActive()) {
-            index = intake.indexOf(new String("green"));
-
-            double maxDegree = 300;
-            double currentPosition = hw.turnTable.getPosition();
-            double currentDegrees = currentPosition * maxDegree;
-
-            int greenIndex = order.indexOf("green");
-
-            double drive = -gamepad1.left_stick_y;
-            double turn = gamepad1.left_stick_x;
-            double spin = -gamepad1.right_stick_y;
-
-            // moves intake
-            if(gamepad1.b == true){
-                telemetry.addLine("buttonB pressed");
-                telemetry.update();
-                detectColour();
-            }
-            if (gamepad1.a == true) {
-                sort();
-
-            }
-            if(gamepad1.x == true){
-                intake.clear();
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            }
-        }
     }
-    private void detectColour () {
+
+    private void detectColour() throws InterruptedException {
 
         int red = colourSensor.red();
         int green = colourSensor.green();
@@ -90,19 +71,17 @@ public class SorterTelop extends LinearOpMode {
 
 
         //purple
-        if(length <= 3){
+        if (length <= 3) {
             if (blue > green) {
                 telemetry.addData("Blue", colourSensor.blue());
                 telemetry.update();
 
                 telemetry.addLine("purple detected");
-                if (purple1Detected == 1 && purple2Detected == 1){ //continues to add purple even if purple1Detected and purple2Detected == 1
+                if (purple1Detected == 1 && purple2Detected == 1) { //continues to add purple even if purple1Detected and purple2Detected == 1
                     telemetry.addLine("purple1Full"); //it does not output purpleFull
                     telemetry.update();
-                }
-
-                else if (purple1Detected == 0 || purple2Detected == 0) {
-                    if(purple1Detected == 0){
+                } else if (purple1Detected == 0 || purple2Detected == 0) {
+                    if (purple1Detected == 0) {
                         purple1Detected = 1;
                         telemetry.addLine("purple1Detected");
                         telemetry.update();
@@ -129,8 +108,7 @@ public class SorterTelop extends LinearOpMode {
                             telemetry.addLine(Integer.toString(length));
                             telemetry.update();
                         }
-                    }
-                    else if(purple2Detected == 0 && purple1Detected != 0){
+                    } else if (purple2Detected == 0 && purple1Detected != 0) {
                         purple2Detected = 1;
                         telemetry.addLine("purple1Detected");
                         telemetry.update();
@@ -170,10 +148,10 @@ public class SorterTelop extends LinearOpMode {
                 if (greenDetected == 1) {
                     telemetry.addLine("greenFull");
                     telemetry.update();
-                } else if(greenDetected == 0){
+                } else if (greenDetected == 0) {
                     greenDetected = greenDetected + 1;
                     if (length == 0) {
-                        turnTable.setPosition(0);
+                        turnTable.setPosition(0); 
                         sleep(1000);
                         intake.add("green");
                         telemetry.addLine(Integer.toString(length));
@@ -196,7 +174,7 @@ public class SorterTelop extends LinearOpMode {
         }
     }
 
-    private void sort(){
+    private void sort() throws InterruptedException {
         index = intake.indexOf(new String("green"));
         turnTable.setPosition(0);
         firstColour = order.get(0);
@@ -210,8 +188,7 @@ public class SorterTelop extends LinearOpMode {
                 turnTable.setPosition(0);
                 sleep(7000);
                 intake.clear();
-            }
-            else if (index == 1) {
+            } else if (index == 1) {
                 turnTable.setPosition(0);//60 degrees
                 sleep(1000);
                 turnTable.setPosition(0.5);
@@ -222,8 +199,7 @@ public class SorterTelop extends LinearOpMode {
                 sleep(1000);
                 intake.clear();
 
-            }
-            else if (index == 2) {
+            } else if (index == 2) {
                 turnTable.setPosition(0);//60 degrees
                 sleep(1000);
                 turnTable.setPosition(1);
@@ -234,8 +210,7 @@ public class SorterTelop extends LinearOpMode {
                 sleep(1000);
                 intake.clear();
             }
-        }
-        else if (firstColour.equals("purple") && secondColour.equals("green")) {
+        } else if (firstColour.equals("purple") && secondColour.equals("green")) {
             if (index == 0) {
                 turnTable.setPosition(0.5);
                 sleep(1000);
@@ -246,8 +221,7 @@ public class SorterTelop extends LinearOpMode {
                 turnTable.setPosition(0);
                 sleep(1000);
                 intake.clear();
-            }
-            else if (index == 1) {
+            } else if (index == 1) {
                 turnTable.setPosition(0);
                 sleep(1000);
                 turnTable.setPosition(1);
@@ -257,8 +231,7 @@ public class SorterTelop extends LinearOpMode {
                 turnTable.setPosition(0);
                 sleep(500);
                 intake.clear();
-            }
-            else if (index == 2) {
+            } else if (index == 2) {
                 turnTable.setPosition(0);
                 sleep(1000);
                 turnTable.setPosition(0.5);
@@ -269,8 +242,7 @@ public class SorterTelop extends LinearOpMode {
                 sleep(500);
                 intake.clear();
             }
-        }
-        else{ //if (firstColour.equals("green")) {
+        } else { //if (firstColour.equals("green")) {
             telemetry.addData("index", index);
             telemetry.update();
             if (index == 0) {
@@ -281,19 +253,17 @@ public class SorterTelop extends LinearOpMode {
                 turnTable.setPosition(1);
                 sleep(1000);
                 turnTable.setPosition(0);
-                sleep(500);
+                sleep(1000);
                 intake.clear();
-            }
-            else if (index == 1) {
+            } else if (index == 1) {
                 turnTable.setPosition(1);//60 degrees
                 sleep(1000);
                 turnTable.setPosition(0.5);
                 sleep(1000);
                 turnTable.setPosition(0);
-                sleep(10000000);
+                sleep(1000);
                 intake.clear();
-            }
-            else if (index == 2) {
+            } else if (index == 2) {
                 turnTable.setPosition(0.5);//60 degrees
                 sleep(1000);
                 turnTable.setPosition(1);
@@ -303,9 +273,9 @@ public class SorterTelop extends LinearOpMode {
                 intake.clear();
             }
         }
-
     }
-    public int getSize(){
+
+    public int getSize() {
         return intake.size();
     }
 }
