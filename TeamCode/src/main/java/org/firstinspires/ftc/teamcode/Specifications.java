@@ -41,8 +41,8 @@ public class Specifications {
 
 
 
-
-
+    public static final String COLOUR_SENSOR = "colour";
+    public static final String TURN_TABLE = "turntable";
     public static final String FTLF_MOTOR = "lf";
     public static final String FTRT_MOTOR = "rf";
     public static final String BKLF_MOTOR = "lb";

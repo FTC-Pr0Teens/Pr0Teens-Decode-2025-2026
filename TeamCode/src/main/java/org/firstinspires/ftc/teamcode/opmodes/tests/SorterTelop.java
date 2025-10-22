@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.tests;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.ArrayList;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.sorter.SorterSubsystem;
@@ -14,8 +10,9 @@ import org.firstinspires.ftc.teamcode.sorter.SorterSubsystem;
 @TeleOp (name = "SortIntake (Blocks to Java)")
 
 public class SorterTelop extends LinearOpMode {
-    Hardware hw = Hardware.getInstance(hardwareMap);
-    SorterSubsystem sorterSubsystem = new SorterSubsystem(0,0,0,hw);
+
+    private Hardware hw;
+    private SorterSubsystem sorterSubsystem;
 
     ArrayList<String> order = new ArrayList<>();
     ArrayList<String> intake = new ArrayList<>();
@@ -29,7 +26,11 @@ public class SorterTelop extends LinearOpMode {
     int length = intake.size();
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
+        Hardware hw = Hardware.getInstance(hardwareMap);
+
+        sorterSubsystem = new SorterSubsystem(0,0,0, hw);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -57,10 +58,10 @@ public class SorterTelop extends LinearOpMode {
             if(gamepad1.b == true){
                 telemetry.addLine("buttonB pressed");
                 telemetry.update();
-                detectColour();
+                sorterSubsystem.detectColour();
             }
             if (gamepad1.a == true) {
-                sort();
+                sorterSubsystem.sort();
 
             }
             if(gamepad1.x == true){
@@ -72,19 +73,19 @@ public class SorterTelop extends LinearOpMode {
     }
     private void detectColour () {
 
-        int red = colourSensor.red();
-        int green = colourSensor.green();
-        int blue = colourSensor.blue();
-        int alpha = colourSensor.alpha();
+        int red = hw.colourSensor.red();
+        int green = hw.colourSensor.green();
+        int blue = hw.colourSensor.blue();
+        int alpha = hw.colourSensor.alpha();
 
         int length = intake.size();
 
         telemetry.addData("intake: ", intake.size());
 
-        telemetry.addData("Red", colourSensor.red());
-        telemetry.addData("Green", colourSensor.green());
-        telemetry.addData("Blue", colourSensor.blue());
-        telemetry.addData("Alpha", colourSensor.alpha());
+        telemetry.addData("Red", hw.colourSensor.red());
+        telemetry.addData("Green", hw.colourSensor.green());
+        telemetry.addData("Blue", hw.colourSensor.blue());
+        telemetry.addData("Alpha", hw.colourSensor.alpha());
 
         telemetry.update();
 
@@ -92,7 +93,7 @@ public class SorterTelop extends LinearOpMode {
         //purple
         if(length <= 3){
             if (blue > green) {
-                telemetry.addData("Blue", colourSensor.blue());
+                telemetry.addData("Blue", hw.colourSensor.blue());
                 telemetry.update();
 
                 telemetry.addLine("purple detected");
@@ -107,23 +108,23 @@ public class SorterTelop extends LinearOpMode {
                         telemetry.addLine("purple1Detected");
                         telemetry.update();
                         if (length == 0) {
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
                             telemetry.update();
                         } else if (length == 1) {
-                            turnTable.setPosition(0.5);
+                            hw.turnTable.setPosition(0.5);
                             sleep(1000);
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
                             telemetry.update();
                         } else {
-                            turnTable.setPosition(1);
+                            hw.turnTable.setPosition(1);
                             sleep(1000);
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
@@ -135,23 +136,23 @@ public class SorterTelop extends LinearOpMode {
                         telemetry.addLine("purple1Detected");
                         telemetry.update();
                         if (length == 0) {
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
                             telemetry.update();
                         } else if (length == 1) {
-                            turnTable.setPosition(0.5);
+                            hw.turnTable.setPosition(0.5);
                             sleep(1000);
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
                             telemetry.update();
                         } else {
-                            turnTable.setPosition(1);
+                            hw.turnTable.setPosition(1);
                             sleep(1000);
-                            turnTable.setPosition(0);
+                            hw.turnTable.setPosition(0);
                             sleep(1000);
                             intake.add("purple");
                             telemetry.addLine(Integer.toString(length));
@@ -164,7 +165,7 @@ public class SorterTelop extends LinearOpMode {
 
 //green
             if (green > blue) {
-                telemetry.addData("Green", colourSensor.green());
+                telemetry.addData("Green", hw.colourSensor.green());
                 telemetry.update();
                 telemetry.addLine("green detected");
                 if (greenDetected == 1) {
@@ -173,19 +174,19 @@ public class SorterTelop extends LinearOpMode {
                 } else if(greenDetected == 0){
                     greenDetected = greenDetected + 1;
                     if (length == 0) {
-                        turnTable.setPosition(0);
+                        hw.turnTable.setPosition(0);
                         sleep(1000);
                         intake.add("green");
                         telemetry.addLine(Integer.toString(length));
                         telemetry.update();
                     } else if (length == 1) {
-                        turnTable.setPosition(0.5);
+                        hw.turnTable.setPosition(0.5);
                         sleep(1000);
                         intake.add("green");
                         telemetry.addLine(Integer.toString(length));
                         telemetry.update();
                     } else {
-                        turnTable.setPosition(1);
+                        hw.turnTable.setPosition(1);
                         sleep(1000);
                         intake.add("green");
                         telemetry.addLine(Integer.toString(length));
@@ -198,74 +199,74 @@ public class SorterTelop extends LinearOpMode {
 
     private void sort(){
         index = intake.indexOf(new String("green"));
-        turnTable.setPosition(0);
+        hw.turnTable.setPosition(0);
         firstColour = order.get(0);
         secondColour = order.get(1);
         if (firstColour.equals("purple") && secondColour.equals("purple")) {
             if (index == 0) {
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(7000);
                 intake.clear();
             }
             else if (index == 1) {
-                turnTable.setPosition(0);//60 degrees
+                hw.turnTable.setPosition(0);//60 degrees
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
                 intake.clear();
 
             }
             else if (index == 2) {
-                turnTable.setPosition(0);//60 degrees
+                hw.turnTable.setPosition(0);//60 degrees
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
                 intake.clear();
             }
         }
         else if (firstColour.equals("purple") && secondColour.equals("green")) {
             if (index == 0) {
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
                 intake.clear();
             }
             else if (index == 1) {
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(500);
                 intake.clear();
             }
             else if (index == 2) {
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(500);
                 intake.clear();
             }
@@ -274,31 +275,31 @@ public class SorterTelop extends LinearOpMode {
             telemetry.addData("index", index);
             telemetry.update();
             if (index == 0) {
-                turnTable.setPosition(0);//60 degrees
+                hw.turnTable.setPosition(0);//60 degrees
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(500);
                 intake.clear();
             }
             else if (index == 1) {
-                turnTable.setPosition(1);//60 degrees
+                hw.turnTable.setPosition(1);//60 degrees
                 sleep(1000);
-                turnTable.setPosition(0.5);
+                hw.turnTable.setPosition(0.5);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(10000000);
                 intake.clear();
             }
             else if (index == 2) {
-                turnTable.setPosition(0.5);//60 degrees
+                hw.turnTable.setPosition(0.5);//60 degrees
                 sleep(1000);
-                turnTable.setPosition(1);
+                hw.turnTable.setPosition(1);
                 sleep(1000);
-                turnTable.setPosition(0);
+                hw.turnTable.setPosition(0);
                 sleep(1000);
                 intake.clear();
             }
