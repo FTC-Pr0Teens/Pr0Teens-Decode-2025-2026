@@ -55,7 +55,7 @@ public class Specifications {
 
     public static final String PUSHER = "push";
 
-    public static final String LIME_LIGHT = "lime";
+    public static final String LIME_LIGHT = "limelight";
 
 //    public static final String LIGHT = "light";
 //
