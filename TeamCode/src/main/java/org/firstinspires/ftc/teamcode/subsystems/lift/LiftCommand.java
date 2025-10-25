@@ -35,13 +35,13 @@ public class LiftCommand {
         liftSubsystem.intake();
     }
 
-    public void turn(){ liftSubsystem.turretTurn();}
-    public void turn2(){
-        liftSubsystem.turretTurn2();
-    }
-    public void turn3(){
-        liftSubsystem.turretTurn3();
-    }
+//    public void turn(){ liftSubsystem.turretTurn();}
+//    public void turn2(){
+//        liftSubsystem.turretTurn2();
+//    }
+//    public void turn3(){
+//        liftSubsystem.turretTurn3();
+//    }
     public void shoot(){
         double targetRPM = 5600;
         double currentRPM = hw.shooter.getVelocity();
@@ -57,6 +57,12 @@ public class LiftCommand {
     }
     public void shootstop(){
         liftSubsystem.shooterstop();
+    }
+    public void rainbet(){
+        liftSubsystem.rainbetIntake();
+    }
+    public void rainbetStop(){
+        liftSubsystem.stopTurn();
     }
 
 

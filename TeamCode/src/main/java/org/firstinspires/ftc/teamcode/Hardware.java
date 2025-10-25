@@ -28,7 +28,7 @@ public class Hardware {
 //     Servos
 
 
-    public final Servo turn;
+    public final CRServo turn;
     public final CRServo turret;
     public final DcMotorEx intake;
     public final Servo pusher;
@@ -51,7 +51,7 @@ public class Hardware {
 
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
-        this.turn = hwMap.get(Servo.class, Specifications.TURN);
+        this.turn = hwMap.get(CRServo.class, Specifications.TURN);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
 

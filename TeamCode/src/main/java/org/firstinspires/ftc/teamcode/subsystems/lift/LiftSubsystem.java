@@ -34,21 +34,27 @@ class LiftSubsystem {
 
     }
 
-    public void turretTurn() {
-        hw.turn.setPosition(0.0);
+//    public void turretTurn() {
+//        hw.turn.setPosition(0.0);
+//
+//    }
+//    public void turretTurn2() {
+//        hw.turn.setPosition(0.18);
+//
+//    }
+//    public void turretTurn3() {
+//        hw.turn.setPosition(0.36);
 
-    }
-    public void turretTurn2() {
-        hw.turn.setPosition(0.18);
-
-    }
-    public void turretTurn3() {
-        hw.turn.setPosition(0.36);
-
-    }
+//    }
     public void push() {
         hw.pusher.setPosition(0.3);
 
+    }
+    public void rainbetIntake(){
+        hw.turn.setPower(0.67);
+    }
+    public void stopTurn(){
+        hw.turn.setPower(0.0);
     }
 
 

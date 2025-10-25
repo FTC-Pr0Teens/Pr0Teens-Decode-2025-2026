@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.opmodes.tests;
+package org.firstinspires.ftc.teamcode.opmodes.tests.utiltest;
+
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -25,7 +26,7 @@ public class SampleAutoOpMode extends LinearOpMode {
         PICKUP_FIRST,
 
     }
-    AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
+    org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.HANG_ONE;
     public static double kpx = 0.055;
     public static double kpy = 0.055;
     public static double kdx = 0.02;
@@ -61,21 +62,19 @@ public class SampleAutoOpMode extends LinearOpMode {
 
                 case HANG_ONE:
                     mecanumCommand.moveToPos(50, 50, 3.14);// set target
-//                    mecanumCommand.moveToPos(60, 0, 0);
                     liftCommand.handleIntake();
-                    liftCommand.rainbet();
                     if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
+                        autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
                     break;
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     liftCommand.stopintake();
-                    liftCommand.rainbetStop();
+                    liftCommand.turn();
                     liftCommand.handleIntake();
 
                     sleep(1000);
-                    autoState = AUTO_STATE.PICKUP_FIRST;
+                    autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.PICKUP_FIRST;
                     break;
 
 //                case SUBMERSIBLE_PICKUP:
