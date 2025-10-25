@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 
 public class Hardware {
@@ -29,6 +30,8 @@ public class Hardware {
 
     public final DcMotorEx shooter;
 
+    public final WebcamName logitech;
+
     // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
 
@@ -45,6 +48,8 @@ public class Hardware {
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
+        this.logitech = hwMap.get(WebcamName.class, "Webcam 1");
+
     }
 
     public static Hardware getInstance(HardwareMap hwMap) {
@@ -52,6 +57,7 @@ public class Hardware {
             instance = new Hardware(hwMap);
         }
         return instance;
+
     }
 
 
