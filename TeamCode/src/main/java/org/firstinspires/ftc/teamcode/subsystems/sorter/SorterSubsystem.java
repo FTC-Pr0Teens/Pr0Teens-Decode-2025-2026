@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sorter;
+package org.firstinspires.ftc.teamcode.subsystems.sorter;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 

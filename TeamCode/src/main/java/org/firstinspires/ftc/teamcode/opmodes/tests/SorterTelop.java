@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.ArrayList;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.sorter.SorterSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.sorter.SorterSubsystem;
 
 @TeleOp (name = "SortIntake (Blocks to Java)")
 
