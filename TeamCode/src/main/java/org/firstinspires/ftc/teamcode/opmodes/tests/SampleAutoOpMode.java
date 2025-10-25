@@ -61,9 +61,7 @@ public class SampleAutoOpMode extends LinearOpMode {
 
                 case HANG_ONE:
                     mecanumCommand.moveToPos(50, 50, 3.14);// set target
-//                    mecanumCommand.moveToPos(60, 0, 0);
                     liftCommand.handleIntake();
-                    liftCommand.rainbet();
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
@@ -71,7 +69,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     liftCommand.stopintake();
-                    liftCommand.rainbetStop();
+//                    liftCommand.turn();
                     liftCommand.handleIntake();
 
                     sleep(1000);

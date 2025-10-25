@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests.utiltest;
 
 
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -16,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 
 
 @Config
-@Autonomous (name = "Sample Auto")
-public class SampleAutoOpMode extends LinearOpMode {
+@Autonomous (name = "Rainbet Auto")
+public class rainbetAuto extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private LiftCommand liftCommand;
     enum AUTO_STATE {
@@ -26,7 +25,7 @@ public class SampleAutoOpMode extends LinearOpMode {
         PICKUP_FIRST,
 
     }
-    org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.HANG_ONE;
+    AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
     public static double kpx = 0.055;
     public static double kpy = 0.055;
     public static double kdx = 0.02;
@@ -61,20 +60,22 @@ public class SampleAutoOpMode extends LinearOpMode {
             switch (autoState) {
 
                 case HANG_ONE:
-                    mecanumCommand.moveToPos(50, 50, 3.14);// set target
+                    mecanumCommand.moveToPos(40, 0, 0);// set target
                     liftCommand.handleIntake();
+                    liftCommand.rainbet();
                     if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.PICKUP_ZERO; // move to next state
+                        autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
                     break;
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     liftCommand.stopintake();
-                    liftCommand.turn();
+                    liftCommand.rainbetStop();
+
                     liftCommand.handleIntake();
 
                     sleep(1000);
-                    autoState = org.firstinspires.ftc.teamcode.opmodes.tests.SampleAutoOpMode.AUTO_STATE.PICKUP_FIRST;
+                    autoState = AUTO_STATE.PICKUP_FIRST;
                     break;
 
 //                case SUBMERSIBLE_PICKUP:
