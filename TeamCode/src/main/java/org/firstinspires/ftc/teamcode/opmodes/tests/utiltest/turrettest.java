@@ -62,10 +62,6 @@ public class turrettest extends LinearOpMode {
         mecanumCommand.setConstants(kpx, kdx, kix,
                 kpy, kdy, kiy,
                 kpTheta, kdTheta, kitheta);
-
-        telemetry.addLine("Initialized. Ready to track ball.");
-        telemetry.addLine("Press A to toggle tracking");
-        telemetry.addLine("Pipeline 2 should be configured for ball detection");
         telemetry.update();
 
         waitForStart();
