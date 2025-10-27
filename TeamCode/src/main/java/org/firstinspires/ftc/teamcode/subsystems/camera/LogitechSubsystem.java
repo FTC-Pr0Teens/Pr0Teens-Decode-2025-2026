@@ -44,7 +44,7 @@ public class LogitechSubsystem {
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
-        builder.setCamera(hw.logitech);
+//        builder.setCamera(hw.logitech);
 
         builder.setAutoStopLiveView(true);
 
