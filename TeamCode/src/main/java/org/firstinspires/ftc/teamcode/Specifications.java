@@ -56,6 +56,8 @@ public class Specifications {
     public static final String PIN_POINT_ODOMETRY = "odo";
     public static final String TURRET = "turret";
     public static final String PUSHER = "pusher";
+    public static final String colourSensor = "colourSensor";
+
 
 
     public static final int CVSmoothing = 30;

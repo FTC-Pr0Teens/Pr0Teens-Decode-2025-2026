@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -22,6 +23,7 @@ public class Hardware {
     public final DcMotorEx shooter;
     // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
+    public final ColorSensor colourSensor;
 
     public Hardware(HardwareMap hwMap){
         this.rf = hwMap.get(DcMotorEx.class, Specifications.FTRT_MOTOR); //rightforward
@@ -35,6 +37,7 @@ public class Hardware {
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
+        this.colourSensor = hwMap.get(ColorSensor.class, Specifications.colourSensor);
     }
 
     public static Hardware getInstance(HardwareMap hwMap) {

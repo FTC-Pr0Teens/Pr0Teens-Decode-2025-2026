@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
+import org.firstinspires.ftc.teamcode.subsystems.sorter.SorterSubsystem;
 
 
 @TeleOp(name = "TeleopSample", group = "TeleOp")
@@ -13,6 +14,8 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
+
+    private SorterSubsystem sorterSubsystem;
     private ElapsedTime timer;
 
     private ElapsedTime resetTimer;
