@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.List;
@@ -23,6 +24,19 @@ public class LimelightSubsystem {
     private double ty;
     private double area;
     private String color;
+
+    private static final double kP = 0.02;
+    private static final double kI = 0.0;
+    private static final double kD = 0.001;
+    private static final double MAX_POWER = 0.4;
+
+    private double previousError = 0;
+    private double integral = 0;
+
+    private double initialHeading = 0;
+    private double currentHeading = 0;
+    double rotationalPower = 0;
+    private boolean active = false;
 
     public LimelightSubsystem(Hardware hw, Telemetry telemetry){
         this.hw = hw;
@@ -39,7 +53,7 @@ public class LimelightSubsystem {
 
     }
 
-    public void ballPosition(){
+    public void ballPosition(Telemetry telemetry, MecanumCommand mec){
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
             List<LLResultTypes.DetectorResult> detections = result.getDetectorResults();
@@ -49,10 +63,24 @@ public class LimelightSubsystem {
                 ty = firstDetection.getTargetYPixels();
                 area = firstDetection.getTargetArea();
                 color = firstDetection.getClassName();
-            } else {
 
+                double error = -tx;
+
+                integral += error;
+                integral = Math.max(-50, Math.min(50, integral));
+
+                double derivative = error - previousError;
+                previousError = error;
+
+                rotationalPower = (kP * error) + (kI * integral) + (kD * derivative);
+                rotationalPower = Math.max(-MAX_POWER, Math.min(MAX_POWER, rotationalPower));
+
+            } else {
+                telemetry.addData("Limelight", "No data available");
             }
         }
+
+        mec.fieldOrientedMove(0, 0, rotationalPower);
     }
 
     public void telemetryLimelight(Telemetry telemetry){
@@ -86,4 +114,6 @@ public class LimelightSubsystem {
 
         telemetry.update();
     }
+
+
 }
