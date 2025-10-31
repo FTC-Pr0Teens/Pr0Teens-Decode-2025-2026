@@ -60,10 +60,10 @@ class MecanumSubsystem {
         globalXController = new PIDCore(kpx, kdx, kix);
         globalYController = new PIDCore(kpy, kdy, kiy);
         globalThetaController = new PIDCore(kptheta, kdtheta, kitheta);
-        hw.lb.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.lb.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.lf.setDirection(DcMotorSimple.Direction.REVERSE);
-        hw.rf.setDirection(DcMotorSimple.Direction.FORWARD);
-        hw.rb.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.rf.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.rb.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -146,10 +146,10 @@ class MecanumSubsystem {
     // motorProcess(sets the powers)
     public void motorProcess(){
         // combine main and adjustment velocities
-        lfvel = lfVelMain + lfVelAdjustment1;
-        lbvel = lbVelMain + lbVelAdjustment1;
-        rfvel = rfVelMain + rfVelAdjustment1;
-        rbvel = rbVelMain + rbVelAdjustment1;
+        lfvel = lfVelMain;
+        lbvel = lbVelMain;
+        rfvel = rfVelMain;
+        rbvel = rbVelMain;
 
         // normalize to keep within [-1, 1]
         double max = Math.max(Math.abs(lfvel), Math.max(Math.abs(lbvel), Math.max(Math.abs(rfvel), Math.abs(rbvel))));
@@ -224,7 +224,6 @@ class MecanumSubsystem {
 
     //PartialMoveAdjustment is used in GridAutoCentering, it allows the robot to auto center to the grid
     public void partialMoveAdjustment(double verticalVel, double horizontalVel, double rotationalVel){
-
         rbVelAdjustment1 = (verticalVel * Math.cos(Math.toRadians(45)) + horizontalVel * Math.sin(Math.toRadians(45)) + rotationalVel * Math.sin(Math.toRadians(45)))*(1.41421356237);
         rfVelAdjustment1 = (-horizontalVel * Math.cos(Math.toRadians(45)) + verticalVel * Math.sin(Math.toRadians(45)) + rotationalVel * Math.sin(Math.toRadians(45)))*(1.41421356237);
         lfVelAdjustment1 = (verticalVel * Math.cos(Math.toRadians(45)) + horizontalVel * Math.sin(Math.toRadians(45)) - rotationalVel * Math.sin(Math.toRadians(45)))*(1.41421356237);
@@ -239,30 +238,6 @@ class MecanumSubsystem {
         hw.lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    // Basic Mecanum robot movement
-    public void move(double vertical, double horizontal, double rotational){
-
-        rightFrontMotorOutput = (-horizontal * Math.cos(Math.toRadians(45)) + vertical * Math.sin(Math.toRadians(45)) + rotational * Math.sin(Math.toRadians(45)))*(1.41421356237);
-        leftFrontMotorOutput = (vertical * Math.cos(Math.toRadians(45)) + horizontal * Math.sin(Math.toRadians(45)) - rotational * Math.sin(Math.toRadians(45)))*(1.41421356237);
-        rightBackMotorOutput = (vertical * Math.cos(Math.toRadians(45)) + horizontal * Math.sin(Math.toRadians(45)) + rotational * Math.sin(Math.toRadians(45)))*(1.41421356237);
-        leftBackMotorOutput = (-horizontal * Math.cos(Math.toRadians(45)) + vertical * Math.sin(Math.toRadians(45)) - rotational * Math.sin(Math.toRadians(45)))*(1.41421356237);
-
-        setPowers(rightBackMotorOutput,leftBackMotorOutput,rightFrontMotorOutput,leftFrontMotorOutput);
-
-    }
-
-//    public void moveToPosition(double power, double degree, int position){
-//
-////        double y1 = power * Math.sin(Math.toRadians(degree)) * Math.cos(Math.toRadians(45)) - power * Math.cos(Math.toRadians(degree)) * Math.sin(Math.toRadians(45));
-////        double x1 = power * Math.cos(Math.toRadians(degree)) * Math.cos(Math.toRadians(45)) + power * Math.sin(Math.toRadians(degree)) * Math.sin(Math.toRadians(45));
-////        double y2 = power * Math.sin(Math.toRadians(degree)) * Math.cos(Math.toRadians(45)) - power * Math.cos(Math.toRadians(degree)) * Math.sin(Math.toRadians(45));
-////        double x2 = power * Math.cos(Math.toRadians(degree)) * Math.cos(Math.toRadians(45)) + power * Math.sin(Math.toRadians(degree)) * Math.sin(Math.toRadians(45));
-////        while (hw.rf.getCurrentPosition()<position){
-////            setPowers(0,0,0,0);
-////
-////            setPowers(0,0,0,0);
-////        }
-//    }
 
     //Update PID controllers with new constants
     public void updatePIDConstants(){

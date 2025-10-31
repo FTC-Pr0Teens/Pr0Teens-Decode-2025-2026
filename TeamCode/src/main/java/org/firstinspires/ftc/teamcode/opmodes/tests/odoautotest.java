@@ -54,7 +54,7 @@ public class odoautotest extends LinearOpMode {
             updateTelemetry();
 
             mecanumCommand.motorProcess();
-            mecanumCommand.processPIDUsingPinpoint();
+            mecanumCommand.processOdometry();
             moveToPos(0, 15, 0);
             stopRobot();
 
@@ -69,7 +69,7 @@ public class odoautotest extends LinearOpMode {
 //
 //    public void moveToPos(double x, double y, double theta) {
 //        mecanumCommand.setFinalPositionMotionProfile(30, 30, x, y);
-//        if (!mecanumCommand.positionNotReachedYet()) {
+//        if (!mecanumCommand.isPositionReachedYet()) {
 //            stage1++;
 //        }
 //    }

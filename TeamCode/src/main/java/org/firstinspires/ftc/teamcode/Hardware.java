@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -30,7 +31,7 @@ public class Hardware {
 
     public final DcMotorEx shooter;
 
-    public final WebcamName logitech;
+    //public final WebcamName logitech;
 
     // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
@@ -48,8 +49,11 @@ public class Hardware {
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
-        this.logitech = hwMap.get(WebcamName.class, "Webcam 1");
-
+        //this.logitech = hwMap.get(WebcamName.class, "Webcam 1");
+        lb.setDirection(DcMotorSimple.Direction.FORWARD);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        rf.setDirection(DcMotorSimple.Direction.REVERSE);
+        rb.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public static Hardware getInstance(HardwareMap hwMap) {

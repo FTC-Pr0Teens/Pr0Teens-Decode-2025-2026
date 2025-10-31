@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 
 
 @Config
@@ -22,7 +19,7 @@ public class SampleAutoOpMode extends LinearOpMode {
     enum AUTO_STATE {
         HANG_ONE,
         PICKUP_ZERO,
-        SUBMERSIBLE_PICKUP,
+        FINISH,
         PICKUP_FIRST,
 
     }
@@ -55,50 +52,25 @@ public class SampleAutoOpMode extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addLine("for sydney wong");
             mecanumCommand.motorProcess();
+            mecanumCommand.processPIDUsingPinpoint();
             mecanumCommand.processOdometry();
             switch (autoState) {
 
                 case HANG_ONE:
                     mecanumCommand.moveToPos(40, 0, 0);// set target
-                    liftCommand.turret();
-                    if (!mecanumCommand.positionNotReachedYet()) {
+                    if (mecanumCommand.isPositionReachedYet()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
                     break;
                 case PICKUP_ZERO:
-                    mecanumCommand.stop();
-                    sleep(1000);
-                    liftCommand.turretstop();
-                    autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
-                    break;
-
-                    case SUBMERSIBLE_PICKUP:
-                    if (!submersibleTargetSet) {  // flag variable
-                        kpx = 0.05; kpy = 0.1;
-                        kdx = 0.0017; kdy = 0.0017;
-                        kix = 650; kiy = 1100; kitheta = 40000;
-                        kpTheta = 1.6; kdTheta = 0.035;
-                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
-                        mecanumCommand.moveToPos(0, 0, 0);
-                        submersibleTargetSet = true;
-                    }
-
-                    if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.PICKUP_FIRST;
+                    mecanumCommand.moveToPos(0, 0, 0);// set target
+                    if (mecanumCommand.isPositionReachedYet()) {
+                        autoState = AUTO_STATE.FINISH; // move to next state
                     }
                     break;
-
-                case PICKUP_FIRST:
-
-                    mecanumCommand.stop();
-
-                    break;
-                default:
-                    mecanumCommand.stop();
-                    break;
-
-
             }
+
+
             updateTelemetry();
         }
     }

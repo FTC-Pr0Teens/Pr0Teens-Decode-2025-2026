@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.mecanum;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
-import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Command wrapper for controlling a Mecanum drive system using
@@ -86,7 +84,7 @@ public class MecanumCommand {
 
         public boolean moveToPos(double x, double y, double theta) {
             setFinalPosition(0.67, x, y, theta);
-            return!(positionNotReachedYet());
+            return!(isPositionReachedYet());
         }
 
         public void setFinalPosition(double velocity, double x, double y, double theta) {
@@ -96,8 +94,8 @@ public class MecanumCommand {
             this.velocity = velocity;
         }
 
-        public boolean positionNotReachedYet() {
-            return !(isXReached() && isYReached() && isThetaReached());
+        public boolean isPositionReachedYet() {
+            return (isXReached() && isYReached() && isThetaReached());
         }
 
         public double getXDifferencePinPoint() {

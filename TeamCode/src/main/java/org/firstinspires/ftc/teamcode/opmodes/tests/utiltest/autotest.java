@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 
 @Config
 @Autonomous(name = "Sample Auto Fixed")
@@ -59,7 +58,7 @@ public class autotest extends LinearOpMode {
         int loopCount = 0;
 
         // Main control loop
-        while (opModeIsActive() && mecanumCommand.positionNotReachedYet() && runtime.seconds() < 10.0) {
+        while (opModeIsActive() && mecanumCommand.isPositionReachedYet() && runtime.seconds() < 10.0) {
             // motorProcess() already calls processOdometry() internally
             mecanumCommand.motorProcess();
 
