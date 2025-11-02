@@ -62,7 +62,7 @@ public class rainbetAuto extends LinearOpMode {
                 case HANG_ONE:
                     mecanumCommand.moveToPos(40, 0, 0);// set target
                     liftCommand.handleIntake();
-                    liftCommand.rainbet();
+//                    liftCommand.rainbet();
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
@@ -70,7 +70,7 @@ public class rainbetAuto extends LinearOpMode {
                 case PICKUP_ZERO:
                     mecanumCommand.stop();
                     liftCommand.stopintake();
-                    liftCommand.rainbetStop();
+//                    liftCommand.rainbetStop();
 
                     liftCommand.handleIntake();
 

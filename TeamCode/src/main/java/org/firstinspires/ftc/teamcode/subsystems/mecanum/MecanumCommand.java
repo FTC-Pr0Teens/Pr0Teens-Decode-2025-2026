@@ -176,15 +176,7 @@ public class MecanumCommand {
         // Use the new unified update method
         pinPointOdoSubsystem.updateOdometry();
     }
-    public double getX(){
-        return pinPointOdoSubsystem.getX();
-    }
-    public double getY(){
-        return pinPointOdoSubsystem.getY();
-    }
-    public double getTheta(){
-        return pinPointOdoSubsystem.getY();
-    }
+
     // Debug helper
     public void debugPID(org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
         telemetry.addData("PID ex (global)", ex);
@@ -193,7 +185,13 @@ public class MecanumCommand {
     }
 }
 
-
+/**
+ * field-oriented movement for TeleOp modes using PinPoint heading.
+ *
+ * @param vertical   Forward/backward input (-1 to 1).
+ * @param horizontal Left/right strafe input (-1 to 1).
+ * @param rotational Rotation input (-1 to 1).
+ */
 
 
 

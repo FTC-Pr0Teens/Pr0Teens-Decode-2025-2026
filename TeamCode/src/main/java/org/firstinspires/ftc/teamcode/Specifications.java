@@ -40,7 +40,7 @@ public class Specifications {
 
 ;
     public static final String INTAKE= "intake";
-    public static final String TURN = "turn";
+    public static final String TURN = "sorter";
     public static final String PITCH = "pitch";
     public static final String SHOOTER = "shooter";
     public static final String TURRET= "turret";
@@ -53,9 +53,9 @@ public class Specifications {
     public static final String BKRT_MOTOR = "rb";
 
 
-    public static final String PUSHER = "push";
+    public static final String PUSHER = "pusher";
 
-    public static final String LIME_LIGHT = "limelight";
+//    public static final String LIME_LIGHT = "limelight";
 
 //    public static final String LIGHT = "light";
 //

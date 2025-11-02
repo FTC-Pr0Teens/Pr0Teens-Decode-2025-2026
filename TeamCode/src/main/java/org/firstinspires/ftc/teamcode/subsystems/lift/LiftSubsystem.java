@@ -12,11 +12,13 @@ import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 
 class LiftSubsystem {
+
     private final Hardware hw;
 
 
     public LiftSubsystem(Hardware hw) {
         this.hw = hw;
+        hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -50,12 +52,12 @@ class LiftSubsystem {
         hw.pusher.setPosition(0.3);
 
     }
-    public void rainbetIntake(){
-        hw.turn.setPower(0.67);
-    }
-    public void stopTurn(){
-        hw.turn.setPower(0.0);
-    }
+//    public void rainbetIntake(){
+//        hw.sorter.setPower(0.67);
+//    }
+//    public void stopTurn(){
+//        hw.sorter.setPower(0.0);
+//    }
 
 
         public void shooter(double targetVelocity) {

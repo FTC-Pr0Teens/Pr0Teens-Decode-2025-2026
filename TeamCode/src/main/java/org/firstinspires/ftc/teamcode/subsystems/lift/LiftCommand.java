@@ -58,12 +58,12 @@ public class LiftCommand {
     public void shootstop(){
         liftSubsystem.shooterstop();
     }
-    public void rainbet(){
-        liftSubsystem.rainbetIntake();
-    }
-    public void rainbetStop(){
-        liftSubsystem.stopTurn();
-    }
+//    public void rainbet(){
+//        liftSubsystem.rainbetIntake();
+//    }
+//    public void rainbetStop(){
+//        liftSubsystem.stopTurn();
+//    }
 
 
 

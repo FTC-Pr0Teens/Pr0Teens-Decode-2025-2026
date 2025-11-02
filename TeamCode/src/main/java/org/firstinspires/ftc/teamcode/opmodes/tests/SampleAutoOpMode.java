@@ -20,18 +20,19 @@ public class SampleAutoOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private LiftCommand liftCommand;
     enum AUTO_STATE {
-        HANG_ONE,
-        PICKUP_ZERO,
+        INTAKE_ONE,
+        TURN_ONE,
+        SUBMERSIBLE_PICKUP,
         PICKUP_FIRST,
 
     }
-    AUTO_STATE autoState = AUTO_STATE.HANG_ONE;
-    public static double kpx = 0.055;
-    public static double kpy = 0.055;
-    public static double kdx = 0.02;
-    public static double kdy = 0.02;
-    public static double kpTheta = 0.98;
-    public static double kdTheta = 0.0;
+    AUTO_STATE autoState = AUTO_STATE.INTAKE_ONE;
+    public static double kpx = 0.057;
+    public static double kpy = 0.057;
+    public static double kdx = 0.0073;
+    public static double kdy = 0.0073;
+    public static double kpTheta = 1.13;
+    public static double kdTheta = 0.05;
     public static double kix = 0;
     public static double kiy = 0;
     public static double kitheta = 40000;
@@ -59,43 +60,47 @@ public class SampleAutoOpMode extends LinearOpMode {
 
             switch (autoState) {
 
-                case HANG_ONE:
-                    mecanumCommand.moveToPos(50, 50, 3.14);// set target
-                    liftCommand.handleIntake();
+                case INTAKE_ONE:
+                    mecanumCommand.moveToPos(100, 0, 0);// set target
+
                     if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
+                        autoState = AUTO_STATE.TURN_ONE; // move to next state
                     }
                     break;
-                case PICKUP_ZERO:
-                    mecanumCommand.stop();
-                    liftCommand.stopintake();
-//                    liftCommand.turn();
-                    liftCommand.handleIntake();
+                case TURN_ONE:
+                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.62);
+//                    liftCommand.handleIntake();
+                    if (!mecanumCommand.positionNotReachedYet()) {
+                        sleep(200);
+                        autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
+                    }
 
-                    sleep(1000);
-                    autoState = AUTO_STATE.PICKUP_FIRST;
+
+                        break;
+
+
+                case SUBMERSIBLE_PICKUP:
+                    double targetY = -70;
+                    double targetHeading = 1.62;
+                    double tolerance = 0.5;
+
+
+                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), targetY, targetHeading);
+
+
+                    if (Math.abs(mecanumCommand.getOdoY() - targetY) < tolerance) {
+                        mecanumCommand.stop();
+                        autoState = AUTO_STATE.PICKUP_FIRST;
+                    }
                     break;
 
-//                case SUBMERSIBLE_PICKUP:
-//                    if (!submersibleTargetSet) {  // flag variable
-////                        kpx = 0.05; kpy = 0.1;
-////                        kdx = 0.0017; kdy = 0.0017;
-////                        kix = 650; kiy = 1100; kitheta = 40000;
-////                        kpTheta = 1.6; kdTheta = 0.035;
-////                        mecanumCommand.setConstants(kpx, kdx, kix, kpy, kdy, kiy, kpTheta, kdTheta, kitheta);
-//                        mecanumCommand.moveToPos(0, 0, 0);
-//                        liftCommand.stopintake();
-//                        submersibleTargetSet = true;
-//                    }
-//
-//                    if (!mecanumCommand.positionNotReachedYet()) {
-//                        autoState = AUTO_STATE.PICKUP_FIRST;
-//                    }
-//                    break;
 
                 case PICKUP_FIRST:
-
+//                    mecanumCommand.moveToPos(0, 0, 0);
                     mecanumCommand.stop();
+                    liftCommand.stopintake();
+                    mecanumCommand.moveToPos(0, 0, 0);
+
 
                     break;
                 default:

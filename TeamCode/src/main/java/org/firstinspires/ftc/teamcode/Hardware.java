@@ -19,7 +19,7 @@ public class Hardware {
 
     //    // Motors
 
-    private Limelight3A limelight;
+//    private Limelight3A limelight;
     public final DcMotorEx lf;
     public final DcMotorEx rf;
     public final DcMotorEx lb;
@@ -28,7 +28,7 @@ public class Hardware {
 //     Servos
 
 
-    public final CRServo turn;
+    public final Servo sorter;
     public final CRServo turret;
     public final DcMotorEx intake;
     public final Servo pusher;
@@ -47,11 +47,11 @@ public class Hardware {
         this.rb = hwMap.get(DcMotorEx.class, Specifications.BKRT_MOTOR);//rightback
 
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
-        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+//        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
 
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
-        this.turn = hwMap.get(CRServo.class, Specifications.TURN);
+        this.sorter = hwMap.get(Servo.class, Specifications.TURN);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
 
