@@ -32,9 +32,6 @@ public class Sorting extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            double maxDegree = 300;
-            double currentPosition = hw.sorter.getPosition();
-
             // moves intake55
             if (gamepad1.b) {
                 sorterSubsystem.detectColour();

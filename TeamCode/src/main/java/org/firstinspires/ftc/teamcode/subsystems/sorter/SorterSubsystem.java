@@ -30,6 +30,10 @@ public class SorterSubsystem {
 
     public Telemetry telemetry;
 
+    double firstPos;
+    double secondPos;
+    double thirdPos;
+
 
 
     public SorterSubsystem(Hardware hw, ArrayList<String>  motif, Telemetry telemetry){
@@ -43,6 +47,9 @@ public class SorterSubsystem {
         length = intake.size();
         intake = new ArrayList<>();
         this.telemetry = telemetry;
+        firstPos = 0;
+        secondPos = 0.067;
+        thirdPos = 0.133;
 
     }
 
@@ -70,23 +77,23 @@ public class SorterSubsystem {
                 telemetry.addLine("purple detected");
                 telemetry.update();
                 if (length == 0) {
-                    sorter.setPosition(0);
+                    sorter.setPosition(firstPos);
                     waitTime(1);
                     intake.add("purple");
                     telemetry.addLine(Integer.toString(length));
                     telemetry.update();
                 } else if (length == 1) {
-                    sorter.setPosition(0.067);
+                    sorter.setPosition(secondPos);
                     waitTime(1);
-                    sorter.setPosition(0);
+                    sorter.setPosition(firstPos);
                     waitTime(1);
                     intake.add("purple");
                     telemetry.addLine(Integer.toString(length));
                     telemetry.update();
                 } else {
-                    sorter.setPosition(0.133);
+                    sorter.setPosition(thirdPos);
                     waitTime(1);
-                    sorter.setPosition(0);
+                    sorter.setPosition(firstPos);
                     waitTime(1);
                     intake.add("purple");
                     telemetry.addLine(Integer.toString(length));
@@ -100,19 +107,23 @@ public class SorterSubsystem {
             telemetry.update();
             telemetry.addLine("green detected");
             if (length == 0) {
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.add("green");
                 telemetry.addLine(Integer.toString(length));
                 telemetry.update();
             } else if (length == 1) {
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
+                waitTime(1);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.add("green");
                 telemetry.addLine(Integer.toString(length));
                 telemetry.update();
             } else {
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
+                waitTime(1);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.add("green");
                 telemetry.addLine(Integer.toString(length));
@@ -120,131 +131,77 @@ public class SorterSubsystem {
             }
         }
     }
-
-
-    public void detectColour(String colour){
-        if(colour.equalsIgnoreCase("purple")){
-            if (length == 0) {
-                sorter.setPosition(0);
-                waitTime(1);
-                intake.add("purple");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            } else if (length == 1) {
-                sorter.setPosition(0.067);
-                waitTime(1);
-                sorter.setPosition(0);
-                waitTime(1);
-                intake.add("purple");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            } else {
-                sorter.setPosition(0.133);
-                waitTime(1);
-                sorter.setPosition(0);
-                waitTime(1);
-                intake.add("purple");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            }
-        }
-        if(colour.equalsIgnoreCase("green")){
-            telemetry.addData("Green", colourSensor.green());
-            telemetry.update();
-            telemetry.addLine("green detected");
-            if (length == 0) {
-                sorter.setPosition(0);
-                waitTime(1);
-                intake.add("green");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            } else if (length == 1) {
-                sorter.setPosition(0.067);
-                waitTime(1);
-                intake.add("green");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            } else {
-                sorter.setPosition(0.133);
-                waitTime(1);
-                intake.add("green");
-                telemetry.addLine(Integer.toString(length));
-                telemetry.update();
-            }
-        }
-    }
-
 
     public void sort() { //change name to outake
         int length = intake.size();
         index = intake.indexOf(new String("green"));
         telemetry.addData("index ", index);
         telemetry.update();
-        sorter.setPosition(0);
+        sorter.setPosition(firstPos);
         firstColour = order.get(0);
         secondColour = order.get(1);
         //120 degrees = 0.067
         //240 degrees = 0.133
         if (firstColour.equals("purple") && secondColour.equals("purple")) {
             if (index == 0) {
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             } else if (index == 1) {
-                sorter.setPosition(0);//60 degrees
+                sorter.setPosition(firstPos);//60 degrees
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
 
             } else if (index == 2) {
-                sorter.setPosition(0);//60 degrees
+                sorter.setPosition(firstPos);//60 degrees
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             }
         } else if (firstColour.equals("purple") && secondColour.equals("green")) {
             if (index == 0) {
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             } else if (index == 1) {
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             } else if (index == 2) {
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             }
@@ -252,29 +209,29 @@ public class SorterSubsystem {
             telemetry.addData("index", index);
             telemetry.update();
             if (index == 0) {
-                sorter.setPosition(0);//60 degrees
+                sorter.setPosition(firstPos);//60 degrees
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             } else if (index == 1) {
-                sorter.setPosition(0.133);//60 degrees
+                sorter.setPosition(thirdPos);//60 desgrees
                 waitTime(1);
-                sorter.setPosition(0.067);
+                sorter.setPosition(secondPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             } else if (index == 2) {
-                sorter.setPosition(0.067);//60 degrees
+                sorter.setPosition(secondPos);//60 degrees
                 waitTime(1);
-                sorter.setPosition(0.133);
+                sorter.setPosition(thirdPos);
                 waitTime(1);
-                sorter.setPosition(0);
+                sorter.setPosition(firstPos);
                 waitTime(1);
                 intake.clear();
             }
