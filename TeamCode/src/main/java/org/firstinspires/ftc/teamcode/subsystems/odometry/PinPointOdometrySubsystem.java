@@ -228,4 +228,11 @@ public class PinPointOdometrySubsystem {
     public double getHeading(){
         return pinpointDriver.getHeading();
     }
+
+    public void updateOdometry(){
+        pinpointDriver.update();  // Update sensor once
+        x = (pinpointDriver.getPosX() / 10);
+        y =  (pinpointDriver.getPosY() / 10);  // Fix the sign
+        heading = pinpointDriver.getHeading();
+    }
 }

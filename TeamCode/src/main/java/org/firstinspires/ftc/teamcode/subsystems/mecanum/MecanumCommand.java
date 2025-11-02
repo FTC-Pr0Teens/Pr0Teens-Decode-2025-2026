@@ -218,6 +218,19 @@ public class MecanumCommand {
         mecanumSubsystem.setPowers(0,0,0,0);
     }
 
+    public void processOdometry(){
+        // Use the new unified update method
+        pinPointOdoSubsystem.updateOdometry();
+    }
+    public double getX(){
+        return pinPointOdoSubsystem.getX();
+    }
+    public double getY(){
+        return pinPointOdoSubsystem.getY();
+    }
+    public double getTheta(){
+        return pinPointOdoSubsystem.getY();
+    }
 }
 
 
