@@ -183,6 +183,9 @@ public class MecanumCommand {
         telemetry.addData("PID ey (global)", ey);
         telemetry.addData("PID etheta", etheta);
     }
+    public void setRotationPower(double power) {
+        mecanumSubsystem.partialMove(0, 0, power);
+    }
 }
 
 /**
