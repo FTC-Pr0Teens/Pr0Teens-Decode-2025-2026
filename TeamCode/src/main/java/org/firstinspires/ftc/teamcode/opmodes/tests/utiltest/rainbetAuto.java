@@ -60,23 +60,21 @@ public class rainbetAuto extends LinearOpMode {
             switch (autoState) {
 
                 case HANG_ONE:
-                    mecanumCommand.moveToPos(40, 0, 0);// set target
-                    liftCommand.handleIntake();
-//                    liftCommand.rainbet();
+                    mecanumCommand.moveToPos(0, 0, 3.14);// set target
+
+
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
                     break;
                 case PICKUP_ZERO:
-                    mecanumCommand.stop();
-                    liftCommand.stopintake();
-//                    liftCommand.rainbetStop();
+                    mecanumCommand.moveToPos(0, 20, 3.14);// set target
 
-                    liftCommand.handleIntake();
 
-                    sleep(1000);
-                    autoState = AUTO_STATE.PICKUP_FIRST;
-                    break;
+                    if (!mecanumCommand.positionNotReachedYet()) {
+                        autoState = AUTO_STATE.PICKUP_FIRST; // move to next state
+                    }
+                   break;
 
 //                case SUBMERSIBLE_PICKUP:
 //                    if (!submersibleTargetSet) {  // flag variable

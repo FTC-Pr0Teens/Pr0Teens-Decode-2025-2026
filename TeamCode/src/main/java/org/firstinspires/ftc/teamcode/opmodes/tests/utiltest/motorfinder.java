@@ -23,10 +23,10 @@ public class motorfinder extends LinearOpMode {
         leftRear = hardwareMap.get(DcMotor.class, "lb");
         rightRear = hardwareMap.get(DcMotor.class, "rb");
 
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.lf.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.lb.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.rf.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.rb.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         waitForStart();

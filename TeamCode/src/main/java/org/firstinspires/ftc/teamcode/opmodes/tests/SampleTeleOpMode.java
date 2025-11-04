@@ -22,8 +22,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private Hardware hw;
     private ElapsedTime resetTimer;
 
-    private static final double PUSHER_UP = 0.8;
-    private static final double PUSHER_DOWN = 1.0;
+    private static final double PUSHER_UP = 0.2867;
+    private static final double PUSHER_DOWN = 0.12;
     private static final long PUSHER_TIME = 500;
     double heading;
     enum ROBOT_STATE{
@@ -52,7 +52,8 @@ public class SampleTeleOpMode extends LinearOpMode {
 //        liftCommand = new LiftCommand(hw);
         resetTimer = new ElapsedTime();
         hw.pusher.setPosition(PUSHER_DOWN);
-        hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         // Wait for start button to be pressed
         waitForStart();
 

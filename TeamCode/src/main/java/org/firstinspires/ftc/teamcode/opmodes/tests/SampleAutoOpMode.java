@@ -64,12 +64,12 @@ public class SampleAutoOpMode extends LinearOpMode {
                     mecanumCommand.moveToPos(100, 0, 0);// set target
 
                     if (!mecanumCommand.positionNotReachedYet()) {
-                        autoState = AUTO_STATE.TURN_ONE; // move to next state
+                        autoState = AUTO_STATE.TURN_ONE;
                     }
                     break;
                 case TURN_ONE:
-                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.62);
-//                    liftCommand.handleIntake();
+                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.6);
+
                     if (!mecanumCommand.positionNotReachedYet()) {
                         sleep(200);
                         autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
@@ -80,12 +80,12 @@ public class SampleAutoOpMode extends LinearOpMode {
 
 
                 case SUBMERSIBLE_PICKUP:
-                    double targetY = -70;
+                    double targetY = -85;
                     double targetHeading = 1.62;
                     double tolerance = 0.5;
 
 
-                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), targetY, targetHeading);
+                    mecanumCommand.moveToPos(120, targetY, targetHeading);
 
 
                     if (Math.abs(mecanumCommand.getOdoY() - targetY) < tolerance) {
@@ -113,24 +113,6 @@ public class SampleAutoOpMode extends LinearOpMode {
         }
     }
 
-//        while (opModeIsActive()) {
-//            mecanumCommand.processOdometry();
-//
-//            telemetry.addLine("chaewon");
-//
-//            if (mecanumCommand.positionNotReachedYet()) {
-//                mecanumCommand.moveToPos(0,15,0);
-//                mecanumCommand.motorProcess();
-//
-//            } else {
-//                mecanumCommand.stop();
-//            }
-//
-//            // run processes
-//            updateTelemetry();
-//        }
-//
-//    }
 
 
     public void updateTelemetry() {
