@@ -8,9 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 class MecanumSubsystem {
     //rf: right front/forward
     //rb: right back
@@ -61,10 +58,10 @@ class MecanumSubsystem {
         globalYController = new PIDCore(kpy, kdy, kiy);
         globalThetaController = new PIDCore(kptheta, kdtheta, kitheta);
 
-        hw.lf.setDirection(DcMotorSimple.Direction.FORWARD);
-        hw.lb.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.lb.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.rf.setDirection(DcMotorSimple.Direction.FORWARD);
-        hw.rb.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.rb.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
 
@@ -266,13 +263,13 @@ class MecanumSubsystem {
 
     // Output Positional Getters for PID controllers
     public double globalXControllerOutputPositional(double XsetPoint, double Xfeedback) {
-        return globalXController.outputPositional(XsetPoint, Xfeedback);
+        return globalXController.outputPID(XsetPoint, Xfeedback);
     }
     public double globalYControllerOutputPositional(double YsetPoint, double Yfeedback) {
-        return globalYController.outputPositional(YsetPoint, Yfeedback);
+        return globalYController.outputPID(YsetPoint, Yfeedback);
     }
     public double globalThetaControllerOutputPositional(double ThetasetPoint, double Thetafeedback) {
-        return globalThetaController.outputPositional(ThetasetPoint, Thetafeedback);
+        return globalThetaController.outputPID(ThetasetPoint, Thetafeedback);
     }
 
     // stop all motors

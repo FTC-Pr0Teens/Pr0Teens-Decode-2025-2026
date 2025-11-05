@@ -9,7 +9,6 @@ public class TurretSubsystem {
     private MecanumCommand mecanumCommand;
     private PinPointOdometrySubsystem pinPointOdoSubsystem;
 
-
     public TurretSubsystem(Hardware hw) {
         mecanumCommand = new MecanumCommand(hw);
         pinPointOdoSubsystem = new PinPointOdometrySubsystem(hw);
@@ -17,40 +16,36 @@ public class TurretSubsystem {
 
     }
 
-    public void tanAdjustement(double targetX, double targetY) {
+    public double tanAdjustementBlue(double targetX, double targetY) {
         double currentX = mecanumCommand.getOdoX();
         double currentY = mecanumCommand.getOdoY();
-
+        double currentHeading = (pinPointOdoSubsystem.getHeading());
+        double normalizedCurrentHeading = currentHeading % (2 * Math.PI);
 
         double deltaX = targetX - currentX;
         double deltaY = targetY - currentY;
-
-        double currentHeading = normalizeAngle(pinPointOdoSubsystem.getHeading());
         double targetHeading = Math.atan2(deltaY, deltaX);
 
-        double error = angleWrap(targetHeading - currentHeading);
+        double deltaHeading = targetHeading - normalizedCurrentHeading;
+        return (deltaHeading > 180 ? 360 - deltaHeading : deltaHeading) + currentHeading;
+    }
+    public double tanAdjustementRed(double targetX, double targetY){
+        double currentX = mecanumCommand.getOdoX();
+        double currentY = mecanumCommand.getOdoY();
+        double currentHeading = (pinPointOdoSubsystem.getHeading());
+        double normalizedCurrentHeading = currentHeading % (2 * Math.PI);
 
+        double deltaX = targetX - currentX;
+        double deltaY = targetY - currentY;
+        double targetHeading = Math.atan2(deltaY, deltaX);
 
-        double correction = error * 0.5;
-
-        mecanumCommand.setRotationPower(correction);
+        double deltaHeading = targetHeading - normalizedCurrentHeading;
+        return -((deltaHeading > 180 ? 360 - deltaHeading : deltaHeading)) + currentHeading;
     }
 
-    public double normalizeAngle(double angle) {
-
-        double twoPi = 2 * Math.PI;
-        return ((angle % twoPi) + twoPi) % twoPi;
-
-
     }
 
 
-    private double angleWrap(double angle) {
-        while (angle > Math.PI) angle -= 2 * Math.PI;
-        while (angle < -Math.PI) angle += 2 * Math.PI;
-        return angle;
-    }
-}
 
 
 

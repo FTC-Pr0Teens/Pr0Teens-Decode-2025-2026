@@ -128,7 +128,7 @@ public class PIDCore {
     }
 
 
-    public double outputPositional(double setPoint, double feedback) {
+    public double outputPID(double setPoint, double feedback) {
         error = setPoint - feedback;
 
         // Apply deadband
@@ -209,7 +209,7 @@ public class PIDCore {
 
     public double outputFeedForward(double setPoint, double feedback, VelAccelPair velAccelPair) {
 
-        double pidOutput = outputPositional(setPoint, feedback);
+        double pidOutput = outputPID(setPoint, feedback);
 
 
         feedForward = 0;
@@ -221,7 +221,7 @@ public class PIDCore {
     }
 
     public double cascadeOutput(double setPoint, double feedback, double setVelocity, double feedbackVelocity) {
-        outputPositionalValue = outputPositional(setPoint, feedback);
+        outputPositionalValue = outputPID(setPoint, feedback);
         outputVelocityValue = outputVelocity(setVelocity, feedbackVelocity);
         return outputPositionalValue + outputVelocityValue;
     }
@@ -285,18 +285,18 @@ public class PIDCore {
 
     // LEGACY METHODS (for backward compatibility)
     public double outputPositional2(double setPoint, double feedback) {
-        return outputPositional(setPoint, feedback);
+        return outputPID(setPoint, feedback);
     }
 
     public double outputPositionalFeedForward(double setPoint, double feedback) {
-        double pidOutput = outputPositional(setPoint, feedback);
+        double pidOutput = outputPID(setPoint, feedback);
         return pidOutput + Kf;
     }
 
     public double outputPositionalCapped(double setPoint, double feedback, double integralCap) {
         double oldLimit = integralLimit;
         setIntegralLimit(integralCap);
-        double result = outputPositional(setPoint, feedback);
+        double result = outputPID(setPoint, feedback);
         setIntegralLimit(oldLimit);
         return result;
     }
