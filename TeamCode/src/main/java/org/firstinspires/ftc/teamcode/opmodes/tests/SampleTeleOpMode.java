@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,12 +12,14 @@ import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
 @TeleOp(name = "TeleopSample", group = "TeleOp")
 public class SampleTeleOpMode extends LinearOpMode {
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
+    private TurretSubsystem turretSubsystem;
     private LiftCommand liftCommand;
     private ElapsedTime timer;
     private Hardware hw;
@@ -47,6 +50,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
+        turretSubsystem = new TurretSubsystem(hw, "BLUE");
         liftCommand = new LiftCommand(hw);
 
 //        liftCommand = new LiftCommand(hw);
