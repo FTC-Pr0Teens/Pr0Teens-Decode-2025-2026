@@ -17,7 +17,7 @@ public class SorterSubsystem {
     ArrayList<String> intake;
     ColorSensor colourSensor;
     private Servo sorter;
-    private Servo pusher;
+//    private Servo pusher;
     private DcMotor rb;
     String firstColour;
     String secondColour;
@@ -38,21 +38,25 @@ public class SorterSubsystem {
 
     public SorterSubsystem(Hardware hw, ArrayList<String>  motif, Telemetry telemetry){
         this.hw = hw;
-        this.colourSensor = hw.colourSensor;
+    //    this.colourSensor = hw.colourSensor;
         this.sorter = hw.sorter;
-        this.pusher = hw.pusher;
+//        this.pusher = hw.pusher;
         this.rb = hw.rb;
-        this.order = motif;
+        // this.order = motif;
         timer = new ElapsedTime();
-        length = intake.size();
         intake = new ArrayList<>();
+      //  length = 0;
+        order = motif;
         this.telemetry = telemetry;
         firstPos = 0;
-        secondPos = 0.067;
-        thirdPos = 0.133;
+        secondPos = 0.42;
+        thirdPos = 0.88;
+       // secondPos = 0.067;
+        //thirdPos = 0.133;
 
     }
 
+    //organizes artifacts on intake and adds the colour of each artifact to a list in order of entry
     public void detectColour() { //change name to intake
         telemetry.addLine("detectColour");
         telemetry.update();
@@ -61,7 +65,7 @@ public class SorterSubsystem {
         int blue = colourSensor.blue();
         int alpha = colourSensor.alpha();
 
-        int length = intake.size();
+        length = intake.size();
 
         telemetry.addData("intake: ", intake.size());
 
@@ -132,8 +136,9 @@ public class SorterSubsystem {
         }
     }
 
-    public void sort() { //change name to outake
-        int length = intake.size();
+    //organizes balls on outtake by comparing intake list with the motif
+    public void sort() {
+        length = intake.size();
         index = intake.indexOf(new String("green"));
         telemetry.addData("index ", index);
         telemetry.update();
@@ -205,7 +210,7 @@ public class SorterSubsystem {
                 waitTime(1);
                 intake.clear();
             }
-        } else { //if (firstColour.equals("green")) {
+        } else {
             telemetry.addData("index", index);
             telemetry.update();
             if (index == 0) {
@@ -238,38 +243,33 @@ public class SorterSubsystem {
         }
 
     }
-
+//checks if
     void CheckArtifact () {
         purpleNum = 0;
         greenNum = 0;
         for (int pointer = 0; pointer < 3; pointer++) {
             if (intake.get(pointer).equalsIgnoreCase("purple")) {
                 purpleNum++;
-                if(purpleNum == 2){
-                    telemetry.addLine("purple artifacts");
-                }
             }
             telemetry.addLine("# of Purples: " + purpleNum);
             telemetry.update();
         }
 
         for (int check = 0; check < 3; check++) {
-            if (intake.get(check).equalsIgnoreCase("purple")) {
+            if (intake.get(check).equalsIgnoreCase("green")) {
                 greenNum++;
-                if(greenNum == 2){
-                    telemetry.addLine("already have 1 green artifacts");
-                }
             }
             telemetry.addLine("# of Green: " + greenNum);
             telemetry.update();
         }
 
     }
-    public void push () {
-        pusher.setPosition(0.1);
-        waitTime(1);
-        pusher.setPosition(0);
-    }
+
+//    public void push () {
+//        pusher.setPosition(0.1);
+//        waitTime(1);
+//        pusher.setPosition(0);
+//    }
     public void waitTime(double seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
@@ -288,6 +288,10 @@ public class SorterSubsystem {
         public void clearList(){
         intake.clear();
         }
+
+    public void IntakeOutake(){}
+
+
 
 
 }
