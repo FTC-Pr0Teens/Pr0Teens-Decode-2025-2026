@@ -226,7 +226,7 @@ public class PinPointOdometrySubsystem {
      * @return current y position
      */
     public double getY(){
-        return y;
+        return -y;
 
     }
 

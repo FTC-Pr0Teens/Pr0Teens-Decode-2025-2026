@@ -70,6 +70,13 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.start) {
                 mecanumCommand.resetPinPointOdometry();
             }
+            if(gamepad1.options){
+
+            }
+
+            if (gamepad1.dpad_up){
+
+            }
 
                 // --- Intake toggle on A (edge) ---
                 boolean currentAState = gamepad1.a;
