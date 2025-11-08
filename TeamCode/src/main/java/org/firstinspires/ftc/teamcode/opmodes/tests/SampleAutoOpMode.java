@@ -81,7 +81,7 @@ public class SampleAutoOpMode extends LinearOpMode {
 
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(-39.43 , -2, -0.39);
+                    mecanumCommand.moveToPos(-39.43 , -2, 0.39);
 
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.PRELOAD_ONE;
@@ -106,7 +106,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                         isPusherUp = false;
                         sorterpos = 1;
 
-                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 1000) {
+                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 700) {
                         hw.sorter.setPosition(SORTER_FIRST_POS);
                         autoState = AUTO_STATE.PRELOAD_TWO;
                     }
