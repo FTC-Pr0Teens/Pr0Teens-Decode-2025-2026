@@ -61,12 +61,13 @@ public class SampleAutoOpMode extends LinearOpMode {
             switch (autoState) {
 
                 case INTAKE_ONE:
-                    mecanumCommand.moveToPos(100, 0, 0);// set target
+                    mecanumCommand.moveToPos(-100, 0, 0);// set target
 
                     if (!mecanumCommand.positionNotReachedYet()) {
                         autoState = AUTO_STATE.TURN_ONE;
                     }
                     break;
+
                 case TURN_ONE:
                     mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.6);
 

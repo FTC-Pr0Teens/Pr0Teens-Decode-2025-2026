@@ -64,7 +64,7 @@ public class PinPointOdometrySubsystem {
 
         // Set encoder directions to FORWARD for both encoders
         // This means x increases when moving forward, y increases when strafing left
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
         // Initialize and reset control loop timer
         controllerLoopTime = new ElapsedTime();
@@ -226,7 +226,7 @@ public class PinPointOdometrySubsystem {
      * @return current y position
      */
     public double getY(){
-        return y;
+        return -y;
 
     }
 
