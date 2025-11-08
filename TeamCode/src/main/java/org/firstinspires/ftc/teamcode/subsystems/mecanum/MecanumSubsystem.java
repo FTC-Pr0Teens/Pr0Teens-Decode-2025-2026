@@ -8,6 +8,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 class MecanumSubsystem {
     //rf: right front/forward
     //rb: right back
@@ -263,19 +266,19 @@ class MecanumSubsystem {
 
     // Output Positional Getters for PID controllers
     public double globalXControllerOutputPositional(double XsetPoint, double Xfeedback) {
-        return globalXController.outputPID(XsetPoint, Xfeedback);
+        return globalXController.outputPositional(XsetPoint, Xfeedback);
     }
     public double globalYControllerOutputPositional(double YsetPoint, double Yfeedback) {
-        return globalYController.outputPID(YsetPoint, Yfeedback);
+        return globalYController.outputPositional(YsetPoint, Yfeedback);
     }
     public double globalThetaControllerOutputPositional(double ThetasetPoint, double Thetafeedback) {
-        return globalThetaController.outputPID(ThetasetPoint, Thetafeedback);
+        return globalThetaController.outputPositional(ThetasetPoint, Thetafeedback);
     }
 
     // stop all motors
     public void stop(){
 
-            setPowers(0,0,0,0);
+        setPowers(0,0,0,0);
 
     }
 
@@ -325,4 +328,3 @@ class MecanumSubsystem {
         hw.lf.setPower(y2);
     }
 }
-

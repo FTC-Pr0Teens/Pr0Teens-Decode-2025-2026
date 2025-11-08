@@ -235,6 +235,6 @@ public class PinPointOdometrySubsystem {
      * @return current heading
      */
     public double getHeading(){
-        return heading;
+        return -heading;
     }
 }
