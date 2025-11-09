@@ -16,8 +16,8 @@ public class OuttakeSubsystem {
     private double integralSum = 0;
     private double timeChange = 0;
     private double errorChange = 0;
-    public static double Kd = 0.01;
-    public static double Kp = 0.03;
+    public static double Kd = 0.0;
+    public static double Kp = 0.8;
     public static double Ki = 0.00 ;
     private Hardware hw;
 
@@ -81,43 +81,33 @@ public class OuttakeSubsystem {
         }
 
     public double outputPositional(double targetRPM, double currentRPM) {
-
-     error = targetRPM - currentRPM;
-
-
+        error = targetRPM - currentRPM;
 
         double currentTime = timer.seconds();
         double deltaTime = currentTime - lastTime;
-        if (deltaTime <= 0) {
-            deltaTime = 0.001;
-        }
+        if (deltaTime <= 0) deltaTime = 0.001;
 
 
         derivative = (error - lastError) / deltaTime;
 
 
-        if (activateIntegral && Math.abs(integralSum) < integralLimit) {
+        if (Math.abs(error) < 300 && Math.abs(integralSum) < integralLimit) {
             integralSum += error * deltaTime;
-
-            if (Math.abs(integralSum) > integralLimit) {
-                integralSum = integralLimit * Math.signum(integralSum);
-            }
-        } else if (!activateIntegral) {
-            integralSum = 0;
+        } else {
+            integralSum *= 0.95;
         }
 
+        double maxRPM = 6000.0;
+        double kF = 0.9;
+        double feedForward = kF * (targetRPM / maxRPM);
 
-        outputPositionalValue = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
+        outputPositionalValue = feedForward + (Kp * error) + (Kd * derivative) + (Ki * integralSum);
 
-        if (Math.abs(outputPositionalValue) > outputLimit) {
-            outputPositionalValue = outputLimit * Math.signum(outputPositionalValue);
-        }
+        outputPositionalValue = Math.max(0.0, Math.min(outputLimit, outputPositionalValue));
 
-
+        errorChange = error - lastError;
         lastError = error;
         lastTime = currentTime;
-        errorChange = error - lastError;
-        timeChange = deltaTime;
 
         return outputPositionalValue;
     }
@@ -131,7 +121,7 @@ public class OuttakeSubsystem {
         double baseRPM = 4000;
         return slope * distance + baseRPM;
     }
-    public void aimAndShoot(DcMotor shooter, double distance, double currentRPM, double deltaTime) {
+    public void aimAndShoot(DcMotor shooter, double distance, double currentRPM) {
         double targetRPM = getTargetRPM(distance);
         double outputPower = outputPositional(targetRPM, currentRPM);
 

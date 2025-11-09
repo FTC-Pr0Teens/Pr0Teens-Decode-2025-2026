@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,16 +10,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
+import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
 @Config
-@Autonomous(name = "Sample Auto")
-public class SampleAutoOpMode extends LinearOpMode {
+@Autonomous(name = "Blue Auto")
+public class BlueFieldAuto extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private TurretSubsystem turretSubsystem;
     private LiftCommand liftCommand;
+    private OuttakeSubsystem outtakeSubsystem;
 
     enum AUTO_STATE {
         MOVEPRELOAD,
@@ -62,6 +61,7 @@ public class SampleAutoOpMode extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         liftCommand = new LiftCommand(hw);
         turretSubsystem = new TurretSubsystem(hw);
+        outtakeSubsystem = new OuttakeSubsystem(hw);
         hw.sorter.setPosition(0);
         hw.shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mecanumCommand.setConstants(kpx, kdx, kix,
@@ -78,12 +78,12 @@ public class SampleAutoOpMode extends LinearOpMode {
             mecanumCommand.motorProcess();
             mecanumCommand.processPIDUsingPinpoint();
             mecanumCommand.processOdometry();
-
+            double stage = 0;
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(-39.43 , -2, 0.39);
+                    mecanumCommand.moveToPos(-40 , -2, -0.39);
 
-                    if (!mecanumCommand.positionNotReachedYet()) {
+                    if (!mecanumCommand.isPositionreached()) {
                         autoState = AUTO_STATE.PRELOAD_ONE;
 
                     }
@@ -93,22 +93,25 @@ public class SampleAutoOpMode extends LinearOpMode {
 
                     hw.shooter.setPower(1.0);
                     hw.intake.setPower(0.7);
-                    if (!isPusherUp && pusherTimer.milliseconds() == 0) {
+
+                    if (stage == 0) {
                         pusherTimer.reset();
-                    }
-                    if (!isPusherUp && pusherTimer.milliseconds() >= 1500) {
+                        stage++;
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
                         hw.pusher.setPosition(PUSHER_UP);
                         pusherTimer.reset();
-                        isPusherUp = true;
-                    } else if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
+                        stage++;
+                    } else if ( stage == 2 && pusherTimer.milliseconds() >= PUSHER_TIME) {
                         hw.pusher.setPosition(PUSHER_DOWN);
-                        pusherTimer.reset();
-                        isPusherUp = false;
-                        sorterpos = 1;
-
-                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 700) {
-                        hw.sorter.setPosition(SORTER_FIRST_POS);
-                        autoState = AUTO_STATE.PRELOAD_TWO;
+                            pusherTimer.reset();
+                            stage++;
+                    }   else if (stage == 3 && pusherTimer.milliseconds() >= 800) {
+                            hw.sorter.setPosition(SORTER_SECOND_POS);
+                            autoState = AUTO_STATE.PRELOAD_TWO;
+                    }   else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
+                            hw.pusher.setPosition(PUSHER_UP);
+                            pusherTimer.reset();
+                            stage++;
                     }
 
                     break;
@@ -122,7 +125,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                         pusherTimer.reset();
                     }
 
-                    if (!isPusherUp && pusherTimer.milliseconds() >= 1500) {
+                    if (!isPusherUp && pusherTimer.milliseconds() >= 1000) {
                         hw.pusher.setPosition(PUSHER_UP);
                         pusherTimer.reset();
                         isPusherUp = true;
@@ -130,9 +133,9 @@ public class SampleAutoOpMode extends LinearOpMode {
                         hw.pusher.setPosition(PUSHER_DOWN);
                         pusherTimer.reset();
                         isPusherUp = false;
-                        sorterpos = 2;
-                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 1000) {
-                        hw.sorter.setPosition(SORTER_SECOND_POS);
+                        sorterpos = 3;
+                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 800) {
+                        hw.sorter.setPosition(SORTER_THIRD_POS);
                         autoState = AUTO_STATE.PRELOAD_THREE;
                     }
                     break;
@@ -144,7 +147,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                         pusherTimer.reset();
                     }
 
-                    if (!isPusherUp && pusherTimer.milliseconds() >= 1500) {
+                    if (!isPusherUp && pusherTimer.milliseconds() >= 1000) {
                         hw.pusher.setPosition(PUSHER_UP);
                         pusherTimer.reset();
                         isPusherUp = true;
@@ -153,8 +156,8 @@ public class SampleAutoOpMode extends LinearOpMode {
                         pusherTimer.reset();
                         isPusherUp = false;
                         sorterpos = 3;
-                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 1000) {
-                        hw.sorter.setPosition(SORTER_SECOND_POS);
+                    }     else if (!isPusherUp && sorterpos == 2 && pusherTimer.milliseconds() >= 800) {
+                        hw.sorter.setPosition(SORTER_FIRST_POS);
                         autoState = AUTO_STATE.INTAKE_ONE;
                     }
                     break;
@@ -163,7 +166,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                     hw.shooter.setPower(0.0);
 //                    mecanumCommand.moveToPos(-100, 0, 0);// set target
 //
-//                    if (!mecanumCommand.positionNotReachedYet()) {
+//                    if (!mecanumCommand.isPositionreached()) {
 //                        autoState = AUTO_STATE.TURN_ONE;
 //                    }
                     break;
@@ -171,7 +174,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                 case TURN_ONE:
 //                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.6);
 //
-//                    if (!mecanumCommand.positionNotReachedYet()) {
+//                    if (!mecanumCommand.isPositionreached()) {
 //                        sleep(200);
 //                        autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
 //                    }

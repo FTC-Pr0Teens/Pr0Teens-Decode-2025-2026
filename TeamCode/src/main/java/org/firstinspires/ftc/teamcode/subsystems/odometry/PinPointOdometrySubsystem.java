@@ -100,8 +100,8 @@ public class PinPointOdometrySubsystem {
 
     public void updateOdometry(){
         odo.update();  // Update sensor once
-        x = (odo.getPosX() / 10);
-        y =  (odo.getPosY() / 10);  // Fix the sign
+        x = - (odo.getPosX() / 10);
+        y = - (odo.getPosY() / 10);  // Fix the sign
         heading = odo.getHeading();
     }
 

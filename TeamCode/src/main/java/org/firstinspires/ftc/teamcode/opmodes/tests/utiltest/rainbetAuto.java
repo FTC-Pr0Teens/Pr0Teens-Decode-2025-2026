@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests.utiltest;
 
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.lift.LiftCommand;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumConstants;
 
 
 @Config
@@ -63,7 +60,7 @@ public class rainbetAuto extends LinearOpMode {
                     mecanumCommand.moveToPos(0, 0, 3.14);// set target
 
 
-                    if (!mecanumCommand.positionNotReachedYet()) {
+                    if (!mecanumCommand.isPositionreached()) {
                         autoState = AUTO_STATE.PICKUP_ZERO; // move to next state
                     }
                     break;
@@ -71,7 +68,7 @@ public class rainbetAuto extends LinearOpMode {
                     mecanumCommand.moveToPos(0, 20, 3.14);// set target
 
 
-                    if (!mecanumCommand.positionNotReachedYet()) {
+                    if (!mecanumCommand.isPositionreached()) {
                         autoState = AUTO_STATE.PICKUP_FIRST; // move to next state
                     }
                    break;
@@ -88,7 +85,7 @@ public class rainbetAuto extends LinearOpMode {
 //                        submersibleTargetSet = true;
 //                    }
 //
-//                    if (!mecanumCommand.positionNotReachedYet()) {
+//                    if (!mecanumCommand.isPositionreached()) {
 //                        autoState = AUTO_STATE.PICKUP_FIRST;
 //                    }
 //                    break;
@@ -113,7 +110,7 @@ public class rainbetAuto extends LinearOpMode {
 //
 //            telemetry.addLine("chaewon");
 //
-//            if (mecanumCommand.positionNotReachedYet()) {
+//            if (mecanumCommand.isPositionreached()) {
 //                mecanumCommand.moveToPos(0,15,0);
 //                mecanumCommand.motorProcess();
 //

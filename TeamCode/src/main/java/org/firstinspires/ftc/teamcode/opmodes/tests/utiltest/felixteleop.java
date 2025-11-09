@@ -64,7 +64,7 @@ public class felixteleop extends LinearOpMode {
 
                 double currentRPM = hw.shooter.getVelocity();
                 double deltaTime = 0.02;
-                outtakeSubsystem.aimAndShoot(hw.shooter, distance, currentRPM, deltaTime);
+                outtakeSubsystem.aimAndShoot(hw.shooter, distance, currentRPM);
 
                 telemetry.addData("Target X", tx);
                 telemetry.addData("Target Y", ty);

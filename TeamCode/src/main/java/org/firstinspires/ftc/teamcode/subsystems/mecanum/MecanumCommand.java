@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.mecanum;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
-import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Command wrapper for controlling a Mecanum drive system using
@@ -58,7 +56,6 @@ public class MecanumCommand {
         ey = mecanumSubsystem.globalYControllerOutputPositional(yFinal, pinPointOdoSubsystem.getY());
         etheta = mecanumSubsystem.globalThetaControllerOutputPositional(thetaFinal, pinPointOdoSubsystem.getHeading());
 
-
         double max = Math.max(Math.abs(ex), Math.abs(ey));
         if (max > velocity) {
             double scalar = velocity / max;
@@ -79,6 +76,9 @@ public class MecanumCommand {
      */
     public void moveGlobalPartialPinPoint(double vertical, double horizontal, double rotational) {
         double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
+        //replace first negative sign with positive
+        //replace second vertical with -
+        //heading has to be turning positive countercloickwise
         double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
         double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
 
@@ -92,8 +92,9 @@ public class MecanumCommand {
 
     public boolean moveToPos(double x, double y, double theta) {
         setFinalPosition(0.67, x, y, theta);
-        return!(positionNotReachedYet());
+        return isPositionreached();
     }
+
 
     public void setFinalPosition(double velocity, double x, double y, double theta) {
         this.xFinal = x;
@@ -102,8 +103,8 @@ public class MecanumCommand {
         this.velocity = velocity;
     }
 
-    public boolean positionNotReachedYet() {
-        return !(isXReached() && isYReached() && isThetaReached());
+    public boolean isPositionreached() {
+        return isXReached() && isYReached() && isThetaReached();
     }
 
     public double getXDifferencePinPoint() {
