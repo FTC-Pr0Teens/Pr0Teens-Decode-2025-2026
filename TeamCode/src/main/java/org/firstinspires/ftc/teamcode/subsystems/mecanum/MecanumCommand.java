@@ -79,7 +79,7 @@ public class MecanumCommand {
         //replace first negative sign with positive
         //replace second vertical with -
         //heading has to be turning positive countercloickwise
-        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
+        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) + horizontal * Math.cos(angle);
         double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
 
         mecanumSubsystem.partialMove(localVertical, localHorizontal, rotational);
@@ -104,7 +104,7 @@ public class MecanumCommand {
     }
 
     public boolean isPositionreached() {
-        return isXReached() && isYReached() && isThetaReached();
+        return !(isXReached() && isYReached() && isThetaReached());
     }
 
     public double getXDifferencePinPoint() {
