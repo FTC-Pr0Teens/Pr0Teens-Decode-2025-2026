@@ -17,7 +17,7 @@ public class SorterSubsystem {
     ArrayList<String> intake;
     ColorSensor colourSensor;
     private Servo sorter;
-//    private Servo pusher;
+    //    private Servo pusher;
     private DcMotor rb;
     String firstColour;
     String secondColour;
@@ -35,23 +35,23 @@ public class SorterSubsystem {
     double thirdPos;
 
 
-
-    public SorterSubsystem(Hardware hw, ArrayList<String>  motif, Telemetry telemetry){
+    public SorterSubsystem(Hardware hw, ArrayList<String> motif, Telemetry telemetry) {
         this.hw = hw;
-    //    this.colourSensor = hw.colourSensor;
+        //    this.colourSensor = hw.colourSensor;
         this.sorter = hw.sorter;
 //        this.pusher = hw.pusher;
         this.rb = hw.rb;
         // this.order = motif;
         timer = new ElapsedTime();
         intake = new ArrayList<>();
-      //  length = 0;
-        order = motif;
+        //  length = 0;
+        order = new ArrayList<>();
+        //motif;
         this.telemetry = telemetry;
         firstPos = 0;
         secondPos = 0.42;
         thirdPos = 0.88;
-       // secondPos = 0.067;
+        // secondPos = 0.067;
         //thirdPos = 0.133;
 
     }
@@ -243,8 +243,9 @@ public class SorterSubsystem {
         }
 
     }
-//checks if
-    void CheckArtifact () {
+
+    //checks if
+    void CheckArtifact() {
         purpleNum = 0;
         greenNum = 0;
         for (int pointer = 0; pointer < 3; pointer++) {
@@ -265,8 +266,8 @@ public class SorterSubsystem {
 
     }
 
-//    public void push () {
-//        pusher.setPosition(0.1);
+    //    public void push () {
+//        pusher.setPosition(0.85);
 //        waitTime(1);
 //        pusher.setPosition(0);
 //    }
@@ -281,17 +282,13 @@ public class SorterSubsystem {
             telemetry.update();
         }
     }
-    public void setLength(){
-            length = intake.size();
-            telemetry.addLine(Integer.toString(length));
-        }
-        public void clearList(){
+
+    public void setLength() {
+        length = intake.size();
+        telemetry.addLine(Integer.toString(length));
+    }
+
+    public void clearList() {
         intake.clear();
-        }
-
-    public void IntakeOutake(){}
-
-
-
-
+    }
 }
