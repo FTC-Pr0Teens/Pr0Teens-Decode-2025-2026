@@ -55,11 +55,6 @@ public class LogitechSubsystem {
             }
         }
 
-        if (obelisk == "PPG"){
-
-        } else if (obelisk == "PPG"){
-
-        }
     }
     public void telemetryAprilTag(Telemetry telemetry){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
