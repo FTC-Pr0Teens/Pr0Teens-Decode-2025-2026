@@ -21,7 +21,8 @@ public class Hardware {
     private static Hardware instance;
 
     // Motors
-//  public Limelight3A limelight;
+  public Limelight3A limelight;
+    public WebcamName logitech;
     public final DcMotorEx intake;
     public final Servo sorter;
     public final Servo pusher;
@@ -31,20 +32,18 @@ public class Hardware {
     public final DcMotorEx lb;
     public final DcMotorEx rb;
     public final DcMotorEx shooter;
-    //     Odometry
+    // Odometry
     public final GoBildaPinpointDriver pinPointOdo;
-    public WebcamName logitech;
-    public Limelight3A limelight;
+    //public final ColorSensor colourSensor;
 
-    public Hardware(HardwareMap hwMap) {
-
-
+    public Hardware(HardwareMap hwMap){
         this.rf = hwMap.get(DcMotorEx.class, Specifications.FTRT_MOTOR); //rightforward
         this.lf = hwMap.get(DcMotorEx.class, Specifications.FTLF_MOTOR); //leftforward
         this.lb = hwMap.get(DcMotorEx.class, Specifications.BKLF_MOTOR); //leftback
         this.rb = hwMap.get(DcMotorEx.class, Specifications.BKRT_MOTOR);//rightback
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
-//        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
@@ -60,8 +59,4 @@ public class Hardware {
         }
         return instance;
     }
-
-
 }
-
-
