@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 
 public class Hardware {
@@ -21,7 +22,6 @@ public class Hardware {
 
     // Motors
 //  public Limelight3A limelight;
-
     public final DcMotorEx intake;
     public final Servo sorter;
     public final Servo pusher;
@@ -31,11 +31,14 @@ public class Hardware {
     public final DcMotorEx lb;
     public final DcMotorEx rb;
     public final DcMotorEx shooter;
-    // Odometry
+    //     Odometry
     public final GoBildaPinpointDriver pinPointOdo;
-    //public final ColorSensor colourSensor;
+    public WebcamName logitech;
+    public Limelight3A limelight;
 
-    public Hardware(HardwareMap hwMap){
+    public Hardware(HardwareMap hwMap) {
+
+
         this.rf = hwMap.get(DcMotorEx.class, Specifications.FTRT_MOTOR); //rightforward
         this.lf = hwMap.get(DcMotorEx.class, Specifications.FTLF_MOTOR); //leftforward
         this.lb = hwMap.get(DcMotorEx.class, Specifications.BKLF_MOTOR); //leftback
@@ -48,7 +51,7 @@ public class Hardware {
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
-        //this.colourSensor = hwMap.get(ColorSensor.class, Specifications.colourSensor);
+
     }
 
     public static Hardware getInstance(HardwareMap hwMap) {
@@ -57,4 +60,8 @@ public class Hardware {
         }
         return instance;
     }
+
+
 }
+
+

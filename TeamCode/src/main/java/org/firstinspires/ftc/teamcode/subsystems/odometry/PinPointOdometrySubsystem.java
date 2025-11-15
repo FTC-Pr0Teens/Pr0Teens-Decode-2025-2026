@@ -57,7 +57,7 @@ public class PinPointOdometrySubsystem {
 
         // TODO: Tune these offsets for accurate positioning
         // odo.setOffsets(0, 865);
-        odo.setOffsets(53.5, 0);
+        odo.setOffsets(0, 0);
 
         // Set the encoder resolution to the 4-bar pod type
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -100,8 +100,8 @@ public class PinPointOdometrySubsystem {
 
     public void updateOdometry(){
         odo.update();  // Update sensor once
-        x = (odo.getPosX() / 10);
-        y =  (odo.getPosY() / 10);  // Fix the sign
+        x = - (odo.getPosX() / 10);
+        y = - (odo.getPosY() / 10);  // Fix the sign
         heading = odo.getHeading();
     }
 
@@ -218,7 +218,7 @@ public class PinPointOdometrySubsystem {
      * @return current x position
      */
     public double getX(){
-        return x;
+        return -x;
     }
 
     /**
@@ -235,6 +235,6 @@ public class PinPointOdometrySubsystem {
      * @return current heading
      */
     public double getHeading(){
-        return heading;
+        return -heading;
     }
 }

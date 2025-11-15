@@ -61,13 +61,10 @@ class MecanumSubsystem {
         globalYController = new PIDCore(kpy, kdy, kiy);
         globalThetaController = new PIDCore(kptheta, kdtheta, kitheta);
 
-        hw.lf.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.lf.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.lb.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.rf.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.rb.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-
 
         // set motor behaviour
         hw.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -291,8 +288,8 @@ class MecanumSubsystem {
     public void fieldOrientedMove(double x, double y, double z, double theta) {
         // translate the field relative movement (joystick) into the robot relative movement
         //changed all 3 lines below
-        double newX = x * Math.cos(theta) - y * Math.sin(theta);
-        double newY = x * Math.sin(theta) + y * Math.cos(theta);
+        double newX = x * Math.cos(theta) + y * Math.sin(theta);
+        double newY = x * Math.sin(theta) - y * Math.cos(theta);
 
         // wheel power calculations
         rightFrontMotorOutput = - newY + newX - z;

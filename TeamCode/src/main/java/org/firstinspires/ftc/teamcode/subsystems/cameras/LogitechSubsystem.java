@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.cameras;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -13,31 +14,45 @@ import java.util.List;
 
 public class LogitechSubsystem {
     private Hardware hw;
+    private WebcamName logitech;
     private static final boolean USE_WEBCAM = true;
 
     private static boolean GPP = false;
     private static boolean PGP = false;
     private static boolean PPG = false;
 
-    private static String obelisk;
+    public static String obelisk;
+
+    private static String alliance;
+
+    private static int targetid;
 
     private AprilTagProcessor aprilTag;
 
     private VisionPortal visionPortal;
 
-    public void intiAprilTag(Hardware hw){
+    public LogitechSubsystem(Hardware hw, String alliance) {
+        this.hw = hw;
+        this.logitech = hw.logitech;
+
+        if (alliance == "blue") {
+            targetid = 20;
+        } else if (alliance == "red"){
+            targetid = 24;
+        }
+
+
         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagOutline(true)
                 .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 .setTagLibrary(AprilTagGameDatabase.getDecodeTagLibrary())
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-
                 .build();
 
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
-//        builder.setCamera(hw.logitech);
+        builder.setCamera(logitech);
 
         builder.setAutoStopLiveView(true);
 
@@ -47,7 +62,8 @@ public class LogitechSubsystem {
         // Build the Vision Portal, using the above settings.
         visionPortal = builder.build();
     }
-    public void pattern(){
+
+    public String pattern() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null && (detection.id == 21 || detection.id == 22 || detection.id == 23)) {
@@ -55,8 +71,22 @@ public class LogitechSubsystem {
             }
         }
 
+        return obelisk;
     }
-    public void telemetryAprilTag(Telemetry telemetry){
+
+    public void targetApril(Telemetry telemetry) {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null && detection.id == targetid) {
+                telemetry.addData("April tag height ", detection.ftcPose.z);
+                telemetry.addData("April tag angle ", detection.ftcPose.yaw);
+                telemetry.addData("April tag id ", targetid);
+            }
+        }
+
+    }
+
+    public void telemetryAprilTag(Telemetry telemetry) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
 

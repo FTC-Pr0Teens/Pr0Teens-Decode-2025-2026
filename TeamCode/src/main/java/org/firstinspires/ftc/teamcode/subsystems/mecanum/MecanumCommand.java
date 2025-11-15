@@ -73,7 +73,7 @@ public class MecanumCommand {
 
     public void moveGlobalPartialPinPoint(double vertical, double horizontal, double rotational) {
         double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
-        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
+        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) + horizontal * Math.cos(angle);
         double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
 
         mecanumSubsystem.partialMove(localVertical, localHorizontal, rotational);
@@ -86,7 +86,14 @@ public class MecanumCommand {
 
     public boolean moveToPos(double x, double y, double theta) {
         setFinalPosition(0.67, x, y, theta);
-        return!(positionNotReachedYet());
+        return isPositionReached();
+    }
+
+    public void pivot (double power){
+        hw.lf.setPower(power);
+        hw.lb.setPower(power);
+        hw.rb.setPower(-power);
+        hw.rf.setPower(-power);
     }
 
     public void setFinalPosition(double velocity, double x, double y, double theta) {
@@ -96,8 +103,8 @@ public class MecanumCommand {
         this.velocity = velocity;
     }
 
-    public boolean positionNotReachedYet() {
-        return !(isXReached() && isYReached() && isThetaReached());
+    public boolean isPositionReached() {
+        return isXReached() && isYReached() && isThetaReached();
     }
 
     public double getXDifferencePinPoint() {

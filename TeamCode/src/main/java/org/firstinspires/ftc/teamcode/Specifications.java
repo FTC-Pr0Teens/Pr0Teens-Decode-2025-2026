@@ -48,6 +48,8 @@ public class Specifications {
 
     public static final String LIME_LIGHT = "lime";
 
+    public static final String LOGITECH = "logi";
+
     public static final String SORTER = "sorter";
     public static final String PIN_POINT_ODOMETRY = "odo";
     public static final String TURRET = "turret";
