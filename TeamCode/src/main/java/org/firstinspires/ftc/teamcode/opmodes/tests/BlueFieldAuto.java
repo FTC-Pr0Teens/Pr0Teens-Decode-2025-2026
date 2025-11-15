@@ -82,7 +82,7 @@ public class BlueFieldAuto extends LinearOpMode {
             double stage = 0;
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(-40 , -2, -0.39);
+                    mecanumCommand.moveToPos(-178 , 0, 0);
 
                     if (mecanumCommand.isPositionReached()) {
                         autoState = AUTO_STATE.PRELOAD_ONE;

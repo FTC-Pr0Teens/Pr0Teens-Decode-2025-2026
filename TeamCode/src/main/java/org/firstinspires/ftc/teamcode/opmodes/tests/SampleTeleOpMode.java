@@ -94,6 +94,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         // Wait for start button to be pressed
         waitForStart();
 
+
         logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         // Loop while OpMode is running
@@ -213,7 +214,8 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.addData("Pusher ON", isPusherUp);
         telemetry.addData("Pattern ", logitechsub.pattern());
         telemetry.addData("TPS: ", hw.shooter.getVelocity());
-        telemetry.addData("RPM: ", hw.shooter.getVelocity() * 60.0 / 28.0);
+        telemetry.addData("Pattern ", obelisk);
+        telemetry.addData("light:  ", spunUp);
         telemetry.addData("x ", logitechsub.targetApril());
         telemetry.update();
     }
