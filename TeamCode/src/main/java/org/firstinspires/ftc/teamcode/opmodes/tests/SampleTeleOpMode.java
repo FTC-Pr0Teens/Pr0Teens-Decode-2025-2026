@@ -80,6 +80,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw.sorter.setPosition(0);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeCommand.setMaxRPM(5000);
+        hw.light.setPosition(0);
 
         while (opModeInInit()) {
             if (gamepad1.b) {
@@ -99,7 +100,6 @@ public class SampleTeleOpMode extends LinearOpMode {
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            hw.light.setPosition(0);
             logitechsub.pattern();
             logitechsub.telemetryAprilTag(telemetry);
 
@@ -141,7 +141,6 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
             previousAState = currentAState;
 
-
             // --- Pusher pulse on Y (edge) ---
             boolean currentYState = gamepad1.y;
             if (currentYState && !previousYState) {
@@ -166,17 +165,16 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
-
-                if (isOuttakeMotorOn) {
-                    lightOn(outtakeCommand.spinup());
-
-
-                } else if (!isOuttakeMotorOn) {
-                    outtakeCommand.stopShooter();
-                    hw.light.setPosition(0);
-                }
             }
             previousXState = currentXState;
+
+            if (isOuttakeMotorOn) {
+                spunUp = outtakeCommand.spinup();
+                lightOn(spunUp);
+            } else if (!isOuttakeMotorOn) {
+                outtakeCommand.stopShooter();
+                hw.light.setPosition(0);
+            }
 
             boolean currentBState = gamepad1.b;
             if (currentBState && !previousBState) {
@@ -222,7 +220,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     public void lightOn(boolean rpmReached) {
         if (rpmReached && isOuttakeMotorOn) {
-            hw.light.setPosition(1);
+            hw.light.setPosition(0.5);
         } else {
             hw.light.setPosition(0);
         }
