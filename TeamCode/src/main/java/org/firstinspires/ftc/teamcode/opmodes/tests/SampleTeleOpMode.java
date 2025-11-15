@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsys
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
+import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
 
 @TeleOp(name = "TeleopSample", group = "TeleOp")
@@ -26,6 +27,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     private OuttakeCommand outtakeCommand;
     private LimelightSubsystem limelightsub;
     private LogitechSubsystem logitechsub;
+    private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -58,8 +60,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private static final double SORTER_THIRD_POS = 0.78;
 
     boolean spunUp;
-
+    int counter = 1;
     private String ALLIANCE = "blue";
+    private String motif;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -67,6 +70,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         limelightsub = new LimelightSubsystem(hw, telemetry);
+        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -77,14 +81,14 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeCommand.setMaxRPM(5000);
 
-        while (opModeInInit()){
-            if (gamepad1.b){
+        while (opModeInInit()) {
+            if (gamepad1.b) {
                 ALLIANCE = "red";
             }
-            if(gamepad1.x){
+            if (gamepad1.x) {
                 ALLIANCE = "blue";
             }
-            telemetry.addData("Alliance: ",ALLIANCE);
+            telemetry.addData("Alliance: ", ALLIANCE);
             telemetry.update();
         }
         // Wait for start button to be pressed
@@ -115,12 +119,12 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             processTelemetry();
 
-            if (gamepad1.start){
+            if (gamepad1.start) {
                 mecanumCommand.resetPinPointOdometry();
             }
 
             boolean currentLBumpState = gamepad1.left_bumper;
-            if (currentLBumpState && !previousLBumpState){
+            if (currentLBumpState && !previousLBumpState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 isIntakeMotorOn = !isIntakeMotorOn;
                 hw.intake.setPower(isIntakeMotorOn ? 1.0 : 0.0);
@@ -162,11 +166,11 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
 
-                if (isOuttakeMotorOn){
-                  lightOn(outtakeCommand.spinup());
+                if (isOuttakeMotorOn) {
+                    lightOn(outtakeCommand.spinup());
 
 
-                }else if(!isOuttakeMotorOn){
+                } else if (!isOuttakeMotorOn) {
                     outtakeCommand.stopShooter();
                     hw.light.setPosition(0);
                 }
@@ -179,29 +183,28 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
             previousBState = currentBState;
 
-            if (gamepad1.b && sorterTimer.milliseconds() > 800 && !isPusherUp){
+            if (gamepad1.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
                 sorterTimer.reset();
                 if (sorterpos == 0) {
                     hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
-                }
-                else if (sorterpos == 1) {
+                } else if (sorterpos == 1) {
                     hw.sorter.setPosition(SORTER_SECOND_POS);//60 degrees
-                }
-                else if (sorterpos == 2) {
+                } else if (sorterpos == 2) {
                     hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
                 }
-                sorterpos = (sorterpos+1)%3;
+                sorterpos = (sorterpos + 1) % 3;
             }
 
-            if (gamepad1.right_bumper){
-                while (Math.abs(0.0 - logitechsub.targetApril()) > 1.0){
-                    mecanumCommand.pivot(0.0 - logitechsub.targetApril());
-                }
+            if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
+                telemetry.addLine("running Sort code");
+                sorterTimer.reset();
+                sortingSubsystem.temporarySort();
             }
         }
 
     }
-    public void processTelemetry(){
+
+    public void processTelemetry() {
         //add telemetry messages here
         //telemetry.addData("resetTimer: ",  resetTimer.milliseconds());
         telemetry.addLine("---------------------------------");
@@ -214,8 +217,9 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.addData("x ", logitechsub.targetApril());
         telemetry.update();
     }
-    public void lightOn(boolean rpmReached){
-        if(rpmReached && isOuttakeMotorOn){
+
+    public void lightOn(boolean rpmReached) {
+        if (rpmReached && isOuttakeMotorOn) {
             hw.light.setPosition(1);
         } else {
             hw.light.setPosition(0);
