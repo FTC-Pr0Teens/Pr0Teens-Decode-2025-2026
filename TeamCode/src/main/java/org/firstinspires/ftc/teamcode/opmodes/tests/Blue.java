@@ -83,17 +83,12 @@ public class Blue extends LinearOpMode {
             mecanumCommand.motorProcess();
             mecanumCommand.processPIDUsingPinpoint();
             mecanumCommand.processOdometry ();
-            if(mecanumCommand.moveToPos(0 , -25, 0)){
-                mecanumCommand.stop();
-            }
-
 
             switch (autoState) {
                 case MOVEPRELOAD:
 
                     mecanumCommand.moveToPos(-178 , 0, 0);
-                    if (mecanumCommand.isPositionreached()) {
-                        mecanumCommand.resetPinPointOdometry();
+                    if (mecanumCommand.isPositionReached()) {
                         mecanumCommand.stop();
 
                             autoState = AUTO_STATE.TURNPRELOAD;
@@ -101,10 +96,10 @@ public class Blue extends LinearOpMode {
                     }
                     break;
                 case TURNPRELOAD:
-               mecanumCommand.moveToPos(0, 0, -0.65);
-                    if (mecanumCommand.isPositionreached()) {
+               mecanumCommand.moveToPos(-178, 0, -0.65);
+                    if (mecanumCommand.isPositionReached()) {
 
-//                        autoState = AUTO_STATE.PRELOAD_ONE;
+                        autoState = AUTO_STATE.PRELOAD_ONE;
 
                     }
                     break;
@@ -198,7 +193,7 @@ public class Blue extends LinearOpMode {
                     hw.shooter.setPower(0.0);
                     mecanumCommand.moveToPos(-100, 0, 0);// set target
 
-                    if (!mecanumCommand.isPositionreached()) {
+                    if (!mecanumCommand.isPositionReached()) {
                         autoState = AUTO_STATE.TURN_ONE;
                     }
                     break;
@@ -206,9 +201,9 @@ public class Blue extends LinearOpMode {
                 case TURN_ONE:
                     mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.6);
 
-                    if (!mecanumCommand.isPositionreached()) {
+                    if (!mecanumCommand.isPositionReached()) {
                         sleep(200);
-                        autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
+//                        autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
                     }
 
 
