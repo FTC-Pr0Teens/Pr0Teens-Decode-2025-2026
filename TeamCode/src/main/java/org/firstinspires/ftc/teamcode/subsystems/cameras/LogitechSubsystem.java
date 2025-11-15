@@ -42,7 +42,6 @@ public class LogitechSubsystem {
             targetid = 24;
         }
 
-
         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawTagOutline(true)
                 .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
@@ -68,10 +67,9 @@ public class LogitechSubsystem {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null && (detection.id == 21 || detection.id == 22 || detection.id == 23)) {
-                obelisk = String.format(detection.metadata.name, 0, 3);
+                obelisk = detection.metadata.name.substring(8, 11);
             }
         }
-
         return obelisk;
     }
 
