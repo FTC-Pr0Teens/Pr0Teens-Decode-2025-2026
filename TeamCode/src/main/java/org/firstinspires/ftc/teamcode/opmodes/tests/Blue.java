@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 public class Blue extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private TurretSubsystem turretSubsystem;
-//    private IntakeCommand intakeCommand;
+    //    private IntakeCommand intakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
 
     enum AUTO_STATE {
@@ -75,28 +75,30 @@ public class Blue extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
         boolean paused = false;
         boolean submersibleTargetSet = false;
-
+        boolean motorflag = true;
         waitForStart();
         pusherTimer.reset();
         while (opModeIsActive()) {
             telemetry.addLine("for sydney wong");
-            mecanumCommand.motorProcess();
-            mecanumCommand.processPIDUsingPinpoint();
-            mecanumCommand.processOdometry ();
+            if (motorflag){
+                mecanumCommand.motorProcess();
+                mecanumCommand.processPIDUsingPinpoint();
+            } else {
+                mecanumCommand.stop();
+            }
+
+            mecanumCommand.processOdometry();
 
             switch (autoState) {
                 case MOVEPRELOAD:
-
-                    mecanumCommand.moveToPos(-178 , 0, 0);
+                    mecanumCommand.moveToPos(-178, 0, 0);
                     if (mecanumCommand.isPositionReached()) {
                         mecanumCommand.stop();
-
-                            autoState = AUTO_STATE.TURNPRELOAD;
-
+                        autoState = AUTO_STATE.TURNPRELOAD;
                     }
                     break;
                 case TURNPRELOAD:
-               mecanumCommand.moveToPos(-178, 0, -0.65);
+                    mecanumCommand.moveToPos(-178, 0, -0.65);
                     if (mecanumCommand.isPositionReached()) {
 
                         autoState = AUTO_STATE.PRELOAD_ONE;
@@ -109,19 +111,19 @@ public class Blue extends LinearOpMode {
                     hw.shooter.setPower(outtakeSubsystem.outputPositional(4200, hw.shooter.getVelocity()));
                     hw.intake.setPower(0.7);
 
-                        if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-                            hw.pusher.setPosition(PUSHER_UP);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-                            hw.pusher.setPosition(PUSHER_DOWN);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-                            hw.sorter.setPosition(SORTER_SECOND_POS);
-                            stage = 0;
-                            autoState = AUTO_STATE.PRELOAD_TWO;
-                            pusherTimer.reset();
+                    if (stage == 0 && pusherTimer.milliseconds() >= 1000) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
+                        hw.sorter.setPosition(SORTER_SECOND_POS);
+                        stage = 0;
+                        autoState = AUTO_STATE.PRELOAD_TWO;
+                        pusherTimer.reset();
 
                     }
                     break;
@@ -131,20 +133,20 @@ public class Blue extends LinearOpMode {
                     hw.shooter.setPower(outtakeSubsystem.outputPositional(4200, hw.shooter.getVelocity()));
                     hw.intake.setPower(0.7);
 
-                        if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-                            hw.pusher.setPosition(PUSHER_UP);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-                            hw.pusher.setPosition(PUSHER_DOWN);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-                            hw.sorter.setPosition(SORTER_THIRD_POS);
-                            stage = 0;
-                            autoState = AUTO_STATE.PRELOAD_THREE;
-                            pusherTimer.reset();
-                        }
+                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
+                        hw.sorter.setPosition(SORTER_THIRD_POS);
+                        stage = 0;
+                        autoState = AUTO_STATE.PRELOAD_THREE;
+                        pusherTimer.reset();
+                    }
 
                     break;
                 case PRELOAD_THREE:
@@ -152,19 +154,19 @@ public class Blue extends LinearOpMode {
                     hw.intake.setPower(0.7);
 
 
-                        if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-                            hw.pusher.setPosition(PUSHER_UP);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-                            hw.pusher.setPosition(PUSHER_DOWN);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-                            hw.sorter.setPosition(SORTER_FIRST_POS);
-                            stage = 0;
-                            autoState = AUTO_STATE.PRELOAD_EMPTY;
-                            pusherTimer.reset();
+                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
+                        hw.sorter.setPosition(SORTER_FIRST_POS);
+                        stage = 0;
+                        autoState = AUTO_STATE.PRELOAD_EMPTY;
+                        pusherTimer.reset();
 
                     }
                     break;
@@ -173,19 +175,19 @@ public class Blue extends LinearOpMode {
                     hw.shooter.setPower(outtakeSubsystem.outputPositional(4700, hw.shooter.getVelocity()));
 
 
-                        if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-                            hw.pusher.setPosition(PUSHER_UP);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-                            hw.pusher.setPosition(PUSHER_DOWN);
-                            stage++;
-                            pusherTimer.reset();
-                        } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-                            hw.sorter.setPosition(SORTER_FIRST_POS);
-                            stage = 0;
-                            autoState = AUTO_STATE.INTAKE_ONE;
-                            pusherTimer.reset();
+                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
+                        hw.sorter.setPosition(SORTER_FIRST_POS);
+                        stage = 0;
+                        autoState = AUTO_STATE.INTAKE_ONE;
+                        pusherTimer.reset();
 
                     }
                     break;
@@ -249,9 +251,9 @@ public class Blue extends LinearOpMode {
         telemetry.addData("x: ", mecanumCommand.getOdoX());
         telemetry.addData("y: ", mecanumCommand.getOdoY());
         telemetry.addData("Theta: ", mecanumCommand.getOdoHeading());
+
         telemetry.update();
     }
-
 
 
 }

@@ -56,7 +56,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                     }
                     break;
 
-                default:
+
 //                case SUB_PICKUP:
 //                    mecanumCommand.moveGlobalPartialPinPoint(true, 10, 15,0.8);
 //                    autoState = AUTO_STATE.FINISH;
@@ -65,6 +65,7 @@ public class SampleAutoOpMode extends LinearOpMode {
                 case FINISH:
                     stopRobot();
                     break;
+                default:
             }
         }
 

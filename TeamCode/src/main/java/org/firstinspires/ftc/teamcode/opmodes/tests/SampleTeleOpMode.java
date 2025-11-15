@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
-import static org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem.obelisk;
+//import static org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem.obelisk;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
-import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
 
 @TeleOp(name = "TeleopSample", group = "TeleOp")
@@ -26,8 +26,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
     private LimelightSubsystem limelightsub;
-    private LogitechSubsystem logitechsub;
-    private SortingSubsystem sortingSubsystem;
+   // private LogitechSubsystem logitechsub;
+   // private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -70,7 +70,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         limelightsub = new LimelightSubsystem(hw, telemetry);
-        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+       // sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -96,12 +96,12 @@ public class SampleTeleOpMode extends LinearOpMode {
         waitForStart();
 
 
-        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
+        //logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            logitechsub.pattern();
-            logitechsub.telemetryAprilTag(telemetry);
+            //logitechsub.pattern();
+           // logitechsub.telemetryAprilTag(telemetry);
 
 //            if (obelisk == "PPG"){
 //
@@ -197,7 +197,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
                 telemetry.addLine("running Sort code");
                 sorterTimer.reset();
-                sortingSubsystem.temporarySort();
+              //  sortingSubsystem.temporarySort();
             }
         }
 
@@ -210,11 +210,11 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.addData("X", mecanumCommand.getX());
         telemetry.addData("Y", mecanumCommand.getY());
         telemetry.addData("Pusher ON", isPusherUp);
-        telemetry.addData("Pattern ", logitechsub.pattern());
+        //telemetry.addData("Pattern ", logitechsub.pattern());
         telemetry.addData("TPS: ", hw.shooter.getVelocity());
-        telemetry.addData("Pattern ", obelisk);
+        //telemetry.addData("Pattern ", obelisk);
         telemetry.addData("light:  ", spunUp);
-        telemetry.addData("x ", logitechsub.targetApril());
+        //telemetry.addData("x ", logitechsub.targetApril());
         telemetry.update();
     }
 

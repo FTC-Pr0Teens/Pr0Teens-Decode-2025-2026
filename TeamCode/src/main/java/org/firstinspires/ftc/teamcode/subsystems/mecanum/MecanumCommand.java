@@ -164,7 +164,6 @@ public class MecanumCommand {
     }
 
     public void motorProcess() {
-
         mecanumSubsystem.motorProcessNoEncoder();
     }
 
