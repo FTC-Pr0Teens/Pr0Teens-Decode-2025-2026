@@ -83,7 +83,7 @@ public class MecanumCommand {
     }
 
     public boolean moveToPos(double x, double y, double theta) {
-        setFinalPosition(0.67, x, y, theta);
+        setFinalPosition(0.3, x, y, theta);
         return isPositionReached();
     }
 

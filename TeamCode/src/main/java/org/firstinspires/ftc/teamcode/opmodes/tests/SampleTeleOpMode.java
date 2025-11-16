@@ -215,6 +215,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         //telemetry.addData("Pattern ", obelisk);
         telemetry.addData("light:  ", spunUp);
         //telemetry.addData("x ", logitechsub.targetApril());
+        telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
         telemetry.update();
     }
 

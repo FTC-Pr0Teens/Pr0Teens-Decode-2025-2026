@@ -226,6 +226,6 @@ public class PinPointOdometrySubsystem {
      * @return current heading
      */
     public double getHeading(){
-        return pinpointDriver.getHeading();
+        return -heading;
     }
 }
