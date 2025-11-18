@@ -102,7 +102,7 @@ public class Blue extends LinearOpMode {
 
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(-60, 0, 0);
+                    mecanumCommand.moveToPos(10, 0, 0);
                     if (mecanumCommand.isPositionReached()) {
                         mecanumCommand.stop();
 //                        autoState = AUTO_STATE.TURNPRELOAD;
