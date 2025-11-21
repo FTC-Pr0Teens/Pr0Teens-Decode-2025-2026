@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 //import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
@@ -25,7 +25,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
-    private LimelightSubsystem limelightsub;
+//    private LimelightSubsystem limelightsub;
    // private LogitechSubsystem logitechsub;
    // private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
@@ -69,7 +69,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
-        limelightsub = new LimelightSubsystem(hw, telemetry);
+//        limelightsub = new LimelightSubsystem(hw, telemetry);
        // sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -178,7 +178,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             boolean currentBState = gamepad1.b;
             if (currentBState && !previousBState) {
-                limelightsub.ballPosition(telemetry, mecanumCommand);
+//                limelightsub.ballPosition(telemetry, mecanumCommand);
             }
             previousBState = currentBState;
 
