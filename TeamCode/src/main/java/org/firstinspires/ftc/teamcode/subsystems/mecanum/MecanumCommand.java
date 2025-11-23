@@ -56,7 +56,7 @@ public class MecanumCommand {
 
         ex = mecanumSubsystem.globalXControllerOutputPositional(xFinal, pinPointOdoSubsystem.getX());
         ey = mecanumSubsystem.globalYControllerOutputPositional(yFinal, pinPointOdoSubsystem.getY());
-        etheta = mecanumSubsystem.globalThetaControllerOutputPositional(thetaFinal, pinPointOdoSubsystem.getHeading());
+        etheta = -mecanumSubsystem.globalThetaControllerOutputPositional(thetaFinal, pinPointOdoSubsystem.getHeading());
 
 
         double max = Math.max(Math.abs(ex), Math.abs(ey));
@@ -83,7 +83,7 @@ public class MecanumCommand {
     }
 
     public boolean moveToPos(double x, double y, double theta) {
-        setFinalPosition(0.67, x, y, theta);
+        setFinalPosition(0.4, x, y, theta);
         return isPositionReached();
     }
 
@@ -164,7 +164,6 @@ public class MecanumCommand {
     }
 
     public void motorProcess() {
-
         mecanumSubsystem.motorProcessNoEncoder();
     }
 

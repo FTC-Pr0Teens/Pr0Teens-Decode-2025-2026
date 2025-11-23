@@ -15,7 +15,7 @@ public class OuttakeCommand {
 
     private double targetRPM;
 
-    double DEFAULT_RPM = 5000;
+    double DEFAULT_RPM = 4670;
 
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
@@ -23,6 +23,7 @@ public class OuttakeCommand {
         this.shooter = hw.shooter;
         this.targetRPM = DEFAULT_RPM;
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
     }
 
     //returns whether or not we have reached the correctRPM

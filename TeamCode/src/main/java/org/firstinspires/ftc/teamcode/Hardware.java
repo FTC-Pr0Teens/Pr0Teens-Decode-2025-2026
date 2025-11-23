@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 
+import java.security.SecurityPermission;
+
 public class Hardware {
 
     //singleton
@@ -24,6 +26,7 @@ public class Hardware {
     public final DcMotorEx intake;
     public final Servo sorter;
     public final Servo pusher;
+    public final Servo pusher1;
     public final CRServo turret;
     public final DcMotorEx lf;
     public final DcMotorEx rf;
@@ -46,7 +49,8 @@ public class Hardware {
         this.rb = hwMap.get(DcMotorEx.class, Specifications.BKRT_MOTOR);//rightback
 
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
-        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+        this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
+//        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
         this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
 
 
