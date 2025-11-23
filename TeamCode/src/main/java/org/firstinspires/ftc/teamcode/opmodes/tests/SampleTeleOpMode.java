@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
@@ -33,7 +34,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
     private SortingSubsystem sortingSubsystem;
-//        private LimelightSubsystem limelightsub;
+        private LimelightSubsystem limelightsub;
      private LogitechSubsystem logitechsub;
 //     private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
@@ -260,6 +261,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         //telemetry.addData("Pattern ", logitechsub.pattern());
         telemetry.addData("TPS: ", hw.shooter.getVelocity());
         //telemetry.addData("Pattern ", obelisk);
+        telemetry.addData("color:  ", limelightsub.ballColor(telemetry));
         telemetry.addData("light:  ", spunUp);
         //telemetry.addData("x ", logitechsub.targetApril());
         telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
