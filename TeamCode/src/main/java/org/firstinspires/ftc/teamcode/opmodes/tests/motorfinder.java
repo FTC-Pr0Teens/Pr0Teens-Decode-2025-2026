@@ -40,17 +40,17 @@ public class motorfinder extends LinearOpMode {
                 if (gamepad1.b) {
                     hw.lb.setPower(0.5); //
                 } else {
-                    hw.lf.setPower(0);
+                    hw.lb.setPower(0);
                 }
                 if (gamepad1.x) {
                     hw.rf.setPower(0.5); //
                 } else {
-                    hw.lf.setPower(0);
+                    hw.rf.setPower(0);
                 }
                 if (gamepad1.y) {
                     hw.rb.setPower(0.5); //
                 } else {
-                    hw.lf.setPower(0);
+                    hw.rb.setPower(0);
                 }
             }
         }
