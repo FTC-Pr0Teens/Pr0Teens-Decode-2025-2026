@@ -68,8 +68,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private final ElapsedTime sorterTimer = new ElapsedTime();
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
-    private static final double SORTER_SECOND_POS = 0.38;
-    private static final double SORTER_THIRD_POS = 0.78;
+    private static final double SORTER_SECOND_POS = 0.4;
+    private static final double SORTER_THIRD_POS = 0.85;
 
     private TelemetryPacket packet;
 
