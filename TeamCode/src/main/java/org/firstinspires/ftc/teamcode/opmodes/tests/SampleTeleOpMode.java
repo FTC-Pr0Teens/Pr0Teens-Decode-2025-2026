@@ -159,8 +159,8 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (currentYState && !previousYState) {
                 // Start pulse only if not already pulsing
                 if (!isPusherUp) {
-                    hw.pusher.setPosition(0.35);
-                    hw.pusher1.setPosition(0.15);
+                    hw.pusher.setPosition(0.39);
+                    hw.pusher1.setPosition(0.19);
                     pusherTimer.reset();
                     isPusherUp = true;
                 }

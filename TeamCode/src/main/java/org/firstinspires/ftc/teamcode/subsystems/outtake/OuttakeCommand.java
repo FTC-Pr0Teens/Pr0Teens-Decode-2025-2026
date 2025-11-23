@@ -15,7 +15,7 @@ public class OuttakeCommand {
 
     private double targetRPM;
 
-    double DEFAULT_RPM = 4670;
+    double DEFAULT_RPM = 2800;
 
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
