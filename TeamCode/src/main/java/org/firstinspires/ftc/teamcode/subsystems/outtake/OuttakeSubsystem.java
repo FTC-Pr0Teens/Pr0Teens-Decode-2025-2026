@@ -77,6 +77,7 @@ public class OuttakeSubsystem {
         return (30 * v0) / (Math.PI * radius);
     }
 
+
     public double outputPositional(double targetRPM, double currentRPM) {
         error = targetRPM - currentRPM;
 
