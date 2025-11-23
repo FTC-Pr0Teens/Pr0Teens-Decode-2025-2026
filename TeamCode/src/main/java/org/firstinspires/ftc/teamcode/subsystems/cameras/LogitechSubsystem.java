@@ -31,6 +31,8 @@ public class LogitechSubsystem {
 
     private VisionPortal visionPortal;
     private static double aprilx;
+    private static double aprily;
+
 
     public LogitechSubsystem(Hardware hw, String alliance) {
         this.hw = hw;
@@ -93,6 +95,16 @@ public class LogitechSubsystem {
             }
         }
         return aprilx;
+    }
+
+    public double distance() {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null && detection.id == targetid) {
+                aprilx = detection.ftcPose.y;
+            }
+        }
+        return aprily;
     }
 
     public void telemetryAprilTag(Telemetry telemetry) {
