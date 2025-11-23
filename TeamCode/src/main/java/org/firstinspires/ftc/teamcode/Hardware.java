@@ -22,7 +22,6 @@ public class Hardware {
     private static Hardware instance;
 
     // Motors
-//  public Limelight3A limelight;
     public final DcMotorEx intake;
     public final Servo sorter;
     public final Servo pusher;
@@ -50,7 +49,7 @@ public class Hardware {
 
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
         this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
-//        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
         this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);

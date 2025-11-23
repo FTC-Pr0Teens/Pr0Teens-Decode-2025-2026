@@ -46,7 +46,7 @@ public class Specifications {
     public static final String INTAKE = "intake";
     public static final String SHOOTER = "shooter";
 
-//    public static final String LIME_LIGHT = "lime";
+    public static final String LIME_LIGHT = "lime";
 
     public static final String LOGITECH = "logi";
     public static final String PUSHER1 = "pusher1";

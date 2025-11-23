@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 //import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeCommand;
+import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
@@ -21,7 +23,8 @@ public class Blue extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private TurretSubsystem turretSubsystem;
     //    private IntakeCommand intakeCommand;
-    private OuttakeSubsystem outtakeSubsystem;
+    private LogitechSubsystem logitechSubsystem;
+    private OuttakeCommand outtakeCommand;
 
     enum AUTO_STATE {
         MOVEPRELOAD,
@@ -38,9 +41,11 @@ public class Blue extends LinearOpMode {
     }
 
     AUTO_STATE autoState = AUTO_STATE.MOVEPRELOAD;
-    private static final double PUSHER_UP = 0.18;
-    private static final double PUSHER_DOWN = 0;
-    private static final long PUSHER_TIME = 500;
+    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_DOWN = 0.0;
+    private static final double PUSHER_UP1 = 0.19;
+    private static final double PUSHER_DOWN1 = 0;
+    private static final long PUSHER_TIME = 300;
     private final ElapsedTime pusherTimer = new ElapsedTime();
 
 
@@ -56,8 +61,8 @@ public class Blue extends LinearOpMode {
     public static double kitheta = 40000;
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
-    private static final double SORTER_SECOND_POS = 0.38;
-    private static final double SORTER_THIRD_POS = 0.78;
+    private static final double SORTER_SECOND_POS = 0.4;
+    private static final double SORTER_THIRD_POS = 0.85;
 
     double stage = 0;
 
@@ -65,11 +70,14 @@ public class Blue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Hardware hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
+        logitechSubsystem = new LogitechSubsystem(hw, "blue");
 //        intakeCommand = new IntakeCommand(hw);
         turretSubsystem = new TurretSubsystem(hw);
-        outtakeSubsystem = new OuttakeSubsystem(hw);
+        outtakeCommand = new OuttakeCommand(hw);
+
         hw.sorter.setPosition(SORTER_FIRST_POS);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hw.pusher1.setDirection(Servo.Direction.REVERSE);
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -89,6 +97,16 @@ public class Blue extends LinearOpMode {
 
         double power = kp * error + kf * target;
 
+
+        logitechSubsystem.pattern();
+
+        hw.pusher.setPosition(0);
+        hw.pusher1.setPosition(0);
+        hw.sorter.setPosition(0);
+        hw.light.setPosition(0);
+        hw.sorter.setPosition(SORTER_FIRST_POS);
+
+
         waitForStart();
         pusherTimer.reset();
         while (opModeIsActive()) {
@@ -99,190 +117,143 @@ public class Blue extends LinearOpMode {
 
 
             mecanumCommand.processOdometry();
-
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(30, 0, 0);
-                    if (mecanumCommand.isPositionReached()) {
-                        mecanumCommand.stop();
-                        autoState = AUTO_STATE.TURNPRELOAD;
-                    }
-                    break;
-                case TURNPRELOAD:
-                    mecanumCommand.moveToPos(30, 0, -Math.PI / 2);
-                    if (mecanumCommand.isPositionReached()) {
-                        mecanumCommand.stop();
 
+
+                    mecanumCommand.moveToPos(-50, 0, 0);
+                    if (mecanumCommand.isPositionReached()) {
+                        mecanumCommand.stop();
                         autoState = AUTO_STATE.PRELOAD_ONE;
 
                     }
                     break;
-
-
                 case PRELOAD_ONE:
-                    mecanumCommand.moveToPos(30, 40, -Math.PI / 2);
-
-
-                    if (mecanumCommand.isPositionReached()) {
-                        mecanumCommand.stop();
+                    hw.intake.setPower(1.0);
+                    hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
+                    outtakeCommand.spinup();
+                    if (stage == 0) {
+                        pusherTimer.reset();
+                        stage++;
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 600) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        hw.pusher1.setPosition(PUSHER_UP1);
+                        pusherTimer.reset();
+                        stage++;
+                    } else if ( stage == 2 && pusherTimer.milliseconds() >= 500) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        hw.pusher1.setPosition(PUSHER_DOWN1);
+                        pusherTimer.reset();
+                        stage++;
+                    }else if (stage == 3 && pusherTimer.milliseconds() >= 400) {
+                        hw.sorter.setPosition(SORTER_SECOND_POS);
                         autoState = AUTO_STATE.PRELOAD_TWO;
-
-
+                        pusherTimer.reset();
+                        stage = 0;
                     }
-//                    hw.shooter.setVelocity( 2500 * 28.0 / 60.0);
-//                    hw.shooter.setPower(power);
-//                    hw.shooter.setPower(outtakeSubsystem.outputPositional(3000, hw.shooter.getVelocity()));
-//                    hw.intake.setPower(0.7);
-//
-//                    if (stage == 0 && pusherTimer.milliseconds() >= 1000) {
-//                        hw.pusher.setPosition(PUSHER_UP);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-//                        hw.pusher.setPosition(PUSHER_DOWN);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-//                        hw.sorter.setPosition(SORTER_SECOND_POS);
-//                        stage = 0;
 
-//                        pusherTimer.reset();
-//
-//                    }
+
                     break;
 
-
                 case PRELOAD_TWO:
-                    mecanumCommand.moveToPos(10, 0, -Math.PI / 2);
-                    if (mecanumCommand.isPositionReached()) {
-                        mecanumCommand.stop();
+                    hw.intake.setPower(1.0);
+
+                    hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
+                    outtakeCommand.spinup();
+
+                    if (stage == 0 && pusherTimer.milliseconds() >= 600) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        hw.pusher1.setPosition(PUSHER_UP1);
+                        stage++;
+                        pusherTimer.reset();
+                    } else if (stage == 1 && pusherTimer.milliseconds() >= 300) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        hw.pusher1.setPosition(PUSHER_DOWN1);
+
+                        stage++;
+                        pusherTimer.reset();
+                    }else if (stage == 2 && pusherTimer.milliseconds() >= 400) {
+                        pusherTimer.reset();
+                        hw.sorter.setPosition(SORTER_THIRD_POS);
                         autoState = AUTO_STATE.PRELOAD_THREE;
-
-
+                        stage = 0;
                     }
 
-//                    hw.shooter.setVelocity( 2500 * 28.0 / 60.0);
-//                    hw.shooter.setPower(power);
-//                    hw.shooter.setPower(outtakeSubsystem.outputPositional(3000, hw.shooter.getVelocity()));
-//                    hw.intake.setPower(0.7);
-//
-//                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-//                        hw.pusher.setPosition(PUSHER_UP);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-//                        hw.pusher.setPosition(PUSHER_DOWN);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-//                        hw.sorter.setPosition(SORTER_THIRD_POS);
-//                        stage = 0;
-
-//                        pusherTimer.reset();
-//                    }
 
                     break;
                 case PRELOAD_THREE:
-                    mecanumCommand.moveToPos(20, 0, 0);
+                    hw.intake.setPower(1.0);
+
+
+                    hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
+                    outtakeCommand.spinup();
+
+                    if (stage == 0 && pusherTimer.milliseconds() >= 600) {
+                        hw.pusher.setPosition(PUSHER_UP);
+                        hw.pusher1.setPosition(PUSHER_UP1);
+
+                        stage++;
+                        pusherTimer.reset();
+                    } else if ( stage == 1 && pusherTimer.milliseconds() >= 300) {
+                        hw.pusher.setPosition(PUSHER_DOWN);
+                        hw.pusher1.setPosition(PUSHER_DOWN1);
+
+                        stage++;
+                        pusherTimer.reset();
+                    }else if (stage == 2 && pusherTimer.milliseconds() >= 400) {
+                        hw.sorter.setPosition(SORTER_FIRST_POS);
+                    }
+                    autoState = AUTO_STATE.INTAKE_ONE;
+                    break;
+
+
+                case INTAKE_ONE:
+                    hw.intake.setPower(1.0);
+                    hw.shooter.setPower(0);
+
+                    if (stage == 0) {
+                        mecanumCommand.moveToPos(-120, -40, -0.65);
+                        if (mecanumCommand.isPositionReached()) {
+                            mecanumCommand.stop();
+
+
+                        }
+                        stage++;
+                    } else if ( stage == 1) {
+                        mecanumCommand.moveToPos(-120, 70, -0.65);
+                        if (mecanumCommand.isPositionReached()) {
+                            hw.sorter.setPosition(SORTER_SECOND_POS);
+                            mecanumCommand.stop();
+
+
+                        }
+                        stage++;
+                        pusherTimer.reset();
+                    }else if (stage == 2 && pusherTimer.milliseconds() >= 400) {
+                        mecanumCommand.moveToPos(-120, 85, -0.65);
+                        if (mecanumCommand.isPositionReached()) {
+                            hw.sorter.setPosition(SORTER_THIRD_POS);
+                            mecanumCommand.stop();
+                            autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
+                        }
+
+                    }
+
+                    break;
+                case SUBMERSIBLE_PICKUP:
+                    mecanumCommand.moveToPos(-50, 0, 0);
+                    hw.sorter.setPosition(SORTER_FIRST_POS);
                     if (mecanumCommand.isPositionReached()) {
                         mecanumCommand.stop();
+                        autoState = AUTO_STATE.PRELOAD_ONE;
 
                     }
 
-//                    hw.shooter.setVelocity( 2500 * 28.0 / 60.0);
-//                    hw.shooter.setPower(power);
-//                    hw.shooter.setPower(outtakeSubsystem.outputPositional(3000, hw.shooter.getVelocity()));
-//                    hw.intake.setPower(0.7);
-//
-//
-//                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-//                        hw.pusher.setPosition(PUSHER_UP);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-//                        hw.pusher.setPosition(PUSHER_DOWN);
-//                        stage++;
-//                        pusherTimer.reset();
-//                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-//                        hw.sorter.setPosition(SORTER_FIRST_POS);
-//                        stage = 0;
-//                        autoState = AUTO_STATE.PRELOAD_EMPTY;
-//                        pusherTimer.reset();
-//
-//                    }
-                    break;
-                case PRELOAD_EMPTY:
-                    hw.intake.setPower(0.7);
-//                    hw.shooter.setVelocity( 2500 * 28.0 / 60.0);
-                    hw.shooter.setPower(power);
-//                    hw.shooter.setPower(outtakeSubsystem.outputPositional(3000, hw.shooter.getVelocity()));
 
 
-                    if (stage == 0 && pusherTimer.milliseconds() >= 700) {
-                        hw.pusher.setPosition(PUSHER_UP);
-                        stage++;
-                        pusherTimer.reset();
-                    } else if (stage == 1 && pusherTimer.milliseconds() >= 1000) {
-                        hw.pusher.setPosition(PUSHER_DOWN);
-                        stage++;
-                        pusherTimer.reset();
-                    } else if (stage == 2 && pusherTimer.milliseconds() >= 2000) {
-                        hw.sorter.setPosition(SORTER_FIRST_POS);
-                        stage = 0;
-                        autoState = AUTO_STATE.INTAKE_ONE;
-                        pusherTimer.reset();
-
-                    }
-                    break;
-                case INTAKE_ONE:
-                    hw.shooter.setPower(0.0);
-                    mecanumCommand.moveToPos(-100, 0, 0);// set target
-
-                    if (!mecanumCommand.isPositionReached()) {
-                        autoState = AUTO_STATE.TURN_ONE;
-                    }
-                    break;
-
-                case TURN_ONE:
-                    mecanumCommand.moveToPos(mecanumCommand.getOdoX(), mecanumCommand.getOdoY(), 1.6);
-
-                    if (!mecanumCommand.isPositionReached()) {
-                        sleep(200);
-//                        autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
-                    }
-
-
-                    break;
-
-
-                case SUBMERSIBLE_PICKUP:
-                    double targetY = -85;
-                    double targetHeading = 1.62;
-                    double tolerance = 0.5;
-
-
-                    mecanumCommand.moveToPos(120, targetY, targetHeading);
-
-
-                    if (Math.abs(mecanumCommand.getOdoY() - targetY) < tolerance) {
-                        mecanumCommand.stop();
-                        autoState = AUTO_STATE.PICKUP_FIRST;
-                    }
-                    break;
-
-
-                case PICKUP_FIRST:
-                    mecanumCommand.moveToPos(0, 0, 0);
-                    mecanumCommand.stop();
-
-                    mecanumCommand.moveToPos(0, 0, 0);
-
-
-                    break;
                 default:
                     mecanumCommand.stop();
                     break;
-
 
             }
             updateTelemetry();
@@ -294,12 +265,14 @@ public class Blue extends LinearOpMode {
         telemetry.addData("x: ", mecanumCommand.getOdoX());
         telemetry.addData("y: ", mecanumCommand.getOdoY());
         telemetry.addData("Theta: ", mecanumCommand.getOdoHeading());
+        telemetry.addData("state: ", autoState);
 
         telemetry.update();
     }
-
-
 }
+
+
+
 
 
 

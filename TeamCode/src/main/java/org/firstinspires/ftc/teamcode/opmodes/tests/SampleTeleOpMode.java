@@ -85,7 +85,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         outtakeSubsystem = new OuttakeSubsystem(hw);
-//        limelightsub = new LimelightSubsystem(hw, telemetry);
+        limelightsub = new LimelightSubsystem(hw, telemetry);
         sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -116,7 +116,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         waitForStart();
 
 
-        //logitechsub = new LogitechSubsystem(hw, ALLIANCE);
+        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
