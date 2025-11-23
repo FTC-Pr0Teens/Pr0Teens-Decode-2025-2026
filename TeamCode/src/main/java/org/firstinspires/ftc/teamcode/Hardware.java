@@ -53,14 +53,12 @@ public class Hardware {
 //        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
         this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
 
-
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.light = hwMap.get(Servo.class, Specifications.LIGHT);
 
-//
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
     }

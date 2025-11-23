@@ -30,9 +30,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
-    //    private LimelightSubsystem limelightsub;
-    // private LogitechSubsystem logitechsub;
-    // private SortingSubsystem sortingSubsystem;
+//        private LimelightSubsystem limelightsub;
+//     private LogitechSubsystem logitechsub;
+//     private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -102,6 +102,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             hw.pusher1.setPosition(0);
             hw.sorter.setPosition(0);
             hw.light.setPosition(0);
+
             telemetry.addData("Alliance: ", ALLIANCE);
             telemetry.update();
         }
@@ -224,7 +225,6 @@ public class SampleTeleOpMode extends LinearOpMode {
 
         }
 
-
     }
 
     public void processTelemetry() {
@@ -245,7 +245,6 @@ public class SampleTeleOpMode extends LinearOpMode {
         packet.put("ticks:  ", hw.shooter.getVelocity());
 
         telemetry.update();
-
     }
 
     public void lightOn(boolean rpmReached) {

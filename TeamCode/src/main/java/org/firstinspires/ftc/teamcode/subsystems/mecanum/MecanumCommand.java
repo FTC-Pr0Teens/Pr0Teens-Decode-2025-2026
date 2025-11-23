@@ -93,6 +93,12 @@ public class MecanumCommand {
         hw.rb.setPower(-power);
         hw.rf.setPower(-power);
     }
+    public void goForward (double power){
+        hw.lf.setPower(power);
+        hw.lb.setPower(power);
+        hw.rb.setPower(-power);
+        hw.rf.setPower(-power);
+    }
 
     public void setFinalPosition(double velocity, double x, double y, double theta) {
         this.xFinal = x;

@@ -17,6 +17,10 @@ public class OuttakeCommand {
 
     double DEFAULT_RPM = 4670;
 
+    double PPR_of_6000_motor = 28.0;
+
+    double seconds_In_A_Minute = 60.0;
+
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
         this.outtakeSubsystem = new OuttakeSubsystem(hw);
@@ -27,17 +31,15 @@ public class OuttakeCommand {
     }
 
     //returns whether or not we have reached the correctRPM
-    public boolean isRPMReached(double currentRPM) {
+    public boolean isRPMReached() {
+        double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM - currentRPM) < 200;
     }
 
     public boolean spinup(){
-        double currentRPM = hw.shooter.getVelocity() * 60.0 / 28.0;
-        double targetTPS = targetRPM * 28.0 / 60.0;
-
+        double targetTPS = targetRPM * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
-
-        return isRPMReached(currentRPM);
+        return isRPMReached();
     }
 
     public void stopShooter(){
