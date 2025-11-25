@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsys
 //import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -33,7 +33,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
-    private SortingSubsystem sortingSubsystem;
+//    private SortingSubsystem sortingSubsystem;
         private LimelightSubsystem limelightsub;
      private LogitechSubsystem logitechsub;
 //     private SortingSubsystem sortingSubsystem;
@@ -68,8 +68,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private final ElapsedTime sorterTimer = new ElapsedTime();
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
-    private static final double SORTER_SECOND_POS = 0.4;
-    private static final double SORTER_THIRD_POS = 0.85;
+    private static final double SORTER_SECOND_POS = 0.45;
+    private static final double SORTER_THIRD_POS = 0.88;
 
     private TelemetryPacket packet;
 
@@ -86,14 +86,15 @@ public class SampleTeleOpMode extends LinearOpMode {
         outtakeCommand = new OuttakeCommand(hw);
         outtakeSubsystem = new OuttakeSubsystem(hw);
         limelightsub = new LimelightSubsystem(hw, telemetry);
-        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+//        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
         resetTimer = new ElapsedTime();
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeCommand.setMaxRPM(5000);
+        outtakeCommand.setMaxRPM(6000);
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 
@@ -115,12 +116,9 @@ public class SampleTeleOpMode extends LinearOpMode {
         // Wait for start button to be pressed
         waitForStart();
 
-
-        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
-
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            sortingSubsystem.setMotif(logitechsub.pattern());
+//            sortingSubsystem.setMotif(logitechsub.pattern());
             //logitechsub.pattern();
             // logitechsub.telemetryAprilTag(telemetry);
 
@@ -242,10 +240,14 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
                 telemetry.addLine("running Sort code");
                 sorterTimer.reset();
+                limelightsub.ballColor(telemetry);
                 //  sortingSubsystem.temporarySort();
             }
-            dash.sendTelemetryPacket(packet);
-            ;
+//            dash.sendTelemetryPacket(packet);
+
+            if (isIntakeMotorOn == true) {
+                limelightsub.ballColor(telemetry);
+            }
 
         }
 

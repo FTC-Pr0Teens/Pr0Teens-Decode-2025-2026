@@ -56,7 +56,8 @@ public class LogitechSubsystem {
 
         builder.setCamera(logitech);
 
-        builder.setAutoStopLiveView(true);
+//        builder.setAutoStopLiveView(true);
+        builder.setLiveViewContainerId(0);
 
         // Set and enable the processor.
         builder.addProcessor(aprilTag);
