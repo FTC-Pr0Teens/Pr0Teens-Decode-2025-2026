@@ -55,9 +55,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private boolean isOuttakeMotorOn = false;
 
     // --- Pusher Variables ---
-    private static final double PUSHER_UP = 0;
-    private static final double PUSHER_DOWN = 0.08;
-    private static final double PUSHER_UP1 = 0.08;
+    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_DOWN = 0.0;
+    private static final double PUSHER_UP1 = 0.19;
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 750;
     private final ElapsedTime pusherTimer = new ElapsedTime();
@@ -165,8 +165,8 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (currentYState && !previousYState) {
                 // Start pulse only if not already pulsing
                 if (!isPusherUp) {
-                    hw.pusher.setPosition(0.35);
-                    hw.pusher1.setPosition(0.15);
+                    hw.pusher.setPosition(PUSHER_UP);
+                    hw.pusher1.setPosition(PUSHER_UP1);
                     pusherTimer.reset();
                     isPusherUp = true;
                 }
@@ -175,8 +175,8 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             // Pusher down
             if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
-                hw.pusher.setPosition(0);
-                hw.pusher1.setPosition(0);
+                hw.pusher.setPosition(PUSHER_DOWN);
+                hw.pusher1.setPosition(PUSHER_DOWN1);
                 isPusherUp = false;
             }
 
