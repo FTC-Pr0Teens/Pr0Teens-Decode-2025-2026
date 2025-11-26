@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class Artifact {
     private String colour;
-    private double position;
+    private int position;
 
-    public Artifact(String colour, double position) {
+    public Artifact(String colour, int position) {
         this.colour = colour;
         this.position = position;
     }
@@ -13,7 +13,7 @@ public class Artifact {
         return this.colour;
     }
 
-    public double getPosition(){
+    public int getPosition(){
         return this.position;
     }
 

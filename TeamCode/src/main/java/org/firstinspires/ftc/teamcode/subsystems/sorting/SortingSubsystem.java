@@ -60,26 +60,37 @@ public class SortingSubsystem {
         }
     }
 
-    public void outtake(){
-        if (intake.size() == 3){
-            for (String wanted : motif) {
-                for (int i = intake.size() - 1; i >= 0; i--) {
-                    Artifact arti = intake.get(i);
-                    if (arti == null) continue;
 
-                    if (arti.getColour().equals(motif.get(i))) {
-                        outtakeArtifact(arti);
-                        intake.remove(i);   // safe because we're going backwards
-                    }
+    public void outtake(){
+        if (intake.size() == 3 && GNum == 1 && PNum == 2){
+            int motifIndex = 0;
+            // Iterate backwards through intake to minimize sorter rotation
+            // but follow motif order (0 to 2)
+            for (int i = intake.size() - 1; i >= 0; i--) {
+                Artifact arti = intake.get(i);
+                if (arti == null) continue;
+                // Check if artifact color matches motif in order
+                if (arti.getColour().equals(motif.get(motifIndex))) {
+                    motifIndex++;
+                    outtakeArtifact(arti.getPosition());
+                    intake.remove(i);
                 }
             }
-        }
+        } else {
+            // Empty in any order
+            for (int i = intake.size() - 1; i >= 0; i--) {
+                Artifact arti = intake.get(i);
+                if (arti == null) continue;
 
+                outtakeArtifact(arti.getPosition());
+                intake.remove(i);
+            }
+        }
     }
 
 
-    public void outtakeArtifact(Artifact arti){
-
+    public void outtakeArtifact(int position){
+         // macro here
     }
 
     //organizes artifacts on intake and adds the colour of each artifact to a list in order of entry
