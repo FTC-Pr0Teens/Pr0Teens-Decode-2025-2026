@@ -129,6 +129,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            } else if (obelisk == "GPP"){
 //
 //            }
+            hw.color.enableLed(true);
 
             mecanumCommand.processOdometry();
             mecanumCommand.normalMove(
@@ -156,7 +157,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (currentAState && !previousAState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
                 isIntakeMotorOn = !isIntakeMotorOn;
-                hw.intake.setPower(isIntakeMotorOn ? 1.0 : 0.0);
+                hw.intake.setPower(isIntakeMotorOn ? 0.58 : 0.0);
             }
             previousAState = currentAState;
 
@@ -190,26 +191,25 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
-                    double velocity = 5600;
-                    hw.shooter.setVelocity(velocity);
-                    outtakeCommand.spinup();
-                } else if (logitechsub.distance() <= 35) {
-                    double velocity = 2500;
-                    hw.shooter.setVelocity(velocity);
-                    outtakeCommand.spinup();
+                    outtakeCommand.setMaxRPM(3800);
+
                 }
-                else if (logitechsub.distance() <= 70 && logitechsub.distance() >= 35) {
-                    double velocity = 4000;
-                    hw.shooter.setVelocity(velocity);
-                    outtakeCommand.spinup();
+                else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
+                    outtakeCommand.setMaxRPM(2950);
+                }
+                else if (logitechsub.distance() <= 35) {
+                    outtakeCommand.setMaxRPM(2000);
                 }
 
-//                hw.shooter.setVelocityPIDFCoefficients(67,0,0,0);
-//                outtakeCommand.spinup();
+                if (logitechsub.targetApril() > 5) {
+                    mecanumCommand.pivot(0.2);
+                } else if (logitechsub.targetApril() < -5){
+                    mecanumCommand.pivot(-0.2);
+                } else {
+                    mecanumCommand.pivot(0);
+                }
 
-//                double veloicty = 4000;
-//                hw.shooter.setVelocity(veloicty);
-
+                outtakeCommand.spinup();
                 lightOn(spunUp);
             } else if (!isOuttakeMotorOn) {
                 outtakeCommand.stopShooter();
@@ -260,12 +260,13 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.addData("X", mecanumCommand.getX());
         telemetry.addData("Y", mecanumCommand.getY());
         telemetry.addData("Pusher ON", isPusherUp);
-        //telemetry.addData("Pattern ", logitechsub.pattern());
+        telemetry.addData("Pattern ", logitechsub.pattern());
         telemetry.addData("TPS: ", hw.shooter.getVelocity());
         //telemetry.addData("Pattern ", obelisk);
         telemetry.addData("color:  ", limelightsub.ballColor(telemetry));
         telemetry.addData("light:  ", spunUp);
-        //telemetry.addData("x ", logitechsub.targetApril());
+        telemetry.addData("x ", logitechsub.targetApril());
+        telemetry.addData("y ", logitechsub.distance());
         telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
         telemetry.addData("ticks", hw.shooter.getVelocity());
         telemetry.addData("RPM",hw.shooter.getVelocity() * 60.0 / 28.0);

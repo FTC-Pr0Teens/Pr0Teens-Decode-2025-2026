@@ -102,7 +102,7 @@ public class LogitechSubsystem {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null && detection.id == targetid) {
-                aprilx = detection.ftcPose.y;
+                aprily = detection.ftcPose.y;
             }
         }
         return aprily;
