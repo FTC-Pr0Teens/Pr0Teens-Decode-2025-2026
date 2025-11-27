@@ -15,12 +15,9 @@ import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -33,10 +30,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
-//    private SortingSubsystem sortingSubsystem;
-        private LimelightSubsystem limelightsub;
+    private LimelightSubsystem limelightsub;
      private LogitechSubsystem logitechsub;
-//     private SortingSubsystem sortingSubsystem;
+     private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -86,7 +82,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         outtakeCommand = new OuttakeCommand(hw);
         outtakeSubsystem = new OuttakeSubsystem(hw);
         limelightsub = new LimelightSubsystem(hw, telemetry);
-//        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
         logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -118,7 +114,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
-//            sortingSubsystem.setMotif(logitechsub.pattern());
+            sortingSubsystem.setMotif(logitechsub.pattern());
             //logitechsub.pattern();
             // logitechsub.telemetryAprilTag(telemetry);
 
@@ -246,7 +242,8 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            dash.sendTelemetryPacket(packet);
 
             if (isIntakeMotorOn == true) {
-                limelightsub.ballColor(telemetry);
+                sortingSubsystem.intake(limelightsub.ballColor(telemetry));
+                limelightsub.telemetryLimelight(telemetry);
             }
 
         }

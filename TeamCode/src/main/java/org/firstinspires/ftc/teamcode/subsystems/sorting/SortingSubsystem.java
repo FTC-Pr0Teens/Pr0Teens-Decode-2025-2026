@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
@@ -26,10 +27,31 @@ public class SortingSubsystem {
 
     public Telemetry telemetry;
     private LogitechSubsystem logitechSubsystem;
-    double firstPos = 0.0;
-    double secondPos = 0.38;
-    double thirdPos = 0.78;
+    private static final double SORTER_FIRST_POS = 0.0;
+    private static final double SORTER_SECOND_POS = 0.45;
+    private static final double SORTER_THIRD_POS = 0.88;
     double pos;
+
+    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_DOWN = 0.0;
+    private static final double PUSHER_UP1 = 0.19;
+    private static final double PUSHER_DOWN1 = 0;
+    private static final long PUSHER_TIME = 750;
+    private static final long WAIT_TIME = 2000;
+    private final ElapsedTime pusherTimer = new ElapsedTime();
+    private boolean isPusherUp = false;
+    private final ElapsedTime sorterTimer = new ElapsedTime();
+
+    private final ElapsedTime wait = new ElapsedTime();
+
+    enum AUTO_STATE {
+        SORT,
+        PUSH_UP,
+        PUSH_DOWN
+
+    }
+
+    AUTO_STATE autoState = AUTO_STATE.SORT;
 
 
     public SortingSubsystem(Hardware hw, Telemetry telemetry, String motif) {
@@ -47,22 +69,29 @@ public class SortingSubsystem {
         pos = sorter.getPosition();
     }
 
-    public void intake(String colour){
+    public void intake(String colour) {
         length = intake.size();
         if (length <= 3) {
-            if (colour.equals("P")){
+            if (colour.equals("P")) {
                 PNum++;
-            } else if (colour.equals("G")){
+            } else if (colour.equals("G")) {
                 GNum++;
             }
-            Artifact newArti = new Artifact(colour,length);
+            Artifact newArti = new Artifact(colour, length);
             intake.add(newArti);
+        }
+        if (length == 1) {
+            hw.sorter.setPosition(SORTER_FIRST_POS);
+        } else if (length == 2) {
+            hw.sorter.setPosition(SORTER_SECOND_POS);
+        } else {
+            hw.sorter.setPosition(SORTER_THIRD_POS);
         }
     }
 
 
-    public void outtake(){
-        if (intake.size() == 3 && GNum == 1 && PNum == 2){
+    public void outtake() {
+        if (intake.size() == 3 && GNum == 1 && PNum == 2) {
             int motifIndex = 0;
             // Iterate backwards through intake to minimize sorter rotation
             // but follow motif order (0 to 2)
@@ -89,8 +118,36 @@ public class SortingSubsystem {
     }
 
 
-    public void outtakeArtifact(int position){
-         // macro here
+    public void outtakeArtifact(int position) {
+        // macro here
+        switch (autoState) {
+            case SORT:
+                wait.reset();
+
+                if (wait.milliseconds() >= WAIT_TIME) {
+                    sorter.setPosition(position);
+                    autoState = AUTO_STATE.PUSH_UP;
+                }
+                break;
+
+            case PUSH_UP:
+                if (!isPusherUp) {
+                    hw.pusher.setPosition(PUSHER_UP);
+                    hw.pusher1.setPosition(PUSHER_UP1);
+                    pusherTimer.reset();
+                    isPusherUp = true;
+                }
+                autoState = AUTO_STATE.PUSH_DOWN;
+                break;
+
+            case PUSH_DOWN:
+                if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
+                    hw.pusher.setPosition(PUSHER_DOWN);
+                    hw.pusher1.setPosition(PUSHER_DOWN1);
+                    isPusherUp = false;
+                }
+                break;
+        }
     }
 
     //organizes artifacts on intake and adds the colour of each artifact to a list in order of entry
@@ -314,11 +371,12 @@ public class SortingSubsystem {
 //
 //    }
 
-    public void push () {
+    public void push() {
         pusher.setPosition(0.85);
         waitTime(1);
         pusher.setPosition(0);
     }
+
     public void waitTime(double seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
@@ -341,46 +399,45 @@ public class SortingSubsystem {
     }
 
     public void setMotif(String sequence) {
-        if (!motif.isEmpty()){
+        if (!motif.isEmpty()) {
             motif.clear();
         }
 
-        for (char c : sequence.toCharArray()){
+        for (char c : sequence.toCharArray()) {
             motif.add(String.valueOf(c));
         }
     }
-    public void temporarySort(){
-        if(pos == thirdPos){
+
+    public void temporarySort() {
+        if (pos == SORTER_THIRD_POS) {
             push();
             waitTime(0.5);
 
-            sorter.setPosition(secondPos);
+            sorter.setPosition(SORTER_SECOND_POS);
             waitTime(2);
             push();
             waitTime(0.5);
 
-            sorter.setPosition(firstPos);
+            sorter.setPosition(SORTER_FIRST_POS);
             waitTime(2);
             push();
             waitTime(0.5);
-        }
-        else if(pos == firstPos){
+        } else if (pos == SORTER_FIRST_POS) {
             push();
             waitTime(0.5);
 
-            sorter.setPosition(secondPos);
-            waitTime(2);
-            push();
-            waitTime(0.5);
-
-            sorter.setPosition(thirdPos);
+            sorter.setPosition(SORTER_SECOND_POS);
             waitTime(2);
             push();
             waitTime(0.5);
 
-            sorter.setPosition(firstPos);
+            sorter.setPosition(SORTER_THIRD_POS);
+            waitTime(2);
+            push();
+            waitTime(0.5);
+
+            sorter.setPosition(SORTER_FIRST_POS);
             waitTime(2);
         }
     }
-
 }
