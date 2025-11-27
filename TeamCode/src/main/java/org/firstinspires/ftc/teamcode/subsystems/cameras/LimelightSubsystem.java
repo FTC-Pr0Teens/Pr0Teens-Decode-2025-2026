@@ -56,7 +56,10 @@ public class LimelightSubsystem {
                 tx = firstDetection.getTargetXPixels();
                 ty = firstDetection.getTargetYPixels();
                 area = firstDetection.getTargetArea();
-                color = firstDetection.getClassName();
+
+                if (area > 15){
+                    color = firstDetection.getClassName();
+                }
 
 //               double error = tx;
 //               rotationalPower = kP * error;

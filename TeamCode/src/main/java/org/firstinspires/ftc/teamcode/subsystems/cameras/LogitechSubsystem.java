@@ -73,7 +73,12 @@ public class LogitechSubsystem {
                 obelisk = detection.metadata.name.substring(8, 11);
             }
         }
-        return obelisk;
+        if (obelisk != null ){
+            return obelisk;
+        } else {
+            return "GPP";
+        }
+
     }
 
     public double targetApril(Telemetry telemetry) {
