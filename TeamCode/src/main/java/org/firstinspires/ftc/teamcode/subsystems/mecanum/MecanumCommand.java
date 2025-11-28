@@ -55,7 +55,7 @@ public class MecanumCommand {
     public void processPIDUsingPinpoint() {
 
         ex = mecanumSubsystem.globalXControllerOutputPositional(xFinal, pinPointOdoSubsystem.getX());
-        ey = mecanumSubsystem.globalYControllerOutputPositional(yFinal, pinPointOdoSubsystem.getY());
+        ey = -mecanumSubsystem.globalYControllerOutputPositional(yFinal, pinPointOdoSubsystem.getY());
         etheta = -mecanumSubsystem.globalThetaControllerOutputPositional(thetaFinal, pinPointOdoSubsystem.getHeading());
 
 
@@ -73,8 +73,8 @@ public class MecanumCommand {
 
     public void moveGlobalPartialPinPoint(double vertical, double horizontal, double rotational) {
         double angle = Math.PI / 2 - pinPointOdoSubsystem.getHeading();
-        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) - horizontal * Math.cos(angle);
-        double localHorizontal = vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
+        double localVertical = vertical * Math.cos(pinPointOdoSubsystem.getHeading()) + horizontal * Math.cos(angle);
+        double localHorizontal = -vertical * Math.sin(pinPointOdoSubsystem.getHeading()) + horizontal * Math.sin(angle);
         mecanumSubsystem.partialMove(localVertical, localHorizontal, rotational);
     }
 

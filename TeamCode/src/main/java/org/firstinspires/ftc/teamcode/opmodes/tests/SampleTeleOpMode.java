@@ -44,6 +44,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private boolean previousBState = false;
     private boolean previousXState = false;
     private boolean previousYState = false;
+    private boolean previousDownState = false;
+
 
     private boolean previousLBumpState = false;
 
@@ -106,13 +108,15 @@ public class SampleTeleOpMode extends LinearOpMode {
             hw.pusher.setPosition(0);
             hw.pusher1.setPosition(0);
             hw.sorter.setPosition(0);
-//            hw.light.setPosition(0);
-
+            hw.light.setPosition(0);
             telemetry.addData("Alliance: ", ALLIANCE);
             telemetry.update();
         }
         // Wait for start button to be pressed
         waitForStart();
+
+
+        //logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
