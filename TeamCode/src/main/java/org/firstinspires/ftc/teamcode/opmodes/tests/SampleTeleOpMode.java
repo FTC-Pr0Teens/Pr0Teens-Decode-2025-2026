@@ -141,7 +141,7 @@ public class SampleTeleOpMode extends LinearOpMode {
                 mecanumCommand.resetPinPointOdometry();
             }
 
-            boolean currentLBumpState = gamepad1.left_bumper;
+            boolean currentLBumpState = gamepad2.left_bumper;
             if (currentLBumpState && !previousLBumpState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 isIntakeMotorOn = !isIntakeMotorOn;
@@ -150,16 +150,16 @@ public class SampleTeleOpMode extends LinearOpMode {
             previousLBumpState = currentLBumpState;
 
             // --- Intake toggle on A ---
-            boolean currentAState = gamepad1.a;
+            boolean currentAState = gamepad2.a;
             if (currentAState && !previousAState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
                 isIntakeMotorOn = !isIntakeMotorOn;
-                hw.intake.setPower(isIntakeMotorOn ? 0.58 : 0.0);
+                hw.intake.setPower(isIntakeMotorOn ? 0.6 : 0.0);
             }
             previousAState = currentAState;
 
             // --- Pusher up on Y  ---
-            boolean currentYState = gamepad1.y;
+            boolean currentYState = gamepad2.y;
             if (currentYState && !previousYState) {
                 // Start pulse only if not already pulsing
                 if (!isPusherUp) {
@@ -179,7 +179,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
 
             // Outtake
-            boolean currentXState = gamepad1.x;
+            boolean currentXState = gamepad2.x;
 
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
@@ -188,14 +188,14 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
-                    outtakeCommand.setMaxRPM(3800);
+                    outtakeCommand.setMaxRPM(3900);
 
                 }
                 else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-                    outtakeCommand.setMaxRPM(2950);
+                    outtakeCommand.setMaxRPM(2900);
                 }
                 else if (logitechsub.distance() <= 35) {
-                    outtakeCommand.setMaxRPM(2000);
+                    outtakeCommand.setMaxRPM(2200);
                 }
 
                 if (logitechsub.targetApril() > 5) {
