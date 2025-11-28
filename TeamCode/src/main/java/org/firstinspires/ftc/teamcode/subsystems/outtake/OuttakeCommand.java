@@ -16,7 +16,7 @@ public class OuttakeCommand {
     private double targetRPM;
     private double targetRPM1;
 
-    double DEFAULT_RPM = 2800;
+    double DEFAULT_RPM = 3000;
     double DEFAULT_RPM1 = 4000;
 
     double PPR_of_6000_motor = 28.0;
