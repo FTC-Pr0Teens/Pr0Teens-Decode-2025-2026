@@ -74,6 +74,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     private String ALLIANCE = "blue";
     private String motif = "GPP";
     private double velocity;
+    private String colour;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -219,7 +220,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
             previousBState = currentBState;
 
-            if (gamepad1.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
+            if (gamepad2.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
                 sorterTimer.reset();
                 if (sorterpos == 0) {
                     hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
@@ -231,19 +232,24 @@ public class SampleTeleOpMode extends LinearOpMode {
                 sorterpos = (sorterpos + 1) % 3;
             }
 
-
-
-            if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
-                telemetry.addLine("running Sort code");
-                sorterTimer.reset();
-                limelightsub.ballColor(telemetry);
-                //  sortingSubsystem.temporarySort();
-            }
+//            if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
+//                telemetry.addLine("running Sort code");
+//                sorterTimer.reset();
+//                limelightsub.ballColor(telemetry);
+//                //  sortingSubsystem.temporarySort();
+//            }
 //            dash.sendTelemetryPacket(packet);
 
-            if (isIntakeMotorOn == true) {
-                sortingSubsystem.intake(limelightsub.ballColor(telemetry));
-                limelightsub.telemetryLimelight(telemetry);
+//            if (isIntakeMotorOn == true && colour != null) {
+//                sortingSubsystem.intake(colour);
+//                limelightsub.telemetryLimelight(telemetry);
+//            }
+
+            if (gamepad2.b && sorterTimer.milliseconds() > 500) {
+                colour = limelightsub.ballColor(telemetry);
+                if (colour != null) {
+                    sortingSubsystem.intake(colour);
+                }
             }
 
         }

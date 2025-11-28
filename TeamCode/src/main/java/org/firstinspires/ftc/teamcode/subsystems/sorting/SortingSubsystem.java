@@ -72,9 +72,9 @@ public class SortingSubsystem {
     public void intake(String colour) {
         length = intake.size();
         if (length <= 3) {
-            if (colour.equals("P")) {
+            if (colour.equals("purple")) {
                 PNum++;
-            } else if (colour.equals("G")) {
+            } else if (colour.equals("green")) {
                 GNum++;
             }
             Artifact newArti = new Artifact(colour, length);
