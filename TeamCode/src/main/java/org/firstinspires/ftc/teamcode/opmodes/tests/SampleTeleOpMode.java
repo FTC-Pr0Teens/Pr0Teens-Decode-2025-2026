@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 //import static org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem.obelisk;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,7 +24,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 
-@TeleOp(name = "TeleopSample", group = "TeleOp")
+@TeleOp(name = "Pr0teens Teleop", group = "TeleOp")
 public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands
@@ -105,7 +106,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             hw.pusher.setPosition(0);
             hw.pusher1.setPosition(0);
             hw.sorter.setPosition(0);
-            hw.light.setPosition(0);
+//            hw.light.setPosition(0);
 
             telemetry.addData("Alliance: ", ALLIANCE);
             telemetry.update();
@@ -189,13 +190,33 @@ public class SampleTeleOpMode extends LinearOpMode {
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
                     outtakeCommand.setMaxRPM(3900);
-
+                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 3800) {
+                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 4000) {
+                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                        }
+                    } else {
+                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    }
                 }
                 else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
                     outtakeCommand.setMaxRPM(2900);
+                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2800) {
+                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 3000) {
+                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                        }
+                    } else {
+                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    }
                 }
                 else if (logitechsub.distance() <= 35) {
                     outtakeCommand.setMaxRPM(2200);
+                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2100) {
+                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 2300) {
+                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                        }
+                    } else {
+                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    }
                 }
 
                 if (logitechsub.targetApril() > 5) {
@@ -207,10 +228,10 @@ public class SampleTeleOpMode extends LinearOpMode {
                 }
 
                 outtakeCommand.spinup();
-                lightOn(spunUp);
+//                lightOn(spunUp);
             } else if (!isOuttakeMotorOn) {
                 outtakeCommand.stopShooter();
-                hw.light.setPosition(0);
+//                hw.light.setPosition(0);
             }
 
             // Sorter
@@ -278,13 +299,13 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.update();
     }
 
-    public void lightOn(boolean rpmReached) {
-        if (rpmReached && isOuttakeMotorOn) {
-            hw.light.setPosition(0.5);
-        } else {
-            hw.light.setPosition(0);
-        }
-
-
-    }
+//    public void lightOn(boolean rpmReached) {
+//        if (rpmReached && isOuttakeMotorOn) {
+//            hw.light.setPosition(0.5);
+//        } else {
+//            hw.light.setPosition(0);
+//        }
+//
+//
+//    }
 }

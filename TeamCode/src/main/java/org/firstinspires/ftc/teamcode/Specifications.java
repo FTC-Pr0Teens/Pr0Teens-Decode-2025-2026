@@ -60,7 +60,7 @@ public class Specifications {
 
 //    public static final String COLOR_SENSOR = "colorSensor";
 
-    public static final String LIGHT = "led";
+    public static final String LIGHT = "led2";
     public static final String COLOR_SENSOR = "color";
 
     public static final int CVSmoothing = 30;
