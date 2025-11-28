@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -22,7 +23,6 @@ public class Hardware {
     private static Hardware instance;
 
     // Motors
-//  public Limelight3A limelight;
     public final DcMotorEx intake;
     public final Servo sorter;
     public final Servo pusher;
@@ -38,6 +38,7 @@ public class Hardware {
     public WebcamName logitech;
     public Limelight3A limelight;
     public Servo light;
+    public ColorSensor color;
 
 
     public Hardware(HardwareMap hwMap) {
@@ -50,9 +51,8 @@ public class Hardware {
 
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
         this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
-//        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
+        this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
         this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
-
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
@@ -60,7 +60,8 @@ public class Hardware {
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.light = hwMap.get(Servo.class, Specifications.LIGHT);
 
-//
+        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
+
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
     }

@@ -31,6 +31,8 @@ public class LogitechSubsystem {
 
     private VisionPortal visionPortal;
     private static double aprilx;
+    private static double aprily;
+
 
     public LogitechSubsystem(Hardware hw, String alliance) {
         this.hw = hw;
@@ -54,7 +56,8 @@ public class LogitechSubsystem {
 
         builder.setCamera(logitech);
 
-        builder.setAutoStopLiveView(true);
+//        builder.setAutoStopLiveView(true);
+        builder.setLiveViewContainerId(0);
 
         // Set and enable the processor.
         builder.addProcessor(aprilTag);
@@ -70,7 +73,12 @@ public class LogitechSubsystem {
                 obelisk = detection.metadata.name.substring(8, 11);
             }
         }
-        return obelisk;
+        if (obelisk != null ){
+            return obelisk;
+        } else {
+            return "GPP";
+        }
+
     }
 
     public double targetApril(Telemetry telemetry) {
@@ -93,6 +101,16 @@ public class LogitechSubsystem {
             }
         }
         return aprilx;
+    }
+
+    public double distance() {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null && detection.id == targetid) {
+                aprily = detection.ftcPose.y;
+            }
+        }
+        return aprily;
     }
 
     public void telemetryAprilTag(Telemetry telemetry) {
