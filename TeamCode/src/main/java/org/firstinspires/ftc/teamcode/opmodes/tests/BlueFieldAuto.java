@@ -85,6 +85,7 @@ public class BlueFieldAuto extends LinearOpMode {
                     mecanumCommand.moveToPos(40 , 0, 0);
 
                     if (mecanumCommand.isPositionReached()) {
+                        mecanumCommand.stop();
                         autoState = AUTO_STATE.PRELOAD_ONE;
 
                     }
@@ -148,7 +149,7 @@ public class BlueFieldAuto extends LinearOpMode {
                         pusherTimer.reset();
                     }
 
-                    if (!isPusherUp && pusherTimer.milliseconds() >= 1000) {
+                    if (!isPusherUp && pusherTimer.milliseconds() >= 600) {
                         hw.pusher.setPosition(PUSHER_UP);
                         pusherTimer.reset();
                         isPusherUp = true;
