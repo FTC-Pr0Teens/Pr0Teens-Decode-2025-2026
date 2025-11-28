@@ -34,6 +34,7 @@ public class SampleAutoOpMode extends LinearOpMode {
             FINISH
 
         }
+
         boolean firstInstance = true;
         dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();

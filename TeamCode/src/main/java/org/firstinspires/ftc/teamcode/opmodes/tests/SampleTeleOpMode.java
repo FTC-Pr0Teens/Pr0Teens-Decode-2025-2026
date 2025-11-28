@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -30,9 +30,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
-//        private LimelightSubsystem limelightsub;
-//     private LogitechSubsystem logitechsub;
-//     private SortingSubsystem sortingSubsystem;
+    private LimelightSubsystem limelightsub;
+     private LogitechSubsystem logitechsub;
+     private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -51,9 +51,9 @@ public class SampleTeleOpMode extends LinearOpMode {
     private boolean isOuttakeMotorOn = false;
 
     // --- Pusher Variables ---
-    private static final double PUSHER_UP = 0;
-    private static final double PUSHER_DOWN = 0.08;
-    private static final double PUSHER_UP1 = 0.08;
+    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_DOWN = 0.0;
+    private static final double PUSHER_UP1 = 0.19;
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 750;
     private final ElapsedTime pusherTimer = new ElapsedTime();
@@ -64,15 +64,17 @@ public class SampleTeleOpMode extends LinearOpMode {
     private final ElapsedTime sorterTimer = new ElapsedTime();
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
-    private static final double SORTER_SECOND_POS = 0.38;
-    private static final double SORTER_THIRD_POS = 0.78;
+    private static final double SORTER_SECOND_POS = 0.45;
+    private static final double SORTER_THIRD_POS = 0.88;
 
     private TelemetryPacket packet;
 
     boolean spunUp;
     int counter = 1;
     private String ALLIANCE = "blue";
-    private String motif;
+    private String motif = "GPP";
+    private double velocity;
+    private String colour;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -80,17 +82,19 @@ public class SampleTeleOpMode extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         outtakeSubsystem = new OuttakeSubsystem(hw);
-//        limelightsub = new LimelightSubsystem(hw, telemetry);
-        // sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+        limelightsub = new LimelightSubsystem(hw, telemetry);
+        sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
+        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
         resetTimer = new ElapsedTime();
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeCommand.setMaxRPM(5000);
+        outtakeCommand.setMaxRPM(6000);
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
+
         while (opModeInInit()) {
             if (gamepad1.b) {
                 ALLIANCE = "red";
@@ -109,11 +113,9 @@ public class SampleTeleOpMode extends LinearOpMode {
         // Wait for start button to be pressed
         waitForStart();
 
-
-        //logitechsub = new LogitechSubsystem(hw, ALLIANCE);
-
         // Loop while OpMode is running
         while (opModeIsActive()) {
+            sortingSubsystem.setMotif(logitechsub.pattern());
             //logitechsub.pattern();
             // logitechsub.telemetryAprilTag(telemetry);
 
@@ -124,6 +126,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            } else if (obelisk == "GPP"){
 //
 //            }
+            hw.color.enableLed(true);
 
             mecanumCommand.processOdometry();
             mecanumCommand.normalMove(
@@ -138,7 +141,7 @@ public class SampleTeleOpMode extends LinearOpMode {
                 mecanumCommand.resetPinPointOdometry();
             }
 
-            boolean currentLBumpState = gamepad1.left_bumper;
+            boolean currentLBumpState = gamepad2.left_bumper;
             if (currentLBumpState && !previousLBumpState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 isIntakeMotorOn = !isIntakeMotorOn;
@@ -147,21 +150,21 @@ public class SampleTeleOpMode extends LinearOpMode {
             previousLBumpState = currentLBumpState;
 
             // --- Intake toggle on A ---
-            boolean currentAState = gamepad1.a;
+            boolean currentAState = gamepad2.a;
             if (currentAState && !previousAState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
                 isIntakeMotorOn = !isIntakeMotorOn;
-                hw.intake.setPower(isIntakeMotorOn ? 1.0 : 0.0);
+                hw.intake.setPower(isIntakeMotorOn ? 0.6 : 0.0);
             }
             previousAState = currentAState;
 
             // --- Pusher up on Y  ---
-            boolean currentYState = gamepad1.y;
+            boolean currentYState = gamepad2.y;
             if (currentYState && !previousYState) {
                 // Start pulse only if not already pulsing
                 if (!isPusherUp) {
-                    hw.pusher.setPosition(0.35);
-                    hw.pusher1.setPosition(0.15);
+                    hw.pusher.setPosition(PUSHER_UP);
+                    hw.pusher1.setPosition(PUSHER_UP1);
                     pusherTimer.reset();
                     isPusherUp = true;
                 }
@@ -170,14 +173,13 @@ public class SampleTeleOpMode extends LinearOpMode {
 
             // Pusher down
             if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
-                hw.pusher.setPosition(0);
-                hw.pusher1.setPosition(0);
+                hw.pusher.setPosition(PUSHER_DOWN);
+                hw.pusher1.setPosition(PUSHER_DOWN1);
                 isPusherUp = false;
             }
 
             // Outtake
-            boolean currentXState = gamepad1.x;
-
+            boolean currentXState = gamepad2.x;
 
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
@@ -185,25 +187,40 @@ public class SampleTeleOpMode extends LinearOpMode {
             previousXState = currentXState;
 
             if (isOuttakeMotorOn) {
-                hw.shooter.setVelocityPIDFCoefficients(67,0,0,0);
+                if (logitechsub.distance() >= 100) {
+                    outtakeCommand.setMaxRPM(3900);
+
+                }
+                else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
+                    outtakeCommand.setMaxRPM(2900);
+                }
+                else if (logitechsub.distance() <= 35) {
+                    outtakeCommand.setMaxRPM(2200);
+                }
+
+                if (logitechsub.targetApril() > 5) {
+                    mecanumCommand.pivot(0.2);
+                } else if (logitechsub.targetApril() < -5){
+                    mecanumCommand.pivot(-0.2);
+                } else {
+                    mecanumCommand.pivot(0);
+                }
+
                 outtakeCommand.spinup();
-
-//                double veloicty = 4000;
-//                hw.shooter.setVelocity(veloicty);
-
                 lightOn(spunUp);
             } else if (!isOuttakeMotorOn) {
                 outtakeCommand.stopShooter();
                 hw.light.setPosition(0);
             }
 
+            // Sorter
             boolean currentBState = gamepad1.b;
             if (currentBState && !previousBState) {
 //                limelightsub.ballPosition(telemetry, mecanumCommand);
             }
             previousBState = currentBState;
 
-            if (gamepad1.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
+            if (gamepad2.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
                 sorterTimer.reset();
                 if (sorterpos == 0) {
                     hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
@@ -215,13 +232,25 @@ public class SampleTeleOpMode extends LinearOpMode {
                 sorterpos = (sorterpos + 1) % 3;
             }
 
-            if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
-                telemetry.addLine("running Sort code");
-                sorterTimer.reset();
-                //  sortingSubsystem.temporarySort();
+//            if (gamepad1.right_bumper && sorterTimer.milliseconds() >= 500) {
+//                telemetry.addLine("running Sort code");
+//                sorterTimer.reset();
+//                limelightsub.ballColor(telemetry);
+//                //  sortingSubsystem.temporarySort();
+//            }
+//            dash.sendTelemetryPacket(packet);
+
+//            if (isIntakeMotorOn == true && colour != null) {
+//                sortingSubsystem.intake(colour);
+//                limelightsub.telemetryLimelight(telemetry);
+//            }
+
+            if (gamepad2.b && sorterTimer.milliseconds() > 500) {
+                colour = limelightsub.ballColor(telemetry);
+                if (colour != null) {
+                    sortingSubsystem.intake(colour);
+                }
             }
-            dash.sendTelemetryPacket(packet);
-            ;
 
         }
 
@@ -234,11 +263,13 @@ public class SampleTeleOpMode extends LinearOpMode {
         telemetry.addData("X", mecanumCommand.getX());
         telemetry.addData("Y", mecanumCommand.getY());
         telemetry.addData("Pusher ON", isPusherUp);
-        //telemetry.addData("Pattern ", logitechsub.pattern());
+        telemetry.addData("Pattern ", logitechsub.pattern());
         telemetry.addData("TPS: ", hw.shooter.getVelocity());
         //telemetry.addData("Pattern ", obelisk);
+        telemetry.addData("color:  ", limelightsub.ballColor(telemetry));
         telemetry.addData("light:  ", spunUp);
-        //telemetry.addData("x ", logitechsub.targetApril());
+        telemetry.addData("x ", logitechsub.targetApril());
+        telemetry.addData("y ", logitechsub.distance());
         telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
         telemetry.addData("ticks", hw.shooter.getVelocity());
         telemetry.addData("RPM",hw.shooter.getVelocity() * 60.0 / 28.0);
