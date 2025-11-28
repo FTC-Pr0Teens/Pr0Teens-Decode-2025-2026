@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,7 +38,7 @@ public class Hardware {
     public final GoBildaPinpointDriver pinPointOdo;
     public WebcamName logitech;
     public Limelight3A limelight;
-    public Servo light;
+    public RevBlinkinLedDriver light;
     public ColorSensor color;
 
 
@@ -58,7 +59,7 @@ public class Hardware {
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-        this.light = hwMap.get(Servo.class, Specifications.LIGHT);
+        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
 
         this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
 
