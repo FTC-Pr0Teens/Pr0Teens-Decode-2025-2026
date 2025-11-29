@@ -49,7 +49,6 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        processTelemetry();
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
@@ -70,6 +69,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
+            processTelemetry();
             mecanumCommand.normalMove(
                     -gamepad1.left_stick_y,
                     gamepad1.left_stick_x,
