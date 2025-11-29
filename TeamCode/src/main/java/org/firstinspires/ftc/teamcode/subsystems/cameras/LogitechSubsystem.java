@@ -113,6 +113,12 @@ public class LogitechSubsystem {
         return aprily;
     }
 
+    public void close(){
+        if (visionPortal != null) {
+            visionPortal.close();
+        }
+    }
+
     public void telemetryAprilTag(Telemetry telemetry) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());

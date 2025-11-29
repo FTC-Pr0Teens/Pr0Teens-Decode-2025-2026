@@ -32,8 +32,8 @@ public class SampleTeleOpMode extends LinearOpMode {
     private OuttakeCommand outtakeCommand;
     private OuttakeSubsystem outtakeSubsystem;
     private LimelightSubsystem limelightsub;
-     private LogitechSubsystem logitechsub;
-     private SortingSubsystem sortingSubsystem;
+    private LogitechSubsystem logitechsub;
+    private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
     private ElapsedTime resetTimer;
@@ -68,7 +68,7 @@ public class SampleTeleOpMode extends LinearOpMode {
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
     private static final double SORTER_SECOND_POS = 0.45;
-    private static final double SORTER_THIRD_POS = 0.88;
+    private static final double SORTER_THIRD_POS = 0.90;
 
     private TelemetryPacket packet;
 
@@ -94,7 +94,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
         resetTimer = new ElapsedTime();
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtakeCommand.setMaxRPM(6000);
+        outtakeCommand.setMaxRPM(2000);
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 
@@ -115,12 +115,12 @@ public class SampleTeleOpMode extends LinearOpMode {
         // Wait for start button to be pressed
         waitForStart();
 
-
-        //logitechsub = new LogitechSubsystem(hw, ALLIANCE);
+        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
+        sortingSubsystem.setMotif(logitechsub.pattern());
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            sortingSubsystem.setMotif(logitechsub.pattern());
+
             //logitechsub.pattern();
             // logitechsub.telemetryAprilTag(telemetry);
 
@@ -131,7 +131,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            } else if (obelisk == "GPP"){
 //            }
 
-            mecanumCommand.processOdometry();
+           // mecanumCommand.processOdometry();
             mecanumCommand.normalMove(
                     -gamepad1.left_stick_y,
                     gamepad1.left_stick_x,
@@ -189,59 +189,66 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
             previousXState = currentXState;
 
-            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            if (isOuttakeMotorOn) {
-                if (logitechsub.distance() >= 100) {
-                    outtakeCommand.setMaxRPM(3600);
-                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 3400) {
-                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 3700) {
-                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                        }
-                    } else {
-                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                    }
-                }
-                else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-                    outtakeCommand.setMaxRPM(2800);
-                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2600) {
-                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 2900) {
-                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                        }
-                    } else {
-                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                    }
-                }
-                else if (logitechsub.distance() <= 35) {
-                    outtakeCommand.setMaxRPM(2300);
-                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2100) {
-                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 2400) {
-                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                        }
-                    } else {
-                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                    }
-                }
-
+//            if (outtakeCommand.isRPMReached()){
+//                hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+//            } else {
+//                hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//            }
+//
+//            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//            if (isOuttakeMotorOn) {
+//                if (logitechsub.distance() >= 100) {
+//                    outtakeCommand.setMaxRPM(3400);
+//                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 3200) {
+//                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 3500) {
+//
+//                        }
+//                    } else {
+//                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//                    }
+//                } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
+//                    outtakeCommand.setMaxRPM(2800);
+//                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2600) {
+//                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 2900) {
+//                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+//                        }
+//                    } else {
+//                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//                    }
+//                } else if (logitechsub.distance() <= 35) {
+//                    outtakeCommand.setMaxRPM(2300);
+//                    if ((hw.shooter.getVelocity() * 60.0 / 28.0) > 2100) {
+//                        if ((hw.shooter.getVelocity() * 60.0 / 28.0) < 2400) {
+//                            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+//                        }
+//                    } else {
+//                        hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//                    }
+//                }
+//            }
+            if (gamepad2.right_bumper) {
                 if (logitechsub.targetApril() > 5) {
                     mecanumCommand.pivot(0.2);
-                } else if (logitechsub.targetApril() < -5){
+                } else if (logitechsub.targetApril() < -5) {
                     mecanumCommand.pivot(-0.2);
-                } else {
-                    mecanumCommand.pivot(0);
                 }
+            }
 
-                if (gamepad2.dpad_left) {
-                    outtakeCommand.setMaxRPM(2300);
-                } else if (gamepad2.dpad_up) {
-                    outtakeCommand.setMaxRPM(2800);
-                } else if (gamepad2.dpad_right) {
-                    outtakeCommand.setMaxRPM(3600);
-                }
+            if (gamepad2.dpad_left) {
+                outtakeCommand.setMaxRPM(2300);
+            }
+            if (gamepad2.dpad_up) {
+                outtakeCommand.setMaxRPM(2800);
+            }
+            if (gamepad2.dpad_right) {
+                outtakeCommand.setMaxRPM(3600);
+            }
 
-                outtakeCommand.spinup();
+            outtakeCommand.spinup();
+
 
 //                lightOn(spunUp);
-            } else if (!isOuttakeMotorOn) {
+            if (!isOuttakeMotorOn) {
                 outtakeCommand.stopShooter();
 //                hw.light.setPosition(0);
             }
@@ -278,24 +285,20 @@ public class SampleTeleOpMode extends LinearOpMode {
 //                limelightsub.telemetryLimelight(telemetry);
 //            }
 
-            if (gamepad2.b && sorterTimer.milliseconds() > 500) {
-                colour = limelightsub.ballColor(telemetry);
-                if (colour != null) {
-                    sortingSubsystem.intake(colour);
-                }
-            }
+//            if (gamepad2.b && sorterTimer.milliseconds() > 500) {
+//                colour = limelightsub.ballColor(telemetry);
+//                if (colour != null) {
+//                    sortingSubsystem.intake(colour);
+//                }
+//            }
 
         }
+       // limelightsub.close();
+//        logitechsub.close();
 
     }
 
     public void processTelemetry() {
-        //add telemetry messages here
-        //telemetry.addData("resetTimer: ",  resetTimer.milliseconds());
-        telemetry.addLine("---------------------------------");
-        telemetry.addData("X", mecanumCommand.getX());
-        telemetry.addData("Y", mecanumCommand.getY());
-//        telemetry.addData("Pusher ON", isPusherUp);
         telemetry.addData("Pattern ", logitechsub.pattern());
 //        telemetry.addData("TPS: ", hw.shooter.getVelocity());
         //telemetry.addData("Pattern ", obelisk);
@@ -303,21 +306,11 @@ public class SampleTeleOpMode extends LinearOpMode {
 //        telemetry.addData("light:  ", spunUp);
         telemetry.addData("x ", logitechsub.targetApril());
         telemetry.addData("y ", logitechsub.distance());
-        telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
+//        telemetry.addData("heading:  ", mecanumCommand.getOdoHeading());
 //        telemetry.addData("ticks", hw.shooter.getVelocity());
-        telemetry.addData("RPM",hw.shooter.getVelocity() * 60.0 / 28.0);
+        telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
 //        packet.put("ticks:  ", hw.shooter.getVelocity());
 
         telemetry.update();
     }
-
-//    public void lightOn(boolean rpmReached) {
-//        if (rpmReached && isOuttakeMotorOn) {
-//            hw.light.setPosition(0.5);
-//        } else {
-//            hw.light.setPosition(0);
-//        }
-//
-//
-//    }
 }
