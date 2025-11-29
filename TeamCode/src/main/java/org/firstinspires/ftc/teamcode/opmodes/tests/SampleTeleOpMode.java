@@ -36,8 +36,6 @@ public class SampleTeleOpMode extends LinearOpMode {
     private SortingSubsystem sortingSubsystem;
     private ElapsedTime timer;
     private Hardware hw;
-    private ElapsedTime resetTimer;
-    private FtcDashboard dash;
 
     // --- Button Variables ---
     private boolean previousAState = false;
@@ -92,10 +90,8 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
-        resetTimer = new ElapsedTime();
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         outtakeCommand.setMaxRPM(2000);
-        dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 
         while (opModeInInit()) {
@@ -293,8 +289,6 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            }
 
         }
-       // limelightsub.close();
-//        logitechsub.close();
 
     }
 
