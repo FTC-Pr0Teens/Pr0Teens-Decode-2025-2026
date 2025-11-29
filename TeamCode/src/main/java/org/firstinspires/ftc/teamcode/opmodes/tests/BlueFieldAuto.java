@@ -79,7 +79,7 @@ public class BlueFieldAuto extends LinearOpMode {
         hw.pusher.setPosition(PUSHER_DOWN1);
         hw.pusher1.setPosition(PUSHER_DOWN);
         hw.sorter.setPosition(0);
-        hw.light.setPosition(0);
+//        hw.light.setPosition(0);
         hw.sorter.setPosition(SORTER_FIRST_POS);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hw.pusher1.setDirection(Servo.Direction.REVERSE);

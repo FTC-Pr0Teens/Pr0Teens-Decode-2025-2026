@@ -114,7 +114,7 @@ public class Blue extends LinearOpMode {
         hw.pusher.setPosition(0.0);
         hw.pusher1.setPosition(0.0);
         hw.sorter.setPosition(0);
-        hw.light.setPosition(0);
+//        hw.light.setPosition(0);
         hw.sorter.setPosition(SORTER_FIRST_POS);
 
 
