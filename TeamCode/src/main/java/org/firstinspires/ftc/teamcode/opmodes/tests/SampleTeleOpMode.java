@@ -191,6 +191,7 @@ public class SampleTeleOpMode extends LinearOpMode {
             }
             previousXState = currentXState;
 
+            hw.light.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
                     outtakeCommand.setMaxRPM(3900);
