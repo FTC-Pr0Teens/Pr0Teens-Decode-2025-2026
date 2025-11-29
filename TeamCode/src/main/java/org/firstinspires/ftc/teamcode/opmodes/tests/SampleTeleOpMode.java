@@ -129,7 +129,6 @@ public class SampleTeleOpMode extends LinearOpMode {
 //            } else if (obelisk == "PGP"){
 //
 //            } else if (obelisk == "GPP"){
-//
 //            }
             hw.color.enableLed(true);
 
