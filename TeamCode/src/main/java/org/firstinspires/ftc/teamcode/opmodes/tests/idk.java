@@ -90,12 +90,6 @@ public class idk extends LinearOpMode {
         // Loop while OpMode is running
         while (opModeIsActive()) {
             processTelemetry();
-            if (isOuttakeMotorOn){
-                outtakeCommand.setMaxRPM(3000);
-                outtakeCommand.spinup();
-            } else {
-                outtakeCommand.stopShooter();
-            }
 
             mecanumCommand.normalMove(
                     -gamepad1.left_stick_y,
@@ -126,6 +120,13 @@ public class idk extends LinearOpMode {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
             }
             previousXState = currentXState;
+
+            if (isOuttakeMotorOn){
+                outtakeCommand.setMaxRPM(3000);
+                outtakeCommand.spinup();
+            } else {
+                outtakeCommand.stopShooter();
+            }
 
             // --- Pusher up on Y  ---
             boolean currentYState = gamepad1.y;

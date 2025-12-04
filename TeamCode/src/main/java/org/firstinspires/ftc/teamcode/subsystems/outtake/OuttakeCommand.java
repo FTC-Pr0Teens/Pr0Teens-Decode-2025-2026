@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.outtake;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -67,6 +68,7 @@ public class OuttakeCommand {
         this.targetRPM1 = DEFAULT_RPM1;
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
+        hw.pusher1.setDirection(Servo.Direction.REVERSE);
         // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
     }
 
@@ -148,7 +150,7 @@ public class OuttakeCommand {
             return true;
         }
 
-        if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
+        if (pusherTimer.milliseconds() >= PUSHER_TIME) {
             pusherDown();
             isPusherUp = false;
             return true;
@@ -169,12 +171,12 @@ public class OuttakeCommand {
         return true;
     }
 
-    public void pusherUp(){
+    public void pusherUp() {
         hw.pusher.setPosition(PUSHER_UP);
         hw.pusher1.setPosition(PUSHER_UP1);
     }
 
-    public void pusherDown(){
+    public void pusherDown() {
         hw.pusher.setPosition(PUSHER_DOWN);
         hw.pusher1.setPosition(PUSHER_DOWN1);
     }
