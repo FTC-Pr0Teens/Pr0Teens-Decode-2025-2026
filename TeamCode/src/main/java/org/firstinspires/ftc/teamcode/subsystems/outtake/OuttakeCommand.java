@@ -25,7 +25,7 @@ public class OuttakeCommand {
     double seconds_In_A_Minute = 60.0;
     public static double Kd = 0.0;
     public static double Kp = 0.8;
-    public static double Ki = 0.00 ;
+    public static double Ki = 0.00;
     private double error = 0;
     private double lastError = 0;
     private double integralSum = 0;
@@ -67,7 +67,7 @@ public class OuttakeCommand {
         this.targetRPM1 = DEFAULT_RPM1;
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
-       // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
+        // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
     }
 
     //returns whether or not we have reached the correctRPM
@@ -75,31 +75,34 @@ public class OuttakeCommand {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM - currentRPM) < 200;
     }
+
     public boolean isRPMReachedFar() {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM1 - currentRPM) < 200;
     }
 
 
-    public boolean spinup(){
+    public boolean spinup() {
         double targetTPS = targetRPM * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
         hw.shooter2.setVelocity(targetTPS);
 
         return isRPMReached();
     }
-    public boolean spinupfar(){
+
+    public boolean spinupfar() {
         double targetTPS = targetRPM1 * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
         return isRPMReachedFar();
     }
 
 
-    public void stopShooter(){
+    public void stopShooter() {
         hw.shooter.setVelocity(0);
+        hw.shooter2.setVelocity(0);
     }
 
-    public void setMaxRPM(int maxRPM){
+    public void setMaxRPM(int maxRPM) {
         targetRPM = maxRPM;
     }
 
@@ -137,24 +140,21 @@ public class OuttakeCommand {
         return outputPositionalValue;
     }
 
-    public void transfer(boolean currentYState, boolean currentBState){
-        boolean previousYState = currentYState;
-        if (currentYState && !previousYState) {
-            if (!isPusherUp) {
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                pusherTimer.reset();
-                isPusherUp = true;
-            }
+    public boolean transfer() {
+        if (!isPusherUp) {
+            pusherUp();
+            pusherTimer.reset();
+            isPusherUp = true;
+            return true;
         }
 
         if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
-            hw.pusher.setPosition(PUSHER_DOWN);
-            hw.pusher1.setPosition(PUSHER_DOWN1);
+            pusherDown();
             isPusherUp = false;
+            return true;
         }
 
-        if (currentBState && sorterTimer.milliseconds() > 800 && !isPusherUp) {
+        if (sorterTimer.milliseconds() > 800 && !isPusherUp) {
             sorterTimer.reset();
             if (sorterpos == 0) {
                 hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
@@ -164,9 +164,20 @@ public class OuttakeCommand {
                 hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
             }
             sorterpos = (sorterpos + 1) % 3;
+            return false;
         }
+        return true;
     }
 
+    public void pusherUp(){
+        hw.pusher.setPosition(PUSHER_UP);
+        hw.pusher1.setPosition(PUSHER_UP1);
+    }
+
+    public void pusherDown(){
+        hw.pusher.setPosition(PUSHER_DOWN);
+        hw.pusher1.setPosition(PUSHER_DOWN1);
+    }
 }
 
 

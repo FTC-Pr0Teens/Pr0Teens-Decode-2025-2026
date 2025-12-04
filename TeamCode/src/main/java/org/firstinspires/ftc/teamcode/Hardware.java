@@ -62,9 +62,9 @@ public class Hardware {
         this.shooter2 = hwMap.get(DcMotorEx.class, Specifications.SHOOTER2);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
+//        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
 
-        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
+//        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 
