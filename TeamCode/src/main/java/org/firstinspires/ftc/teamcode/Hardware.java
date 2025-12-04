@@ -34,6 +34,8 @@ public class Hardware {
     public final DcMotorEx lb;
     public final DcMotorEx rb;
     public final DcMotorEx shooter;
+    public final DcMotorEx shooter2;
+
     //     Odometry
     public final GoBildaPinpointDriver pinPointOdo;
     public WebcamName logitech;
@@ -57,6 +59,7 @@ public class Hardware {
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
+        this.shooter2 = hwMap.get(DcMotorEx.class, Specifications.SHOOTER2);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
