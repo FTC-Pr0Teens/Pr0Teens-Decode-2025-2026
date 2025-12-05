@@ -73,6 +73,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
             if (gamepad1.x) {
                 ALLIANCE = "blue";
             }
+
             hw.pusher.setPosition(0);
             hw.pusher1.setPosition(0);
             hw.sorter.setPosition(0);
