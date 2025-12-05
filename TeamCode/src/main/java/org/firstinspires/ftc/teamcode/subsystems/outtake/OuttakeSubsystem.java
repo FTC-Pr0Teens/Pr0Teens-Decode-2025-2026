@@ -14,6 +14,7 @@ public class OuttakeSubsystem {
     private double error = 0;
     private double lastError = 0;
     private double integralSum = 0;
+
     private double timeChange = 0;
     private double errorChange = 0;
     public static double Kd = 0.0;

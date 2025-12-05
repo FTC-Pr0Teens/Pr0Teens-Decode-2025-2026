@@ -53,12 +53,16 @@ public class OuttakeCommand {
     private static final double SORTER_THIRD_POS = 0.90;
 
     private boolean isPusherUp = false;
+    private boolean firstRun = true; // ADD THIS
     private static final double PUSHER_UP = 0.39;
     private static final double PUSHER_DOWN = 0.0;
     private static final double PUSHER_UP1 = 0.19;
     private static final double PUSHER_DOWN1 = 0;
-    private static final long PUSHER_TIME = 750;
+    private static final long PUSHER_TIME = 500;
+
     private int sorterpos = 0;
+
+    private boolean pushersequence = false;
 
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
@@ -69,7 +73,11 @@ public class OuttakeCommand {
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
-        // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
+
+        isPusherUp = false;
+        firstRun = true;
+        sorterTimer.reset();
+        pusherTimer.reset();
     }
 
     //returns whether or not we have reached the correctRPM
@@ -141,33 +149,37 @@ public class OuttakeCommand {
 
         return outputPositionalValue;
     }
-
     public boolean transfer() {
-        if (!isPusherUp) {
+        // first run
+        if (!pushersequence){
+            pushersequence = true;
+        }
+        if (!isPusherUp && pusherTimer.milliseconds() > 800) {
             pusherUp();
             pusherTimer.reset();
             isPusherUp = true;
             return true;
         }
 
-        if (pusherTimer.milliseconds() >= PUSHER_TIME) {
+        if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
             pusherDown();
             isPusherUp = false;
+            sorterTimer.reset();
             return true;
         }
 
-        if (sorterTimer.milliseconds() > 800 && !isPusherUp) {
-            sorterTimer.reset();
-            if (sorterpos == 0) {
-                hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
-            } else if (sorterpos == 1) {
-                hw.sorter.setPosition(SORTER_SECOND_POS);//60 degrees
-            } else if (sorterpos == 2) {
-                hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
-            }
-            sorterpos = (sorterpos + 1) % 3;
-            return false;
-        }
+//        if (!isPusherUp && sorterTimer.milliseconds() > 800) {
+//            if (sorterpos == 0) {
+//                hw.sorter.setPosition(SORTER_FIRST_POS);
+//            } else if (sorterpos == 1) {
+//                hw.sorter.setPosition(SORTER_SECOND_POS);
+//            } else if (sorterpos == 2) {
+//                hw.sorter.setPosition(SORTER_THIRD_POS);
+//            }
+//            sorterpos = (sorterpos + 1) % 3;
+//            return false;
+//        }
+
         return true;
     }
 

@@ -63,10 +63,9 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        hw.pusher1.setDirection(Servo.Direction.REVERSE);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        outtakeCommand.setMaxRPM(4000);
+        outtakeCommand.setMaxRPM(2500);
         while (opModeInInit()) {
             if (gamepad1.b) {
                 ALLIANCE = "red";
@@ -98,7 +97,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
             );
 
             //Intake backwards
-            boolean currentLBumpState = gamepad2.left_bumper;
+            boolean currentLBumpState = gamepad1.left_bumper;
             if (currentLBumpState && !previousLBumpState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 isIntakeMotorOn = !isIntakeMotorOn;
@@ -107,7 +106,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
             previousLBumpState = currentLBumpState;
 
             // --- Intake toggle on A ---
-            boolean currentAState = gamepad2.a;
+            boolean currentAState = gamepad1.a;
             if (currentAState && !previousAState) {
                 hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
                 isIntakeMotorOn = !isIntakeMotorOn;
@@ -116,7 +115,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
             previousAState = currentAState;
 
             // --- Pusher up on Y  ---
-            boolean currentYState = gamepad2.y;
+            boolean currentYState = gamepad1.y;
             if (currentYState && !previousYState) {
                 // Start pulse only if not already pulsing
                 if (!isPusherUp) {
@@ -135,13 +134,13 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
                 isPusherUp = false;
             }
 
-            boolean currentXState = gamepad2.x;
+            boolean currentXState = gamepad1.x;
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
             }
             previousXState = currentXState;
 
-            if (gamepad2.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
+            if (gamepad1.b && sorterTimer.milliseconds() > 800 && !isPusherUp) {
                 sorterTimer.reset();
                 if (sorterpos == 0) {
                     hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
@@ -153,10 +152,10 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
                 sorterpos = (sorterpos + 1) % 3;
             }
 
-            if (gamepad2.right_bumper && !previousAimButton) {
+            if (gamepad1.right_bumper && !previousAimButton) {
                 autoAimState = !autoAimState;   // toggle on *edge* of button press
             }
-            previousAimButton = gamepad2.right_bumper;
+            previousAimButton = gamepad1.right_bumper;
 
             if (autoAimState) {
                 if (logitechsub.targetApril() > 5) {
@@ -177,6 +176,9 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
                     outtakeCommand.setMaxRPM(2300);
                 }
             }
+
+
+
         }
     }
     public void processTelemetry() {

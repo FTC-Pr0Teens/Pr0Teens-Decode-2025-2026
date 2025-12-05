@@ -105,7 +105,7 @@ public class LimelightSubsystem {
 
             for (LLResultTypes.FiducialResult april : detections) {
                 if (april.getFiducialId() == targetid) {
-                    aprilx = april.getTargetXDegrees();
+                    aprilx = april.getTargetXPixels();
                     telemetry.addData("April tag x ", april.getTargetXPixels());
                     telemetry.addData("April tag y ", april.getTargetYPixels());
                     telemetry.addData("April tag id ", april.getFiducialId());
@@ -113,6 +113,21 @@ public class LimelightSubsystem {
             }
         }
         return aprilx;
+    }
+
+    public double distance(Telemetry telemetry) {
+        LLResult results = limelight.getLatestResult();
+
+        if (results.isValid()) {
+            List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
+
+            for (LLResultTypes.FiducialResult april : detections) {
+                if (april.getFiducialId() == targetid) {
+                    aprily = april.getTargetYPixels();
+                }
+            }
+        }
+        return aprily;
     }
 
     public void telemetryLimelight(Telemetry telemetry) {

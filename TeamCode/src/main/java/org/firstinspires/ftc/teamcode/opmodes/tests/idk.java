@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,7 +30,7 @@ public class idk extends LinearOpMode {
     private boolean previousAState = false;
     private boolean previousBState = false;
     private boolean previousXState = false;
-    private boolean previousYState = false;
+    private boolean lastYState = false;
     private boolean previousLBumpState = false;
     private boolean isIntakeMotorOn = false;
     private boolean isOuttakeMotorOn = false;
@@ -52,7 +53,8 @@ public class idk extends LinearOpMode {
     private String ALLIANCE = "blue";
     private boolean autoAimState = false;
     private boolean previousAimButton = false;
-    boolean runPusher = false;
+    private boolean runPusher = false;
+    private LimelightSubsystem limelightsub;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,13 +62,11 @@ public class idk extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         logitechsub = new LogitechSubsystem(hw, ALLIANCE);
-        outtakeCommand = new OuttakeCommand(hw);
-
+        limelightsub = new LimelightSubsystem(hw, telemetry);
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
-        hw.pusher1.setDirection(Servo.Direction.REVERSE);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hw.shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -79,13 +79,18 @@ public class idk extends LinearOpMode {
             if (gamepad1.x) {
                 ALLIANCE = "blue";
             }
-            hw.pusher.setPosition(0);
-            hw.pusher1.setPosition(0);
             hw.sorter.setPosition(0);
 //            hw.light.setPosition(0);
         }
 
         waitForStart();
+
+        isPusherUp = false;
+        runPusher = false;
+        lastYState = gamepad1.y;  // ADD THIS - sync with actual button state
+
+        hw.pusher.setPosition(PUSHER_DOWN);
+        hw.pusher1.setPosition(PUSHER_DOWN1);
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
@@ -124,37 +129,44 @@ public class idk extends LinearOpMode {
             if (isOuttakeMotorOn){
                 outtakeCommand.setMaxRPM(3000);
                 outtakeCommand.spinup();
+                if (limelightsub.apriltag(telemetry) > 3) {
+                    hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
+                    hw.turret.setPower(1.0);
+                } else if (limelightsub.apriltag(telemetry) > -3) {
+                    hw.turret.setDirection(DcMotorSimple.Direction.REVERSE);
+                    hw.turret.setPower(1.0);
+                } else {
+                    hw.turret.setPower(0);
+                }
             } else {
                 outtakeCommand.stopShooter();
             }
 
             // --- Pusher up on Y  ---
             boolean currentYState = gamepad1.y;
-
-            if (gamepad1.y && !runPusher){
+            if (currentYState && !lastYState) {
                 runPusher = true;
             }
+            lastYState = currentYState;
 
-            if (runPusher){
+            if (runPusher) {
                 runPusher = outtakeCommand.transfer();
             }
 
-
-
             if (gamepad1.right_bumper && !previousAimButton) {
-                autoAimState = !autoAimState;   // toggle on *edge* of button press
+                autoAimState = !autoAimState;
             }
-            previousAimButton = gamepad2.right_bumper;
+            previousAimButton = gamepad1.right_bumper;
 
-            if (autoAimState) {
-                if (logitechsub.targetApril() > 5) {
-                    mecanumCommand.pivot(0.2);
-                } else if (logitechsub.targetApril() < -5) {
-                    mecanumCommand.pivot(-0.2);
-                } else {
-                    mecanumCommand.pivot(0);
-                }
-            }
+//            if (autoAimState) {
+//                if (logitechsub.targetApril() > 5) {
+//                    mecanumCommand.pivot(0.2);
+//                } else if (logitechsub.targetApril() < -5) {
+//                    mecanumCommand.pivot(-0.2);
+//                } else {
+//                    mecanumCommand.pivot(0);
+//                }
+//            }
 
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
