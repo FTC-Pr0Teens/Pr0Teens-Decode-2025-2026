@@ -47,8 +47,7 @@ public class SortingSubsystem {
     enum AUTO_STATE {
         SORT,
         PUSH_UP,
-        PUSH_DOWN,
-        RESET
+        PUSH_DOWN
 
     }
 
@@ -69,50 +68,6 @@ public class SortingSubsystem {
         this.telemetry = telemetry;
         pos = sorter.getPosition();
     }
-
-    public SortingSubsystem(Hardware hw){
-        this.hw = hw;
-        this.sorter = hw.sorter;
-        this.pusher = hw.pusher;
-        timer = new ElapsedTime();
-    }
-
-    public void pusherDown(){
-        hw.pusher.setPosition(PUSHER_DOWN);
-        hw.pusher1.setPosition(PUSHER_DOWN1);
-    }
-
-    public void pusherUp(){
-        hw.pusher.setPosition(PUSHER_UP);
-        hw.pusher1.setPosition(PUSHER_UP1);
-    }
-
-    int index = 1;
-    public void rotate(){
-        index++;
-        switch (index){
-            case 1:
-                hw.sorter.setPosition(SORTER_FIRST_POS);
-                break;
-            case 2:
-                hw.sorter.setPosition(SORTER_SECOND_POS);
-                break;
-            case 3:
-                hw.sorter.setPosition(SORTER_THIRD_POS);
-                break;
-            case 4:
-                index = 1;
-                hw.sorter.setPosition(SORTER_FIRST_POS);
-                break;
-        }
-
-    }
-
-    public void init(){
-        hw.sorter.setPosition(SORTER_FIRST_POS);
-        pusherDown();
-    }
-
 
     public void intake(String colour) {
         length = intake.size();
@@ -192,29 +147,6 @@ public class SortingSubsystem {
                     isPusherUp = false;
                 }
                 break;
-        }
-    }
-
-    int currentIndex = 1;
-    public void outtakeArtifact(){
-        switch (autoState) {
-            case PUSH_UP:
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                pusherTimer.reset();
-                autoState = AUTO_STATE.PUSH_DOWN;
-                break;
-
-            case PUSH_DOWN:
-                if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
-                    hw.pusher.setPosition(PUSHER_DOWN);
-                    hw.pusher1.setPosition(PUSHER_DOWN1);
-                    isPusherUp = false;
-                }
-                break;
-            case RESET:
-
-
         }
     }
 

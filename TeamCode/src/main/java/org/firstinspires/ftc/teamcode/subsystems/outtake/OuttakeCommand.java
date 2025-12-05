@@ -140,8 +140,6 @@ public class OuttakeCommand {
         return outputPositionalValue;
     }
 
-
-
     public boolean transfer() {
         if (!isPusherUp) {
             pusherUp();
