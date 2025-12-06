@@ -58,11 +58,18 @@ public class OuttakeCommand {
     private static final double PUSHER_DOWN = 0.0;
     private static final double PUSHER_UP1 = 0.19;
     private static final double PUSHER_DOWN1 = 0;
-    private static final long PUSHER_TIME = 500;
+    private static final long PUSHER_TIME = 400;
+    private static final long SORTER_TIME = 400;
 
     private int sorterpos = 0;
+    private TransferState state = TransferState.FIRST;
 
-    private boolean pushersequence = false;
+    private enum TransferState {
+        PUSH_UP,
+        PUSH_DOWN,
+        SORT,
+        FIRST
+    }
 
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
@@ -71,12 +78,12 @@ public class OuttakeCommand {
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
 
         isPusherUp = false;
         firstRun = true;
-        sorterTimer.reset();
         pusherTimer.reset();
     }
 
@@ -126,7 +133,6 @@ public class OuttakeCommand {
 
         derivative = (error - lastError) / deltaTime;
 
-
         if (Math.abs(error) < 300 && Math.abs(integralSum) < integralLimit) {
             integralSum += error * deltaTime;
         } else {
@@ -149,39 +155,63 @@ public class OuttakeCommand {
 
         return outputPositionalValue;
     }
+
     public boolean transfer() {
-        // first run
-        if (!pushersequence){
-            pushersequence = true;
-        }
-        if (!isPusherUp && pusherTimer.milliseconds() > 800) {
-            pusherUp();
-            pusherTimer.reset();
-            isPusherUp = true;
-            return true;
-        }
+        switch (state) {
+            case FIRST:
+                pusherUp();
+                pusherTimer.reset();
+                state = TransferState.PUSH_UP;
+                return true;
 
-        if (isPusherUp && pusherTimer.milliseconds() >= PUSHER_TIME) {
-            pusherDown();
-            isPusherUp = false;
-            sorterTimer.reset();
-            return true;
+            case PUSH_UP:
+                if (pusherTimer.milliseconds() >= PUSHER_TIME) {
+                    pusherDown();
+                    sorterTimer.reset();
+                    state = TransferState.PUSH_DOWN;
+                }
+                return true;
+
+            case PUSH_DOWN:
+                if (sorterTimer.milliseconds() >= SORTER_TIME) {
+                    state = TransferState.SORT;
+                }
+                return true;
+
+            case SORT:
+                sorterpos = (sorterpos + 1) % 3;
+                if (sorterpos == 0) {
+                    hw.sorter.setPosition(SORTER_FIRST_POS);
+                }
+                if (sorterpos == 1) {
+                    hw.sorter.setPosition(SORTER_SECOND_POS);
+                }
+                if (sorterpos == 2) {
+                    hw.sorter.setPosition(SORTER_THIRD_POS);
+                }
+
+                state = TransferState.FIRST;
+                return false;
+
+            default:
+                return false;
         }
-
-//        if (!isPusherUp && sorterTimer.milliseconds() > 800) {
-//            if (sorterpos == 0) {
-//                hw.sorter.setPosition(SORTER_FIRST_POS);
-//            } else if (sorterpos == 1) {
-//                hw.sorter.setPosition(SORTER_SECOND_POS);
-//            } else if (sorterpos == 2) {
-//                hw.sorter.setPosition(SORTER_THIRD_POS);
-//            }
-//            sorterpos = (sorterpos + 1) % 3;
-//            return false;
-//        }
-
-        return true;
     }
+
+    public void sorter(boolean check){
+        if (check && sorterTimer.milliseconds() > SORTER_TIME && !isPusherUp) {
+            sorterTimer.reset();
+            if (sorterpos == 0) {
+                hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
+            } else if (sorterpos == 1) {
+                hw.sorter.setPosition(SORTER_SECOND_POS);//60 degrees
+            } else if (sorterpos == 2) {
+                hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
+            }
+            sorterpos = (sorterpos + 1) % 3;
+        }
+    }
+
 
     public void pusherUp() {
         hw.pusher.setPosition(PUSHER_UP);

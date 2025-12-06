@@ -41,11 +41,6 @@ public class idk extends LinearOpMode {
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 750;
 
-    private final ElapsedTime pusherTimer = new ElapsedTime();
-    private final ElapsedTime sorterTimer = new ElapsedTime();
-
-    private boolean isPusherUp = false;
-
     int sorterpos = 0;
     private static final double SORTER_FIRST_POS = 0.0;
     private static final double SORTER_SECOND_POS = 0.45;
@@ -80,17 +75,17 @@ public class idk extends LinearOpMode {
                 ALLIANCE = "blue";
             }
             hw.sorter.setPosition(0);
+            hw.pusher.setPosition(PUSHER_DOWN);
+            hw.pusher1.setPosition(PUSHER_DOWN1);
+            hw.stopper.setDirection(Servo.Direction.FORWARD);
+            hw.stopper.setPosition(0.2);
 //            hw.light.setPosition(0);
         }
 
         waitForStart();
 
-        isPusherUp = false;
         runPusher = false;
-        lastYState = gamepad1.y;  // ADD THIS - sync with actual button state
-
-        hw.pusher.setPosition(PUSHER_DOWN);
-        hw.pusher1.setPosition(PUSHER_DOWN1);
+        lastYState = gamepad1.y;
 
         // Loop while OpMode is running
         while (opModeIsActive()) {
@@ -129,6 +124,10 @@ public class idk extends LinearOpMode {
             if (isOuttakeMotorOn){
                 outtakeCommand.setMaxRPM(3000);
                 outtakeCommand.spinup();
+                hw.stopper.setDirection(Servo.Direction.FORWARD);
+                hw.stopper.setPosition(0.5);
+
+
                 if (limelightsub.apriltag(telemetry) > 3) {
                     hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
                     hw.turret.setPower(1.0);
@@ -138,19 +137,27 @@ public class idk extends LinearOpMode {
                 } else {
                     hw.turret.setPower(0);
                 }
+
             } else {
                 outtakeCommand.stopShooter();
+                hw.stopper.setPosition(0);
             }
 
             // --- Pusher up on Y  ---
-            boolean currentYState = gamepad1.y;
-            if (currentYState && !lastYState) {
+            if (gamepad1.y && !lastYState) {
                 runPusher = true;
             }
-            lastYState = currentYState;
+
+            lastYState = gamepad1.y;
 
             if (runPusher) {
                 runPusher = outtakeCommand.transfer();
+            }
+
+            if (gamepad1.b) {
+                outtakeCommand.sorter(true);
+            } else {
+                outtakeCommand.sorter(false);
             }
 
             if (gamepad1.right_bumper && !previousAimButton) {

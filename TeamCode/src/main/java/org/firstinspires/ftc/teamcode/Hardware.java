@@ -35,6 +35,7 @@ public class Hardware {
     public final DcMotorEx rb;
     public final DcMotorEx shooter;
     public final DcMotorEx shooter2;
+    public final Servo stopper;
 
     //     Odometry
     public final GoBildaPinpointDriver pinPointOdo;
@@ -62,6 +63,8 @@ public class Hardware {
         this.shooter2 = hwMap.get(DcMotorEx.class, Specifications.SHOOTER2);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
+        this.stopper = hwMap.get(Servo.class, Specifications.STOPPER);
+
 //        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
 
 //        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
