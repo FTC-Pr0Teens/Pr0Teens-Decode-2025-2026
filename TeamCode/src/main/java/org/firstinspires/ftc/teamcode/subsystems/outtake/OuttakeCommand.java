@@ -77,6 +77,8 @@ public class OuttakeCommand {
         this.shooter2 = hw.shooter2;
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
+        hw.shooter.setVelocityPIDFCoefficients(80, 0, 0, 0);
+        hw.shooter2.setVelocityPIDFCoefficients(80, 0, 0, 0);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
@@ -97,7 +99,6 @@ public class OuttakeCommand {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM1 - currentRPM) < 200;
     }
-
 
     public boolean spinup() {
         double targetTPS = targetRPM * PPR_of_6000_motor / seconds_In_A_Minute;
@@ -201,6 +202,7 @@ public class OuttakeCommand {
     public void sorter(boolean check){
         if (check && sorterTimer.milliseconds() > SORTER_TIME && !isPusherUp) {
             sorterTimer.reset();
+            sorterpos = (sorterpos + 1) % 3;
             if (sorterpos == 0) {
                 hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
             } else if (sorterpos == 1) {
@@ -208,7 +210,6 @@ public class OuttakeCommand {
             } else if (sorterpos == 2) {
                 hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
             }
-            sorterpos = (sorterpos + 1) % 3;
         }
     }
 

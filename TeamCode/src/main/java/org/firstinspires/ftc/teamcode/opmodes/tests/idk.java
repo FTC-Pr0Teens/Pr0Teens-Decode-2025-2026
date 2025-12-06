@@ -175,15 +175,15 @@ public class idk extends LinearOpMode {
 //                }
 //            }
 
-            if (isOuttakeMotorOn) {
-                if (logitechsub.distance() >= 100) {
-                    outtakeCommand.setMaxRPM(3500);
-                } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-                    outtakeCommand.setMaxRPM(2800);
-                } else if (logitechsub.distance() <= 35) {
-                    outtakeCommand.setMaxRPM(2300);
-                }
-            }
+//            if (isOuttakeMotorOn) {
+//                if (logitechsub.distance() >= 100) {
+//                    outtakeCommand.setMaxRPM(3500);
+//                } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
+//                    outtakeCommand.setMaxRPM(2800);
+//                } else if (logitechsub.distance() <= 35) {
+//                    outtakeCommand.setMaxRPM(2300);
+//                }
+//            }
 
 
 
@@ -191,8 +191,8 @@ public class idk extends LinearOpMode {
     }
     public void processTelemetry() {
         telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
-        telemetry.addData("x", logitechsub.targetApril());
-        telemetry.addData("y", logitechsub.distance());
+        telemetry.addData("x", limelightsub.apriltag(telemetry));
+        telemetry.addData("y", limelightsub.distance(telemetry));
         telemetry.update();
     }
 }
