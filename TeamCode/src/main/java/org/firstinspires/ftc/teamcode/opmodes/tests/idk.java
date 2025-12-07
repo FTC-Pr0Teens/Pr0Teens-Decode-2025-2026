@@ -125,7 +125,7 @@ public class idk extends LinearOpMode {
             previousXState = currentXState;
 
             if (isOuttakeMotorOn){
-                outtakeCommand.setMaxRPM(0);
+                outtakeCommand.setMaxRPM(4000);
                 outtakeCommand.spinup();
                 hw.stopper.setDirection(Servo.Direction.FORWARD);
                 hw.stopper.setPosition(0.5);
