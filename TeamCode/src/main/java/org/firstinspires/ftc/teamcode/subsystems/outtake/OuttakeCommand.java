@@ -120,8 +120,28 @@ public class OuttakeCommand {
         hw.shooter2.setVelocity(0);
     }
 
-    public void setMaxRPM(int maxRPM) {
+    public void setMaxRPM(double maxRPM) {
         targetRPM = maxRPM;
+    }
+
+    public double getShooterRPM(double distance) {
+
+        // Example data
+        double[] dist = {50, 70, 90, 110, 130};
+        double[] rpm  = {1800, 1900, 2050, 2300, 2600};
+
+        // If outside the range:
+        if (distance <= dist[0]) return rpm[0];
+        if (distance >= dist[dist.length - 1]) return rpm[rpm.length - 1];
+
+        // Otherwise interpolate between points
+        for (int i = 0; i < dist.length - 1; i++) {
+            if (distance >= dist[i] && distance <= dist[i+1]) {
+                return lerp(distance, dist[i], dist[i+1], rpm[i], rpm[i+1]);
+            }
+        }
+
+        return rpm[0];
     }
 
     public double dualShooterPID(double targetRPM, double currentRPM) {
@@ -222,6 +242,10 @@ public class OuttakeCommand {
     public void pusherDown() {
         hw.pusher.setPosition(PUSHER_DOWN);
         hw.pusher1.setPosition(PUSHER_DOWN1);
+    }
+
+    public double lerp(double x, double x0, double x1, double y0, double y1) {
+        return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
     }
 }
 
