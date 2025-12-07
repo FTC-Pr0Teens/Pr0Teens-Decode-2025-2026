@@ -142,7 +142,9 @@ public class idk extends LinearOpMode {
             } else {
                 outtakeCommand.stopShooter();
                 hw.stopper.setPosition(0);
+                hw.turret.setPower(0);
             }
+
 
             // --- Pusher up on Y  ---
             if (gamepad1.y && !lastYState) {
