@@ -50,6 +50,7 @@ public class idk extends LinearOpMode {
     private boolean previousAimButton = false;
     private boolean runPusher = false;
     private LimelightSubsystem limelightsub;
+    private double power;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,6 +63,7 @@ public class idk extends LinearOpMode {
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
+        hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hw.shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -118,25 +120,24 @@ public class idk extends LinearOpMode {
             boolean currentXState = gamepad1.x;
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
+
             }
             previousXState = currentXState;
 
             if (isOuttakeMotorOn){
-                outtakeCommand.setMaxRPM(3000);
+                outtakeCommand.setMaxRPM(0);
                 outtakeCommand.spinup();
                 hw.stopper.setDirection(Servo.Direction.FORWARD);
                 hw.stopper.setPosition(0.5);
 
-
-                if (limelightsub.apriltag(telemetry) > 3) {
-                    hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
-                    hw.turret.setPower(1.0);
-                } else if (limelightsub.apriltag(telemetry) > -3) {
-                    hw.turret.setDirection(DcMotorSimple.Direction.REVERSE);
-                    hw.turret.setPower(1.0);
-                } else {
-                    hw.turret.setPower(0);
-                }
+//                if (limelightsub.apriltag(telemetry) >= 2) { hw.turret.setPower(-0.1); } else if (limelightsub.apriltag(telemetry) >= -2) { hw.turret.setPower(0.1); } else { hw.turret.setPower(0); }
+                    if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
+                        power = 0.03 * limelightsub.apriltag(telemetry);
+                        power = Math.max(-1.0, Math.min(1.0, power));
+                        hw.turret.setPower(-power);
+                    } else {
+                        hw.turret.setPower(0);
+                    }
 
             } else {
                 outtakeCommand.stopShooter();
@@ -193,6 +194,8 @@ public class idk extends LinearOpMode {
         telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
         telemetry.addData("x", limelightsub.apriltag(telemetry));
         telemetry.addData("y", limelightsub.distance(telemetry));
+        telemetry.addData("power", power);
+
         telemetry.update();
     }
 }

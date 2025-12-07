@@ -100,15 +100,12 @@ public class LimelightSubsystem {
     public double apriltag(Telemetry telemetry) {
         LLResult results = limelight.getLatestResult();
 
-        if (results.isValid()) {
+        if (results.isValid() && results != null) {
             List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
 
             for (LLResultTypes.FiducialResult april : detections) {
-                if (april.getFiducialId() == targetid) {
-                    aprilx = april.getTargetXPixels();
-                    telemetry.addData("April tag x ", april.getTargetXPixels());
-                    telemetry.addData("April tag y ", april.getTargetYPixels());
-                    telemetry.addData("April tag id ", april.getFiducialId());
+                if (april.getFiducialId() == 24) {
+                    aprilx = april.getTargetXDegrees();
                 }
             }
         }
@@ -122,7 +119,7 @@ public class LimelightSubsystem {
             List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
 
             for (LLResultTypes.FiducialResult april : detections) {
-                if (april.getFiducialId() == targetid) {
+                if (april.getFiducialId() == 24) {
                     aprily = april.getTargetYPixels();
                 }
             }
