@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.Hardware;
 public class OuttakeCommand {
 
     private Hardware hw;
-    private OuttakeSubsystem outtakeSubsystem;
 
     private DcMotorEx shooter;
     private DcMotorEx shooter2;
@@ -77,8 +76,8 @@ public class OuttakeCommand {
         this.shooter2 = hw.shooter2;
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
-        hw.shooter.setVelocityPIDFCoefficients(80, 0, 0, 0);
-        hw.shooter2.setVelocityPIDFCoefficients(80, 0, 0, 0);
+        hw.shooter.setVelocityPIDFCoefficients(100, 0, 0, 0);
+        hw.shooter2.setVelocityPIDFCoefficients(100, 0, 0, 0);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
@@ -126,9 +125,8 @@ public class OuttakeCommand {
 
     public double getShooterRPM(double distance) {
 
-        // Example data
-        double[] dist = {50, 70, 90, 110, 130};
-        double[] rpm  = {1800, 1900, 2050, 2300, 2600};
+        double[] dist = {60, 110, 140};
+        double[] rpm  = {2200, 2800, 4500};
 
         // If outside the range:
         if (distance <= dist[0]) return rpm[0];
@@ -144,38 +142,6 @@ public class OuttakeCommand {
         return rpm[0];
     }
 
-    public double dualShooterPID(double targetRPM, double currentRPM) {
-        error = targetRPM - currentRPM;
-
-        double currentTime = timer.seconds();
-        double deltaTime = currentTime - lastTime;
-        if (deltaTime <= 0) deltaTime = 0.001;
-
-
-        derivative = (error - lastError) / deltaTime;
-
-        if (Math.abs(error) < 300 && Math.abs(integralSum) < integralLimit) {
-            integralSum += error * deltaTime;
-        } else {
-            integralSum *= 0.95;
-        }
-
-        double maxRPM = 6000.0;
-        double kF = 0.9;
-        double feedForward = kF * (targetRPM / maxRPM);
-
-        //don't need integral and derivative
-        //outputPositionalValue = feedForward + (Kp * error) + (Kd * derivative) + (Ki * integralSum);
-        outputPositionalValue = feedForward + (Kp * error);
-
-        outputPositionalValue = Math.max(0.0, Math.min(outputLimit, outputPositionalValue));
-
-        errorChange = error - lastError;
-        lastError = error;
-        lastTime = currentTime;
-
-        return outputPositionalValue;
-    }
 
     public boolean transfer() {
         switch (state) {
@@ -247,6 +213,7 @@ public class OuttakeCommand {
     public double lerp(double x, double x0, double x1, double y0, double y1) {
         return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
     }
+
 }
 
 
