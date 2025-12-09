@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.cameras;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
-
-import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 
 import java.util.List;
 
@@ -31,25 +30,36 @@ public class LimelightSubsystem {
     private double currentHeading = 0;
     double rotationalPower = 0;
     private boolean active = false;
+    private String alliance;
+    private int targetid;
+    private double aprilx;
+    private double aprily;
 
-    public LimelightSubsystem(Hardware hw, Telemetry telemetry){
+
+    public LimelightSubsystem(Hardware hw, Telemetry telemetry) {
         this.hw = hw;
         this.limelight = hw.limelight;
 
         telemetry.setMsTransmissionInterval(11);
 
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(2);
 
         limelight.start();
 
         telemetry.addLine("Start ");
         telemetry.update();
 
+        if (alliance == "blue") {
+            targetid = 20;
+        } else if (alliance == "red") {
+            targetid = 24;
+        }
     }
 
-    public String ballColor(Telemetry telemetry){
+    public String ballColor(Telemetry telemetry) {
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
+
             List<LLResultTypes.DetectorResult> detections = result.getDetectorResults();
             if (!detections.isEmpty()) {
                 LLResultTypes.DetectorResult firstDetection = detections.get(0);
@@ -87,7 +97,37 @@ public class LimelightSubsystem {
         return color;
     }
 
-    public void telemetryLimelight(Telemetry telemetry){
+    public double apriltag(Telemetry telemetry) {
+        LLResult results = limelight.getLatestResult();
+
+        if (results.isValid() && results != null) {
+            List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
+
+            for (LLResultTypes.FiducialResult april : detections) {
+                if (april.getFiducialId() == 24) {
+                    aprilx = april.getTargetXDegrees();
+                }
+            }
+        }
+        return aprilx;
+    }
+
+    public double distance(Telemetry telemetry) {
+        LLResult results = limelight.getLatestResult();
+
+        if (results.isValid()) {
+            List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
+
+            for (LLResultTypes.FiducialResult april : detections) {
+                if (april.getFiducialId() == 24) {
+                    aprily = april.getTargetYPixels();
+                }
+            }
+        }
+        return aprily;
+    }
+
+    public void telemetryLimelight(Telemetry telemetry) {
         LLResult result = limelight.getLatestResult();
 
         if (result.isValid()) {

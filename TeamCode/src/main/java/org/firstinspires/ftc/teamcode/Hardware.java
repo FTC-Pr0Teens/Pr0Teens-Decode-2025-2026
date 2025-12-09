@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import android.widget.GridLayout;
+
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -40,6 +42,7 @@ public class Hardware {
     public Limelight3A limelight;
     public RevBlinkinLedDriver light;
     public ColorSensor color;
+    private Servo stopper;
 
 
     public Hardware(HardwareMap hwMap) {
@@ -59,9 +62,10 @@ public class Hardware {
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-//        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
+        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
+        this.stopper = hwMap.get(Servo.class, Specifications.STOPPER);
 
-//        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
+        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 

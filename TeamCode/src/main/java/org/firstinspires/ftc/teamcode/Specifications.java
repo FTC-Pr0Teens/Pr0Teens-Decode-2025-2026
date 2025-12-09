@@ -45,6 +45,8 @@ public class Specifications {
     public static final String BKRT_MOTOR = "rb";
     public static final String INTAKE = "intake";
     public static final String SHOOTER = "shooter";
+    public static final String SHOOTER2 = "shooter2";
+
 
     public static final String LIME_LIGHT = "lime";
 
@@ -62,6 +64,8 @@ public class Specifications {
 
     public static final String LIGHT = "led2";
     public static final String COLOR_SENSOR = "color";
+
+    public static final String STOPPER = "stopper";
 
     public static final int CVSmoothing = 30;
 
