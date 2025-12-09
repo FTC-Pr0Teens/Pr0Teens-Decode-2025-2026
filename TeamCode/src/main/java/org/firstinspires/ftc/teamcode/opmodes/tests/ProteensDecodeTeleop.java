@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 
-@TeleOp(name = "Pr0teens Blue Tele", group = "TeleOp")
-public class Pr0teensDecodeTeleop extends LinearOpMode {
+@TeleOp(name = "Pr0teens Red Tele", group = "TeleOp")
+public class ProteensDecodeTeleop extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
@@ -49,7 +49,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
     private static final double SORTER_FIRST_POS = 0.0;
     private static final double SORTER_SECOND_POS = 0.45;
     private static final double SORTER_THIRD_POS = 0.90;
-    private String ALLIANCE = "blue";
+    private String ALLIANCE = "red";
     private boolean autoAimState = false;
     private boolean previousAimButton = false;
 
@@ -80,7 +80,6 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
         // Loop while OpMode is running
         while (opModeIsActive()) {
             processTelemetry();
-            mecanumCommand.processOdometry();
             if (isOuttakeMotorOn){
                 outtakeCommand.spinup();
             } else {
@@ -168,7 +167,7 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
                 if (logitechsub.distance() >= 100) {
                     outtakeCommand.setMaxRPM(4200);
                 } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-                    outtakeCommand.setMaxRPM(3000);
+                    outtakeCommand.setMaxRPM(3200);
                 } else if (logitechsub.distance() <= 35) {
                     outtakeCommand.setMaxRPM(2500);
                 }
@@ -179,8 +178,6 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
         telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
         telemetry.addData("x", logitechsub.targetApril());
         telemetry.addData("y", logitechsub.distance());
-        telemetry.addData("x odo : ", mecanumCommand.getOdoX());
-        telemetry.addData("y oo : ", mecanumCommand.getOdoY());
         telemetry.addData("alliance", ALLIANCE);
         telemetry.update();
     }

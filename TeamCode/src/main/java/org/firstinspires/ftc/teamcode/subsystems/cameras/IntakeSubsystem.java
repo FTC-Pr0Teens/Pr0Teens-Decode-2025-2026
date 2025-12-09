@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.intake;
+package org.firstinspires.ftc.teamcode.subsystems.cameras;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;

@@ -6,27 +6,32 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 import org.firstinspires.ftc.teamcode.Hardware;
-//import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeCommand;
+import org.firstinspires.ftc.teamcode.subsystems.cameras.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
+
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
 @Config
-@Autonomous(name = "Bwedrtvybuhn")
+@Autonomous(name = "Blue Auto")
 public class Blue extends LinearOpMode {
     private Hardware hw;
 
+    ElapsedTime timer;
     private MecanumCommand mecanumCommand;
     private TurretSubsystem turretSubsystem;
-    //    private IntakeCommand intakeCommand;
+    private IntakeSubsystem intakeSubsystem;
     private LogitechSubsystem logitechSubsystem;
     private OuttakeCommand outtakeCommand;
+    boolean firstInstance = true;
 
     enum AUTO_STATE {
         MOVEPRELOAD,
@@ -42,23 +47,14 @@ public class Blue extends LinearOpMode {
         INTAKE_SHOOT,
         INTAKE_SHOOT1,
         INTAKE_SHOOT2,
-        RETURN,
-        CLEAR,
-        NINEBALL_1,
-        NINEBALL_2,
-        NINEBALL_3,
-        TURN_ONE,
-        SUBMERSIBLE_PICKUP,
-        LEAVE,
-        NINEBALL_SHOOT1,
-        NINEBALL_SHOOT2,
-        NINEBALL_SHOOT3,
-        NINEBALL_EMPTY,
-        PICKUP_FIRST,
+        SIX_BALL
 
     }
 
+
     AUTO_STATE autoState = AUTO_STATE.MOVEPRELOAD;
+
+
     private static final double PUSHER_UP = 0.39;
     private static final double PUSHER_DOWN = 0.0;
     private static final double PUSHER_UP1 = 0.19;
@@ -82,6 +78,12 @@ public class Blue extends LinearOpMode {
     private static final double SORTER_FIRST_POS = 0.0;
     private static final double SORTER_SECOND_POS = 0.45;
     private static final double SORTER_THIRD_POS = 0.90;
+    Servo pusher;
+    Servo pusher1;
+    Servo sorter;
+    Servo stopper;
+
+
 
     private int stage1 = 0;
 
@@ -92,16 +94,19 @@ public class Blue extends LinearOpMode {
         Hardware hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
 
+
         logitechSubsystem = new LogitechSubsystem(hw, "blue");
-//        intakeCommand = new IntakeCommand(hw);
+        intakeSubsystem = new IntakeSubsystem(hw);
+
         turretSubsystem = new TurretSubsystem(hw);
         outtakeCommand = new OuttakeCommand(hw);
 
-        hw.sorter.setPosition(SORTER_FIRST_POS);
+        timer = new ElapsedTime();
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hw.pusher1.setDirection(Servo.Direction.REVERSE);
+
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         mecanumCommand.setConstants(kpx, kdx, kix,
                 kpy, kdy, kiy,
@@ -122,19 +127,25 @@ public class Blue extends LinearOpMode {
 
         logitechSubsystem.pattern();
 
-        hw.pusher.setPosition(0.0);
-        hw.pusher1.setPosition(0.0);
-        hw.sorter.setPosition(0);
+
 //        hw.light.setPosition(0);
 
 
-        hw.sorter.setPosition(SORTER_FIRST_POS);
 
+        pusher = hardwareMap.get(Servo.class, "pusher");
+        pusher1 = hardwareMap.get(Servo.class, "pusher1");
+        sorter = hardwareMap.get(Servo.class, "sorter");
+        stopper = hardwareMap.get(Servo.class, "stopper");
 
+        pusher.setPosition(0.0);
+        pusher1.setPosition(0.0);
+        sorter.setPosition(0);
         waitForStart();
         pusherTimer.reset();
+        pusher1.setDirection(Servo.Direction.REVERSE);
+        sorter.setPosition(SORTER_FIRST_POS);
         while (opModeIsActive()) {
-            telemetry.addLine("for sydney wong");
+            updateTelemetry();
 
             mecanumCommand.motorProcess();
             mecanumCommand.processPIDUsingPinpoint();
@@ -155,8 +166,6 @@ public class Blue extends LinearOpMode {
                 case PRELOAD_THREE:
                     processPreloadThree();
                     break;
-                case PRELOAD_EMPTY:
-                    processPreloadEmpty();
                 case INTAKE_MOVE:
                     processIntakeMove();
                     break;
@@ -169,23 +178,9 @@ public class Blue extends LinearOpMode {
                 case INTAKE_THREE:
                     processIntakeThree();
                     break;
-                case SUBMERSIBLE_PICKUP:
-                    processSubPickup();
+                case SIX_BALL:
+                    processSixBall();
                     break;
-                case INTAKE_SHOOT:
-                    processShoot();
-                    break;
-                case INTAKE_SHOOT1:
-                    processShoot1();
-                    break;
-                case INTAKE_SHOOT2:
-                    processShoot2();
-                    break;
-                case LEAVE:
-                    processLeave();
-                    break;
-
-
                 default:
                     updateTelemetry();
                     break;
@@ -195,44 +190,55 @@ public class Blue extends LinearOpMode {
 
 
     private void processMovePreload() {
+        intakeSubsystem.intake();
+        outtakeCommand.spinup();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(61, 44, 3 * (Math.PI / 4));
+                stopper.setPosition(0.5);
+                mecanumCommand.moveToPos(80, 44, 3 * (Math.PI / 4));
                 if (mecanumCommand.isPositionReached()) {
-                    mecanumCommand.stop();
+                    stage1++;
                 }
 
                 break;
             case 1:
+                stopper.setPosition(0.5);
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
+                break;
+            case 2:
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(200);
+            case 3:
                 stage1 = 0;
-
                 autoState = AUTO_STATE.PRELOAD_ONE;
         }
     }
 
     private void processPreloadOne() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(60, 0, 0, 0);
-        outtakeCommand.spinup();
         switch (stage1) {
             case 0:
-                pusherTimer.reset();
-                stage1++;
+                waitTime(300);
+                stopper.setPosition(0.5);
                 break;
             case 1:
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                //wait time
-                stage1++;
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
                 break;
             case 2:
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
-                //wait time
-                stage1++;
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(200);
                 break;
             case 3:
-                hw.sorter.setPosition(SORTER_SECOND_POS);
+                sorter.setPosition(SORTER_SECOND_POS);
+                waitTime(500);
+                break;
+
+            case 4:
                 autoState = AUTO_STATE.PRELOAD_TWO;
                 //wait time
                 stage1 = 0;
@@ -245,79 +251,64 @@ public class Blue extends LinearOpMode {
     }
 
     private void processPreloadTwo() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
+
+//        hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
         outtakeCommand.spinup();
+        stopper.setPosition(0.5);
         switch (stage1) {
             case 0:
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
-                //wait time
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
                 break;
             case 1:
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
+
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(500);
                 //wait time
-                stage1++;
+
                 break;
             case 2:
-                hw.sorter.setPosition(SORTER_THIRD_POS);
+                sorter.setPosition(SORTER_THIRD_POS);
+                waitTime(500);
+                break;
+
+            case 3:
                 autoState = AUTO_STATE.PRELOAD_THREE;
                 // wait time
                 stage1 = 0;
                 break;
 
+
         }
     }
 
     private void processPreloadThree() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
+
+//        hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
         outtakeCommand.spinup();
+        stopper.setPosition(0.5);
         switch (stage1) {
             case 0:
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(500);
+
                 //wait time
                 break;
             case 1:
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(500);
                 //wait time
-                stage1++;
+
                 break;
             case 2:
-                hw.sorter.setPosition(SORTER_FIRST_POS);
-                autoState = AUTO_STATE.PRELOAD_EMPTY;
-                // wait time
-                stage1 = 0;
+                sorter.setPosition(SORTER_FIRST_POS);
+                waitTime(500);
                 break;
-
-        }
-
-    }
-
-    private void processPreloadEmpty() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(67, 0, 0, 0);
-        outtakeCommand.spinup();
-        switch (stage1) {
-            case 0:
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
-                //wait time
-                break;
-            case 1:
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
-                //wait time
-                stage1++;
-                break;
-            case 2:
-                hw.sorter.setPosition(SORTER_FIRST_POS);
+            case 3:
                 autoState = AUTO_STATE.INTAKE_MOVE;
                 // wait time
                 stage1 = 0;
@@ -328,14 +319,16 @@ public class Blue extends LinearOpMode {
     }
 
     private void processIntakeMove() {
-        hw.intake.setPower(1.0);
+        intakeSubsystem.intake();
+        stopper.setPosition(0);
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(112, 39, Math.PI / 2);
-                stage1++;
+                mecanumCommand.moveToPos(112, 28, Math.PI / 2);
+                if (mecanumCommand.isPositionReached()) {
+                    stage1++;
+                }
                 break;
             case 1:
-                hw.sorter.setPosition(SORTER_SECOND_POS);
                 autoState = AUTO_STATE.INTAKE_ONE;
                 stage1 = 0;
                 break;
@@ -346,13 +339,10 @@ public class Blue extends LinearOpMode {
     }
 
     private void processIntakeOne() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setPower(0);
-        hw.sorter.setPosition(SORTER_FIRST_POS);
-
+        intakeSubsystem.intake();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(112, 32, Math.PI / 2);
+                mecanumCommand.moveToPos(112, 20, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
                     //wait
                     stage1++;
@@ -360,9 +350,13 @@ public class Blue extends LinearOpMode {
                 }
                 break;
             case 1:
-                hw.sorter.setPosition(SORTER_SECOND_POS);
-                //wait time
-                stage1++;
+                waitTime(200);
+                break;
+            case 2:
+                sorter.setPosition(SORTER_SECOND_POS);
+                waitTime(400);
+                break;
+            case 3:
                 autoState = AUTO_STATE.INTAKE_TWO;
                 stage1 = 0;
                 break;
@@ -373,23 +367,24 @@ public class Blue extends LinearOpMode {
     }
 
     private void processIntakeTwo() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setPower(0);
-        hw.sorter.setPosition(SORTER_FIRST_POS);
+        intakeSubsystem.intake();
 
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(112, 32, Math.PI / 2);
+                mecanumCommand.moveToPos(112, 0, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
-                    //wait 
                     stage1++;
-
                 }
+
                 break;
             case 1:
-                hw.sorter.setPosition(SORTER_THIRD_POS);
-                //wait time
-                stage1++;
+                waitTime(200);
+                break;
+            case 2:
+                sorter.setPosition(SORTER_THIRD_POS);
+                waitTime(400);
+                break;
+            case 3:
                 autoState = AUTO_STATE.INTAKE_THREE;
                 stage1 = 0;
                 break;
@@ -400,174 +395,108 @@ public class Blue extends LinearOpMode {
     }
 
     private void processIntakeThree() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setPower(0);
-        hw.sorter.setPosition(SORTER_FIRST_POS);
+        intakeSubsystem.intake();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(112, 32, Math.PI / 2);
+                mecanumCommand.moveToPos(112, -10, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
-                    //wait
-                    stage1++;
-
-                }
-                break;
-            case 1:
-                hw.sorter.setPosition(SORTER_THIRD_POS);
-                //wait time
-                stage1++;
-                autoState = AUTO_STATE.SUBMERSIBLE_PICKUP;
-                stage1 = 0;
-                break;
-
-        }
-
-
-    }
-
-    private void processSubPickup() {
-        switch (stage1) {
-            case 0:
-                mecanumCommand.moveToPos(61, 44, 3 * (Math.PI / 4));
-                if (mecanumCommand.isPositionReached()) {
-                    mecanumCommand.stop();
-                }
-
-                break;
-            case 1:
-                stage1 = 0;
-
-                autoState = AUTO_STATE.INTAKE_SHOOT1;
-        }
-    }
-
-    private void processShoot() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
-        outtakeCommand.spinup();
-        switch (stage1) {
-            case 0:
-                //wait time
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
-                break;
-            case 1:
-                //wait time
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
-                stage1++;
-                break;
-            case 2:
-                //wait time
-                hw.sorter.setPosition(SORTER_SECOND_POS);
-                stage1 = 0;
-                autoState = AUTO_STATE.INTAKE_SHOOT1;
-                break;
-
-
-        }
-
-    }
-
-    private void processShoot1() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
-        outtakeCommand.spinup();
-        switch (stage1) {
-            case 0:
-                //wait time
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
-                break;
-            case 1:
-                //wait time
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
-                stage1++;
-                break;
-            case 2:
-                //wait time
-                hw.sorter.setPosition(SORTER_THIRD_POS);
-                stage1 = 0;
-                autoState = AUTO_STATE.INTAKE_SHOOT2;
-                break;
-
-
-        }
-
-    }
-
-    private void processShoot2() {
-        hw.intake.setPower(1.0);
-        hw.shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
-        outtakeCommand.spinup();
-        switch (stage1) {
-            case 0:
-                //wait time
-                hw.pusher.setPosition(PUSHER_UP);
-                hw.pusher1.setPosition(PUSHER_UP1);
-                stage1++;
-                break;
-            case 1:
-                //wait time
-                hw.pusher.setPosition(PUSHER_DOWN);
-                hw.pusher1.setPosition(PUSHER_DOWN1);
-                stage1++;
-                break;
-            case 2:
-                //wait time
-                hw.sorter.setPosition(SORTER_FIRST_POS);
-                stage1 = 0;
-                autoState = AUTO_STATE.LEAVE;
-                break;
-
-
-        }
-    }
-    private void processLeave(){
-
-        hw.shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
-        outtakeCommand.stopShooter();
-        switch (stage1){
-            case 0:
-                //wait time
-                mecanumCommand.moveToPos(112, 32, Math.PI / 2);
-                if(mecanumCommand.isPositionReached()) {
                     stage1++;
                 }
                 break;
             case 1:
-                mecanumCommand.stop();
+                waitTime(200);
                 break;
-
+            case 2:
+                stage1 = 0;
+                autoState = AUTO_STATE.SIX_BALL;
+                break;
 
 
         }
 
+
+    }
+
+    private void processSixBall() {
+        switch (stage1) {
+            case 0:
+                mecanumCommand.moveToPos(80, 44, 3 * (Math.PI / 4));
+                if (mecanumCommand.isPositionReached()) {
+                    stage1++;
+                }
+
+                break;
+            case 1:
+                waitTime(300);
+                stopper.setPosition(0.5);
+                break;
+            case 2:
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
+                break;
+            case 3:
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(200);
+                break;
+            case 4:
+                sorter.setPosition(SORTER_SECOND_POS);
+                waitTime(500);
+                break;
+
+            case 5:
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
+                break;
+            case 6:
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(200);
+                break;
+            case 7:
+                sorter.setPosition(SORTER_THIRD_POS);
+                waitTime(500);
+                break;
+            case 8:
+                pusher.setPosition(PUSHER_UP);
+                pusher1.setPosition(PUSHER_UP1);
+                waitTime(200);
+                break;
+            case 9:
+                pusher.setPosition(PUSHER_DOWN);
+                pusher1.setPosition(PUSHER_DOWN1);
+                waitTime(200);
+                break;
+            case 10:
+                break;
+        }
     }
 
 
     public void updateTelemetry() {
         telemetry.addData("x: ", mecanumCommand.getOdoX());
         telemetry.addData("y: ", mecanumCommand.getOdoY());
-        telemetry.addData("Theta: ", mecanumCommand.getOdoHeading());
+        telemetry.addData("Thetareading: ", mecanumCommand.getOdoHeading());
         telemetry.addData("state: ", autoState);
+        telemetry.addData("stage: ", stage1);
+        telemetry.addData("xFinal: ", mecanumCommand.xFinal);
+        telemetry.addData("yFinal: ", mecanumCommand.yFinal);
+        telemetry.addData("thetaFinal: ", mecanumCommand.thetaFinal);
 
         telemetry.update();
     }
-    private boolean waitDelay(double waitTimeMs) {
-        if (!delayTimerStarted) {
-            pusherTimer.reset();
-            delayTimerStarted = true;
-            return false;
-        } else {
-            if (pusherTimer.milliseconds() >= waitTimeMs) {
-                delayTimerStarted = false;
-                return true;
-            }
-            return false;
+
+
+    private void waitTime(double milliseconds) {
+        if (firstInstance){
+            timer.reset();
+            firstInstance = false;
+        }
+        if (timer.milliseconds() > milliseconds && !isStopRequested()) {
+            firstInstance = true;
+            stage1++;
         }
     }
 

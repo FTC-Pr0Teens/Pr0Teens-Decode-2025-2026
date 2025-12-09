@@ -79,7 +79,6 @@ public class BlueFieldAuto extends LinearOpMode {
         hw.pusher.setPosition(PUSHER_DOWN1);
         hw.pusher1.setPosition(PUSHER_DOWN);
         hw.sorter.setPosition(0);
-//        hw.light.setPosition(0);
         hw.sorter.setPosition(SORTER_FIRST_POS);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
@@ -104,7 +103,7 @@ public class BlueFieldAuto extends LinearOpMode {
 
             switch (autoState) {
                 case MOVEPRELOAD:
-                    mecanumCommand.moveToPos(40, 0, -0.4);
+                    mecanumCommand.moveToPos(40, 0, 0);
                     pusherTimer.reset();
 
                     if (mecanumCommand.isPositionReached() && pusherTimer.milliseconds() >=200) {
@@ -202,7 +201,7 @@ public class BlueFieldAuto extends LinearOpMode {
                     if (mecanumCommand.isPositionReached()) {
                         hw.intake.setPower(1.0);
                         mecanumCommand.stop();
-                        mecanumCommand.moveToPos(100, 50, -1.64);
+                        mecanumCommand.moveToPos(112, -39, -Math.PI/2);
                         pusherTimer.reset();
                         if (mecanumCommand.isPositionReached() && pusherTimer.milliseconds() >= 500) {
 
@@ -213,12 +212,11 @@ public class BlueFieldAuto extends LinearOpMode {
                         autoState = AUTO_STATE.INTAKE_ONE;
                     }
                     break;
-
                 case INTAKE_ONE:
                     hw.intake.setPower(1.0);
                     hw.shooter.setPower(0);
                     hw.sorter.setPosition(SORTER_FIRST_POS);
-                    mecanumCommand.moveToPos(80, 64, -1.64);
+                    mecanumCommand.moveToPos(112, -44, -Math.PI/2);
 
                     if (mecanumCommand.isPositionReached() && pusherTimer.milliseconds() >= 500) {
                         mecanumCommand.stop();
@@ -234,7 +232,7 @@ public class BlueFieldAuto extends LinearOpMode {
                 case INTAKE_TWO:
                     hw.intake.setPower(1.0);
                     hw.sorter.setPosition(SORTER_SECOND_POS);
-                    mecanumCommand.moveToPos(80, 64, -1.64);
+                    mecanumCommand.moveToPos(112, -49, -Math.PI/2);
                     if (mecanumCommand.isPositionReached() && pusherTimer.milliseconds() >= 700) {
                         mecanumCommand.stop();
                         hw.sorter.setPosition(SORTER_THIRD_POS);

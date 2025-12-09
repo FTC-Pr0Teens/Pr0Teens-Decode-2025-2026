@@ -13,6 +13,7 @@ public class OuttakeCommand {
 
     private DcMotorEx shooter;
 
+
     private double targetRPM;
     private double targetRPM1;
 
@@ -30,6 +31,7 @@ public class OuttakeCommand {
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
        // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
     }
 
@@ -45,6 +47,7 @@ public class OuttakeCommand {
 
 
     public boolean spinup(){
+        hw.shooter.setVelocityPIDFCoefficients(70,0,0,0);
         double targetTPS = targetRPM * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
         return isRPMReached();

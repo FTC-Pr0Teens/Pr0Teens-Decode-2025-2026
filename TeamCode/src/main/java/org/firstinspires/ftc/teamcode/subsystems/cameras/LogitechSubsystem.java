@@ -23,7 +23,7 @@ public class LogitechSubsystem {
 
     public static String obelisk;
 
-    private static String alliance;
+    private static String ALLIANCE;
 
     private static int targetid;
 
@@ -34,13 +34,13 @@ public class LogitechSubsystem {
     private static double aprily;
 
 
-    public LogitechSubsystem(Hardware hw, String alliance) {
+    public LogitechSubsystem(Hardware hw, String ALLIANCE) {
         this.hw = hw;
         this.logitech = hw.logitech;
 
-        if (alliance == "blue") {
+        if (ALLIANCE == "blue") {
             targetid = 20;
-        } else if (alliance == "red"){
+        } else if (ALLIANCE == "red"){
             targetid = 24;
         }
 
