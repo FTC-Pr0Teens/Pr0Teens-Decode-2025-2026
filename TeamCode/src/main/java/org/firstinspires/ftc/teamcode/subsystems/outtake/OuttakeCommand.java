@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems.outtake;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
@@ -12,7 +14,7 @@ public class OuttakeCommand {
     private OuttakeSubsystem outtakeSubsystem;
 
     private DcMotorEx shooter;
-
+    private DcMotorEx shooter2;
     private double targetRPM;
     private double targetRPM1;
 
@@ -22,15 +24,67 @@ public class OuttakeCommand {
     double PPR_of_6000_motor = 28.0;
 
     double seconds_In_A_Minute = 60.0;
+    public static double Kd = 0.0;
+    public static double Kp = 0.8;
+    public static double Ki = 0.00;
+    private double error = 0;
+    private double lastError = 0;
+    private double integralSum = 0;
+    // Output tracking
+    private double outputPositionalValue = 0;
+    private double derivative = 0;
+    // Control flags
+    private boolean activateIntegral = false;
+    // Safety limits
+    private double integralLimit = 1000.0; // Prevent integral windup
+    private double outputLimit = 1.0;      // Limit output magnitude
+    // Ignore small errors
+
+    // Time tracking
+    private double lastTime = 0;
+    private double timeChange = 0;
+    private double errorChange = 0;
+    private ElapsedTime timer;
+
+    private final ElapsedTime pusherTimer = new ElapsedTime();
+    private final ElapsedTime sorterTimer = new ElapsedTime();
+    private static final double SORTER_FIRST_POS = 0.0;
+    private static final double SORTER_SECOND_POS = 0.45;
+    private static final double SORTER_THIRD_POS = 0.90;
+
+    private boolean isPusherUp = false;
+    private boolean firstRun = true; // ADD THIS
+    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_DOWN = 0.0;
+    private static final double PUSHER_UP1 = 0.19;
+    private static final double PUSHER_DOWN1 = 0;
+    private static final long PUSHER_TIME = 400;
+    private static final long SORTER_TIME = 400;
+
+    private int sorterpos = 0;
+    private TransferState state = TransferState.FIRST;
+
+    private enum TransferState {
+        PUSH_UP,
+        PUSH_DOWN,
+        SORT,
+        FIRST
+    }
 
     public OuttakeCommand(Hardware hw) {
         this.hw = hw;
-        this.outtakeSubsystem = new OuttakeSubsystem(hw);
         this.shooter = hw.shooter;
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
+        hw.shooter.setVelocityPIDFCoefficients(80, 0, 0, 0);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       // hw.shooter.setVelocityPIDFCoefficients(1.3, 0.0,0.002,0);
+        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        timer = new ElapsedTime();
+        hw.pusher1.setDirection(Servo.Direction.REVERSE);
+
+        isPusherUp = false;
+        firstRun = true;
+        pusherTimer.reset();
     }
 
     //returns whether or not we have reached the correctRPM
@@ -38,39 +92,132 @@ public class OuttakeCommand {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM - currentRPM) < 200;
     }
+
     public boolean isRPMReachedFar() {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
         return Math.abs(targetRPM1 - currentRPM) < 200;
     }
 
-
-    public boolean spinup(){
-        hw.shooter.setVelocityPIDFCoefficients(70,0,0,0);
+    public boolean spinup() {
         double targetTPS = targetRPM * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
+
+
         return isRPMReached();
     }
-    public boolean spinupfar(){
+
+    public boolean spinupfar() {
         double targetTPS = targetRPM1 * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
         return isRPMReachedFar();
     }
 
 
-    public void stopShooter(){
+    public void stopShooter() {
         hw.shooter.setVelocity(0);
     }
 
-    public void setMaxRPM(int maxRPM){
+    public void setMaxRPM(int maxRPM) {
         targetRPM = maxRPM;
     }
 
+    public double dualShooterPID(double targetRPM, double currentRPM) {
+        error = targetRPM - currentRPM;
 
+        double currentTime = timer.seconds();
+        double deltaTime = currentTime - lastTime;
+        if (deltaTime <= 0) deltaTime = 0.001;
+
+
+        derivative = (error - lastError) / deltaTime;
+
+        if (Math.abs(error) < 300 && Math.abs(integralSum) < integralLimit) {
+            integralSum += error * deltaTime;
+        } else {
+            integralSum *= 0.95;
+        }
+
+        double maxRPM = 6000.0;
+        double kF = 0.9;
+        double feedForward = kF * (targetRPM / maxRPM);
+
+        //don't need integral and derivative
+        //outputPositionalValue = feedForward + (Kp * error) + (Kd * derivative) + (Ki * integralSum);
+        outputPositionalValue = feedForward + (Kp * error);
+
+        outputPositionalValue = Math.max(0.0, Math.min(outputLimit, outputPositionalValue));
+
+        errorChange = error - lastError;
+        lastError = error;
+        lastTime = currentTime;
+
+        return outputPositionalValue;
+    }
+
+    public boolean transfer() {
+        switch (state) {
+            case FIRST:
+                pusherUp();
+                pusherTimer.reset();
+                state = TransferState.PUSH_UP;
+                return true;
+
+            case PUSH_UP:
+                if (pusherTimer.milliseconds() >= PUSHER_TIME) {
+                    pusherDown();
+                    sorterTimer.reset();
+                    state = TransferState.PUSH_DOWN;
+                }
+                return true;
+
+            case PUSH_DOWN:
+                if (sorterTimer.milliseconds() >= SORTER_TIME) {
+                    state = TransferState.SORT;
+                }
+                return true;
+
+            case SORT:
+                sorterpos = (sorterpos + 1) % 3;
+                if (sorterpos == 0) {
+                    hw.sorter.setPosition(SORTER_FIRST_POS);
+                }
+                if (sorterpos == 1) {
+                    hw.sorter.setPosition(SORTER_SECOND_POS);
+                }
+                if (sorterpos == 2) {
+                    hw.sorter.setPosition(SORTER_THIRD_POS);
+                }
+
+                state = TransferState.FIRST;
+                return false;
+
+            default:
+                return false;
+        }
+    }
+
+    public void sorter(boolean check){
+        if (check && sorterTimer.milliseconds() > SORTER_TIME && !isPusherUp) {
+            sorterTimer.reset();
+            sorterpos = (sorterpos + 1) % 3;
+            if (sorterpos == 0) {
+                hw.sorter.setPosition(SORTER_FIRST_POS);//60 degrees
+            } else if (sorterpos == 1) {
+                hw.sorter.setPosition(SORTER_SECOND_POS);//60 degrees
+            } else if (sorterpos == 2) {
+                hw.sorter.setPosition(SORTER_THIRD_POS);//60 degrees
+            }
+        }
+    }
+
+
+    public void pusherUp() {
+        hw.pusher.setPosition(PUSHER_UP);
+        hw.pusher1.setPosition(PUSHER_UP1);
+    }
+
+    public void pusherDown() {
+        hw.pusher.setPosition(PUSHER_DOWN);
+        hw.pusher1.setPosition(PUSHER_DOWN1);
+    }
 }
-
-
-
-
-
-
-

@@ -51,6 +51,7 @@ public class idk extends LinearOpMode {
     private boolean runPusher = false;
     private LimelightSubsystem limelightsub;
     private double power;
+    Servo stopper;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,10 +63,12 @@ public class idk extends LinearOpMode {
 
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
+        stopper = hardwareMap.get(Servo.class, "stopper");
+
+
         hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hw.shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         outtakeCommand.setMaxRPM(3000);
 
@@ -79,8 +82,8 @@ public class idk extends LinearOpMode {
             hw.sorter.setPosition(0);
             hw.pusher.setPosition(PUSHER_DOWN);
             hw.pusher1.setPosition(PUSHER_DOWN1);
-            hw.stopper.setDirection(Servo.Direction.FORWARD);
-            hw.stopper.setPosition(0.2);
+            stopper.setDirection(Servo.Direction.FORWARD);
+            stopper.setPosition(0.2);
 //            hw.light.setPosition(0);
         }
 
@@ -127,8 +130,8 @@ public class idk extends LinearOpMode {
             if (isOuttakeMotorOn){
                 outtakeCommand.setMaxRPM(4000);
                 outtakeCommand.spinup();
-                hw.stopper.setDirection(Servo.Direction.FORWARD);
-                hw.stopper.setPosition(0.5);
+                stopper.setDirection(Servo.Direction.FORWARD);
+                stopper.setPosition(0.5);
 
 //                if (limelightsub.apriltag(telemetry) >= 2) { hw.turret.setPower(-0.1); } else if (limelightsub.apriltag(telemetry) >= -2) { hw.turret.setPower(0.1); } else { hw.turret.setPower(0); }
                     if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
@@ -141,7 +144,7 @@ public class idk extends LinearOpMode {
 
             } else {
                 outtakeCommand.stopShooter();
-                hw.stopper.setPosition(0);
+                stopper.setPosition(0);
                 hw.turret.setPower(0);
             }
 
