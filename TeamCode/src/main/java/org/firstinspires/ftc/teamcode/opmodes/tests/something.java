@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 
-@TeleOp(name = "idk", group = "TeleOp")
-public class idk extends LinearOpMode {
+@TeleOp(name = "something", group = "TeleOp")
+public class something extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
@@ -76,7 +76,9 @@ public class idk extends LinearOpMode {
             hw.pusher1.setPosition(PUSHER_DOWN1);
             hw.stopper.setDirection(Servo.Direction.FORWARD);
             hw.stopper.setPosition(0.2);
-//            hw.light.setPosition(0);
+            //outtakeCommand.spinup();
+
+            //            hw.light.setPosition(0);
 
             telemetry.addData("alliance", ALLIANCE);
             telemetry.update();
@@ -107,18 +109,11 @@ public class idk extends LinearOpMode {
             }
             previousLBumpState = currentLBumpState;
 
-            // --- Intake toggle on A ---
-            boolean currentAState = gamepad1.a;
-            if (currentAState && !previousAState) {
-                hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
-                isIntakeMotorOn = !isIntakeMotorOn;
-                hw.intake.setPower(isIntakeMotorOn ? 1.0 : 0.0);
-            }
-            previousAState = currentAState;
 
             boolean currentXState = gamepad1.x;
             if (currentXState && !previousXState) {
                 isOuttakeMotorOn = !isOuttakeMotorOn;
+
             }
             previousXState = currentXState;
 
@@ -127,9 +122,8 @@ public class idk extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 hw.turret.setPower(-1.0);
             } else if (isOuttakeMotorOn) {
-                outtakeCommand.setMaxRPM(outtakeCommand.getShooterRPM(limelightsub.distance(telemetry)));
+                outtakeCommand.setMaxRPM(3000);
 
-//                outtakeCommand.setMaxRPM(3000);
                 if (outtakeCommand.isRPMReached() == true) {
                     hw.light.setPosition(0.5);
                 } else {
@@ -153,29 +147,10 @@ public class idk extends LinearOpMode {
                 hw.stopper.setPosition(0);
                 hw.turret.setPower(0);
             }
-
-
-            // --- Pusher up on Y  ---
-            if (gamepad1.y && !lastYState) {
-                runPusher = true;
-            }
-
-            lastYState = gamepad1.y;
-
-            if (runPusher) {
-                runPusher = outtakeCommand.transfer();
-            }
-
-            if (gamepad1.b) {
-                outtakeCommand.sorter(true);
-            } else {
-                outtakeCommand.sorter(false);
-            }
-
-            packet.put("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
-            dashboard.sendTelemetryPacket(packet);
-
         }
+
+        packet.put("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public void processTelemetry() {
