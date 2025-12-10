@@ -10,12 +10,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 
-@TeleOp(name = "something", group = "TeleOp")
-public class something extends LinearOpMode {
+@TeleOp(name = "testing", group = "TeleOp")
+public class testing extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;

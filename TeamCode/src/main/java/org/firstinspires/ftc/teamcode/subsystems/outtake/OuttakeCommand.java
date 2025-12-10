@@ -126,7 +126,7 @@ public class OuttakeCommand {
     public double getShooterRPM(double distance) {
 
         double[] dist = {60, 110, 120, 140};
-        double[] rpm  = {2400, 2700, 3100, 4300};
+        double[] rpm  = {2400, 2700, 3200, 4400};
 
         // If outside the range:
         if (distance <= dist[0]) return rpm[0];
