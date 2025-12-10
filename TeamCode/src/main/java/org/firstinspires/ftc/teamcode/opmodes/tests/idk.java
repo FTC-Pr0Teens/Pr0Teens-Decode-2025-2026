@@ -17,7 +17,6 @@ public class idk extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
-    private LogitechSubsystem logitechsub;
 
     private Hardware hw;
 
@@ -52,8 +51,6 @@ public class idk extends LinearOpMode {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
-        limelightsub = new LimelightSubsystem(hw, telemetry, ALLIANCE);
-
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -62,6 +59,7 @@ public class idk extends LinearOpMode {
         hw.shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeInInit()) {
+
             if (gamepad1.b) {
                 ALLIANCE = "red";
             }
@@ -79,6 +77,7 @@ public class idk extends LinearOpMode {
             telemetry.addData("alliance", ALLIANCE);
             telemetry.update();
         }
+        limelightsub = new LimelightSubsystem(hw, telemetry, ALLIANCE);
 
         waitForStart();
 
@@ -120,14 +119,23 @@ public class idk extends LinearOpMode {
             }
             previousXState = currentXState;
 
-            if (isOuttakeMotorOn){
+            hw.light.setPosition(0.28);
+
+            if (gamepad1.right_bumper){
+                hw.turret.setPower(-1.0);
+            } else if (isOuttakeMotorOn){
                 outtakeCommand.setMaxRPM(outtakeCommand.getShooterRPM(limelightsub.distance(telemetry)));
-//                outtakeCommand.setMaxRPM(2400);
+
+                if (outtakeCommand.isRPMReached() == true) {
+                    hw.light.setPosition(0.5);
+                } else {
+                    hw.light.setPosition(0.28);
+                }
+
                 outtakeCommand.spinup();
                 hw.stopper.setDirection(Servo.Direction.FORWARD);
                 hw.stopper.setPosition(0.5);
 
-//                if (limelightsub.apriltag(telemetry) >= 2) { hw.turret.setPower(-0.1); } else if (limelightsub.apriltag(telemetry) >= -2) { hw.turret.setPower(0.1); } else { hw.turret.setPower(0); }
                     if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
                         power = 0.03 * limelightsub.apriltag(telemetry);
                         power = Math.max(-1.0, Math.min(1.0, power));
@@ -160,10 +168,10 @@ public class idk extends LinearOpMode {
                 outtakeCommand.sorter(false);
             }
 
-            if (gamepad1.right_bumper && !previousAimButton) {
-                autoAimState = !autoAimState;
-            }
-            previousAimButton = gamepad1.right_bumper;
+//            if (gamepad1.right_bumper && !previousAimButton) {
+//                autoAimState = !autoAimState;
+//            }
+//            previousAimButton = gamepad1.right_bumper;
 
 //            if (autoAimState) {
 //                if (logitechsub.targetApril() > 5) {

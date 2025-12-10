@@ -91,7 +91,7 @@ public class OuttakeCommand {
     //returns whether or not we have reached the correctRPM
     public boolean isRPMReached() {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
-        return Math.abs(targetRPM - currentRPM) < 200;
+        return Math.abs(targetRPM - currentRPM) < 100;
     }
 
     public boolean isRPMReachedFar() {
@@ -126,7 +126,7 @@ public class OuttakeCommand {
     public double getShooterRPM(double distance) {
 
         double[] dist = {60, 110, 140};
-        double[] rpm  = {2200, 2800, 4500};
+        double[] rpm  = {2200, 2800, 4600};
 
         // If outside the range:
         if (distance <= dist[0]) return rpm[0];
