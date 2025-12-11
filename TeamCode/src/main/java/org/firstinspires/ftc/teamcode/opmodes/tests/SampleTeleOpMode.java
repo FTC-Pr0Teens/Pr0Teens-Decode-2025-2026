@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 //import static org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem.obelisk;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 
-@TeleOp(name = "Pr0teens Teleop", group = "TeleOp")
+@Disabled
+@TeleOp(name = "Old", group = "TeleOp")
 public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands

@@ -30,9 +30,9 @@ public class Pr0teensTeleop extends LinearOpMode {
     private boolean isIntakeMotorOn = false;
     private boolean isOuttakeMotorOn = false;
 
-    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_UP = 0.05;
     private static final double PUSHER_DOWN = 0.0;
-    private static final double PUSHER_UP1 = 0.19;
+    private static final double PUSHER_UP1 = 0.05;
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 750;
 
@@ -73,6 +73,8 @@ public class Pr0teensTeleop extends LinearOpMode {
             hw.sorter.setPosition(0);
             hw.pusher.setPosition(PUSHER_DOWN);
             hw.pusher1.setPosition(PUSHER_DOWN1);
+//            hw.pusher.setPosition(PUSHER_UP);
+//            hw.pusher1.setPosition(PUSHER_UP1);
             hw.stopper.setDirection(Servo.Direction.FORWARD);
             hw.stopper.setPosition(0.2);
 //            hw.light.setPosition(0);
@@ -139,22 +141,12 @@ public class Pr0teensTeleop extends LinearOpMode {
                 hw.stopper.setDirection(Servo.Direction.FORWARD);
                 hw.stopper.setPosition(0.5);
 
-                if (ALLIANCE == "blue") {
-                    if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
-                        power = 0.03 * limelightsub.apriltag(telemetry);
-                        power = Math.max(-1.0, Math.min(1.0, power));
-                        hw.turret.setPower(-power);
-                    } else {
-                        hw.turret.setPower(0);
-                    }
-                } else if (ALLIANCE == "red") {
-                    if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
-                        power = 0.03 * limelightsub.apriltag(telemetry);
-                        power = Math.max(-1.0, Math.min(1.0, power));
-                        hw.turret.setPower(power);
-                    } else {
-                        hw.turret.setPower(0);
-                    }
+                if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
+                    power = 0.03 * limelightsub.apriltag(telemetry);
+                    power = Math.max(-1.0, Math.min(1.0, power));
+                    hw.turret.setPower(-power);
+                } else {
+                    hw.turret.setPower(0);
                 }
 
             } else {

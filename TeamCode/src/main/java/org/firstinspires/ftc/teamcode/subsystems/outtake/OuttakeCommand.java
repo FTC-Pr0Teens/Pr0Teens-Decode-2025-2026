@@ -53,9 +53,9 @@ public class OuttakeCommand {
 
     private boolean isPusherUp = false;
     private boolean firstRun = true; // ADD THIS
-    private static final double PUSHER_UP = 0.39;
+    private static final double PUSHER_UP = 0.2;
     private static final double PUSHER_DOWN = 0.0;
-    private static final double PUSHER_UP1 = 0.19;
+    private static final double PUSHER_UP1 = 0.2;
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 400;
     private static final long SORTER_TIME = 400;
@@ -76,8 +76,8 @@ public class OuttakeCommand {
         this.shooter2 = hw.shooter2;
         this.targetRPM = DEFAULT_RPM;
         this.targetRPM1 = DEFAULT_RPM1;
-        hw.shooter.setVelocityPIDFCoefficients(80, 10.0, 5.0, 0.0);
-        hw.shooter2.setVelocityPIDFCoefficients(80, 10.0, 5.0, 0.0);
+        hw.shooter.setVelocityPIDFCoefficients(75, 10.0, 10.0, 0.0);
+        hw.shooter2.setVelocityPIDFCoefficients(75, 10.0, 10.0, 0.0);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
@@ -91,7 +91,7 @@ public class OuttakeCommand {
     //returns whether or not we have reached the correctRPM
     public boolean isRPMReached() {
         double currentRPM = hw.shooter.getVelocity() * seconds_In_A_Minute / PPR_of_6000_motor;
-        return Math.abs(targetRPM - currentRPM) < 150;
+        return Math.abs(targetRPM - currentRPM) < 200;
     }
 
     public boolean isRPMReachedFar() {
@@ -125,8 +125,8 @@ public class OuttakeCommand {
 
     public double getShooterRPM(double distance) {
 
-        double[] dist = {60, 110, 120, 140};
-        double[] rpm  = {2400, 2700, 3200, 4400};
+        double[] dist = {60, 80, 90, 110, 130, 150};
+        double[] rpm  = {2400, 2500, 2600, 2800, 3000, 5300};
 
         // If outside the range:
         if (distance <= dist[0]) return rpm[0];
