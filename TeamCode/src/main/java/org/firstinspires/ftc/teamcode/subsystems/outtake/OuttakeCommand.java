@@ -128,7 +128,7 @@ public class OuttakeCommand {
         double[] dist = {60, 80, 90, 110, 130, 150};
         double[] rpm  = {2400, 2500, 2600, 2800, 3000, 5300};
 
-        // If outside the range:
+        // If outside the range
         if (distance <= dist[0]) return rpm[0];
         if (distance >= dist[dist.length - 1]) return rpm[rpm.length - 1];
 
