@@ -41,7 +41,7 @@ public class Hardware {
     public final GoBildaPinpointDriver pinPointOdo;
     public WebcamName logitech;
     public Limelight3A limelight;
-    public RevBlinkinLedDriver light;
+    public Servo light;
     public ColorSensor color;
 
 
@@ -56,7 +56,9 @@ public class Hardware {
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
         this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
         this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
-        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
+//        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
+                this.logitech = null;
+
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
@@ -65,7 +67,7 @@ public class Hardware {
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
         this.stopper = hwMap.get(Servo.class, Specifications.STOPPER);
 
-//        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
+        this.light = hwMap.get(Servo.class, Specifications.LIGHT);
 
 //        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
 

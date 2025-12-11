@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 //import static org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem.obelisk;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,22 +15,19 @@ import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
-import org.firstinspires.ftc.teamcode.subsystems.odometry.PinPointOdometrySubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
-import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 
-@TeleOp(name = "Pr0teens Teleop", group = "TeleOp")
+@Disabled
+@TeleOp(name = "Old", group = "TeleOp")
 public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
-    private OuttakeSubsystem outtakeSubsystem;
     private LimelightSubsystem limelightsub;
     private LogitechSubsystem logitechsub;
     private SortingSubsystem sortingSubsystem;
@@ -72,7 +69,7 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     boolean spunUp;
     int counter = 1;
-    private String ALLIANCE = "blue";
+    private String ALLIANCE;
     private String motif = "GPP";
     private double velocity;
     private String colour;
@@ -82,8 +79,6 @@ public class SampleTeleOpMode extends LinearOpMode {
         hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
-        outtakeSubsystem = new OuttakeSubsystem(hw);
-        limelightsub = new LimelightSubsystem(hw, telemetry);
         sortingSubsystem = new SortingSubsystem(hw, telemetry, motif);
         logitechsub = new LogitechSubsystem(hw, ALLIANCE);
 
@@ -111,8 +106,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         // Wait for start button to be pressed
         waitForStart();
 
-        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
-        sortingSubsystem.setMotif(logitechsub.pattern());
+        limelightsub = new LimelightSubsystem(hw, telemetry, ALLIANCE);
 
         // Loop while OpMode is running
         while (opModeIsActive()) {

@@ -1,28 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LimelightSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
-import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 
-@TeleOp(name = "idk", group = "TeleOp")
-public class idk extends LinearOpMode {
+@TeleOp(name = "testing", group = "TeleOp")
+public class testing extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
     private OuttakeCommand outtakeCommand;
-    private LogitechSubsystem logitechsub;
 
     private Hardware hw;
 
@@ -55,11 +50,10 @@ public class idk extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        TelemetryPacket packet = new TelemetryPacket();
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
-        logitechsub = new LogitechSubsystem(hw, ALLIANCE);
-        limelightsub = new LimelightSubsystem(hw, telemetry);
-
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -67,22 +61,28 @@ public class idk extends LinearOpMode {
         hw.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hw.shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        outtakeCommand.setMaxRPM(3000);
-
         while (opModeInInit()) {
+
             if (gamepad1.b) {
                 ALLIANCE = "red";
             }
             if (gamepad1.x) {
                 ALLIANCE = "blue";
             }
+
             hw.sorter.setPosition(0);
             hw.pusher.setPosition(PUSHER_DOWN);
             hw.pusher1.setPosition(PUSHER_DOWN1);
             hw.stopper.setDirection(Servo.Direction.FORWARD);
             hw.stopper.setPosition(0.2);
-//            hw.light.setPosition(0);
+            //outtakeCommand.spinup();
+
+            //            hw.light.setPosition(0);
+
+            telemetry.addData("alliance", ALLIANCE);
+            telemetry.update();
         }
+        limelightsub = new LimelightSubsystem(hw, telemetry, ALLIANCE);
 
         waitForStart();
 
@@ -108,14 +108,6 @@ public class idk extends LinearOpMode {
             }
             previousLBumpState = currentLBumpState;
 
-            // --- Intake toggle on A ---
-            boolean currentAState = gamepad1.a;
-            if (currentAState && !previousAState) {
-                hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
-                isIntakeMotorOn = !isIntakeMotorOn;
-                hw.intake.setPower(isIntakeMotorOn ? 1.0 : 0.0);
-            }
-            previousAState = currentAState;
 
             boolean currentXState = gamepad1.x;
             if (currentXState && !previousXState) {
@@ -124,80 +116,51 @@ public class idk extends LinearOpMode {
             }
             previousXState = currentXState;
 
-            if (isOuttakeMotorOn){
-                outtakeCommand.setMaxRPM(4000);
+            hw.light.setPosition(0.28);
+
+            if (gamepad1.right_bumper) {
+                hw.turret.setPower(-1.0);
+            } else if (isOuttakeMotorOn) {
+                outtakeCommand.setMaxRPM(3000);
+
+                if (outtakeCommand.isRPMReached() == true) {
+                    hw.light.setPosition(0.5);
+                } else {
+                    hw.light.setPosition(0.28);
+                }
+
                 outtakeCommand.spinup();
                 hw.stopper.setDirection(Servo.Direction.FORWARD);
                 hw.stopper.setPosition(0.5);
 
-//                if (limelightsub.apriltag(telemetry) >= 2) { hw.turret.setPower(-0.1); } else if (limelightsub.apriltag(telemetry) >= -2) { hw.turret.setPower(0.1); } else { hw.turret.setPower(0); }
-                    if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
-                        power = 0.03 * limelightsub.apriltag(telemetry);
-                        power = Math.max(-1.0, Math.min(1.0, power));
-                        hw.turret.setPower(-power);
-                    } else {
-                        hw.turret.setPower(0);
-                    }
+                if (Math.abs(limelightsub.apriltag(telemetry)) > 2) {
+                    power = 0.03 * limelightsub.apriltag(telemetry);
+                    power = Math.max(-1.0, Math.min(1.0, power));
+                    hw.turret.setPower(-power);
+                } else {
+                    hw.turret.setPower(0);
+                }
 
             } else {
                 outtakeCommand.stopShooter();
                 hw.stopper.setPosition(0);
                 hw.turret.setPower(0);
             }
-
-
-            // --- Pusher up on Y  ---
-            if (gamepad1.y && !lastYState) {
-                runPusher = true;
-            }
-
-            lastYState = gamepad1.y;
-
-            if (runPusher) {
-                runPusher = outtakeCommand.transfer();
-            }
-
-            if (gamepad1.b) {
-                outtakeCommand.sorter(true);
-            } else {
-                outtakeCommand.sorter(false);
-            }
-
-            if (gamepad1.right_bumper && !previousAimButton) {
-                autoAimState = !autoAimState;
-            }
-            previousAimButton = gamepad1.right_bumper;
-
-//            if (autoAimState) {
-//                if (logitechsub.targetApril() > 5) {
-//                    mecanumCommand.pivot(0.2);
-//                } else if (logitechsub.targetApril() < -5) {
-//                    mecanumCommand.pivot(-0.2);
-//                } else {
-//                    mecanumCommand.pivot(0);
-//                }
-//            }
-
-//            if (isOuttakeMotorOn) {
-//                if (logitechsub.distance() >= 100) {
-//                    outtakeCommand.setMaxRPM(3500);
-//                } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-//                    outtakeCommand.setMaxRPM(2800);
-//                } else if (logitechsub.distance() <= 35) {
-//                    outtakeCommand.setMaxRPM(2300);
-//                }
-//            }
-
-
-
         }
+
+        packet.put("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
+        dashboard.sendTelemetryPacket(packet);
     }
+
     public void processTelemetry() {
         telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
         telemetry.addData("x", limelightsub.apriltag(telemetry));
         telemetry.addData("y", limelightsub.distance(telemetry));
         telemetry.addData("power", power);
+        telemetry.addData("alliance", ALLIANCE);
+
 
         telemetry.update();
+
     }
 }
