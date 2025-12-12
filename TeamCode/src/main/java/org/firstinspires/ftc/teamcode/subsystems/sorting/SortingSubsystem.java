@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
+
 import org.firstinspires.ftc.teamcode.util.Artifact;
 
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ public class SortingSubsystem {
     private ElapsedTime timer;
 
     public Telemetry telemetry;
-    private LogitechSubsystem logitechSubsystem;
     private static final double SORTER_FIRST_POS = 0.0;
     private static final double SORTER_SECOND_POS = 0.45;
     private static final double SORTER_THIRD_POS = 0.88;
@@ -55,7 +54,6 @@ public class SortingSubsystem {
 
 
     public SortingSubsystem(Hardware hw, Telemetry telemetry, String motif) {
-        logitechSubsystem = new LogitechSubsystem(hw, "red");
         this.hw = hw;
         this.sorter = hw.sorter;
         this.pusher = hw.pusher;

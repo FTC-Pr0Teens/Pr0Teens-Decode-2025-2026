@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 //import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeCommand;
-import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
@@ -23,7 +22,6 @@ public class BlueFieldAuto extends LinearOpMode {
     private MecanumCommand mecanumCommand;
     private TurretSubsystem turretSubsystem;
     //    private IntakeCommand intakeCommand;
-    private LogitechSubsystem logitechSubsystem;
     private OuttakeCommand outtakeCommand;
 
     enum AUTO_STATE {
@@ -71,7 +69,6 @@ public class BlueFieldAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Hardware hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
-        logitechSubsystem = new LogitechSubsystem(hw, "blue");
 //        intakeCommand = new IntakeCommand(hw);
         turretSubsystem = new TurretSubsystem(hw);
         outtakeCommand = new OuttakeCommand(hw);
