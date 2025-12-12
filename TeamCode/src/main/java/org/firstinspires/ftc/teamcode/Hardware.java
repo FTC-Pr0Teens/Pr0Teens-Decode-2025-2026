@@ -56,13 +56,13 @@ public class Hardware {
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
         this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
         this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
-        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
+//        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
+//        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
         this.stopper = hwMap.get(Servo.class, Specifications.STOPPER);
 
         this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);

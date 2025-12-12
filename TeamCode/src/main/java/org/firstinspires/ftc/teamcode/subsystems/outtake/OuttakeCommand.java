@@ -78,7 +78,6 @@ public class OuttakeCommand {
         this.targetRPM1 = DEFAULT_RPM1;
         hw.shooter.setVelocityPIDFCoefficients(80, 0, 0, 0);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         timer = new ElapsedTime();
         hw.pusher1.setDirection(Servo.Direction.REVERSE);
 

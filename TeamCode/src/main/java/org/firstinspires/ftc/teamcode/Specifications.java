@@ -50,7 +50,7 @@ public class Specifications {
 
     public static final String LIME_LIGHT = "lime";
 
-    public static final String LOGITECH = "logi";
+//    public static final String LOGITECH = "logi";
     public static final String PUSHER1 = "pusher1";
 
     public static final String SORTER = "sorter";
@@ -62,7 +62,7 @@ public class Specifications {
 
 //    public static final String COLOR_SENSOR = "colorSensor";
 
-    public static final String LIGHT = "led2";
+//    public static final String LIGHT = "led2";
     public static final String COLOR_SENSOR = "color";
 
     public static final String STOPPER = "stopper";
