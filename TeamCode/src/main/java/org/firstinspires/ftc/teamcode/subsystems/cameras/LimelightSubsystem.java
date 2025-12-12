@@ -36,7 +36,7 @@ public class LimelightSubsystem {
     private double aprily;
 
 
-    public LimelightSubsystem(Hardware hw, Telemetry telemetry) {
+    public LimelightSubsystem(Hardware hw, Telemetry telemetry, String alliance) {
         this.hw = hw;
         this.limelight = hw.limelight;
 
@@ -104,7 +104,7 @@ public class LimelightSubsystem {
             List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
 
             for (LLResultTypes.FiducialResult april : detections) {
-                if (april.getFiducialId() == 24) {
+                if (april.getFiducialId() == targetid) {
                     aprilx = april.getTargetXDegrees();
                 }
             }
@@ -119,7 +119,7 @@ public class LimelightSubsystem {
             List<LLResultTypes.FiducialResult> detections = results.getFiducialResults();
 
             for (LLResultTypes.FiducialResult april : detections) {
-                if (april.getFiducialId() == 24) {
+                if (april.getFiducialId() == targetid) {
                     aprily = april.getTargetYPixels();
                 }
             }

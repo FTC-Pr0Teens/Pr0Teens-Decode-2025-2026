@@ -36,13 +36,15 @@ public class Hardware {
     public final DcMotorEx lb;
     public final DcMotorEx rb;
     public final DcMotorEx shooter;
+    public final DcMotorEx shooter2;
+    public final Servo stopper;
+
     //     Odometry
     public final GoBildaPinpointDriver pinPointOdo;
     public WebcamName logitech;
     public Limelight3A limelight;
-    public RevBlinkinLedDriver light;
+    public Servo light;
     public ColorSensor color;
-    private Servo stopper;
 
 
     public Hardware(HardwareMap hwMap) {
@@ -56,16 +58,20 @@ public class Hardware {
         this.pusher = hwMap.get(Servo.class, Specifications.PUSHER);
         this.pusher1 = hwMap.get(Servo.class, Specifications.PUSHER1);
         this.limelight = hwMap.get(Limelight3A.class, Specifications.LIME_LIGHT);
-        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
+//        this.logitech = hwMap.get(WebcamName.class, Specifications.LOGITECH);
+                this.logitech = null;
+
 
         this.intake = hwMap.get(DcMotorEx.class, Specifications.INTAKE);
         this.shooter = hwMap.get(DcMotorEx.class, Specifications.SHOOTER);
+        this.shooter2 = hwMap.get(DcMotorEx.class, Specifications.SHOOTER2);
         this.sorter = hwMap.get(Servo.class, Specifications.SORTER);
         this.turret = hwMap.get(CRServo.class, Specifications.TURRET);
-        this.light = hwMap.get(RevBlinkinLedDriver.class, Specifications.LIGHT);
         this.stopper = hwMap.get(Servo.class, Specifications.STOPPER);
 
-        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
+        this.light = hwMap.get(Servo.class, Specifications.LIGHT);
+
+//        this.color = hwMap.get(ColorSensor.class, Specifications.COLOR_SENSOR);
 
         this.pinPointOdo = hwMap.get(GoBildaPinpointDriver.class, Specifications.PIN_POINT_ODOMETRY);
 

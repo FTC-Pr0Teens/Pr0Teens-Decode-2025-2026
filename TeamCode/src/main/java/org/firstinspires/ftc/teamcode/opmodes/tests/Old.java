@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.sorting.SortingSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.cameras.LogitechSubsystem;
 
-@TeleOp(name = "Pr0teens Blue Tele", group = "TeleOp")
+@TeleOp(name = "Pr0teens Comp Tele", group = "TeleOp")
 public class Pr0teensDecodeTeleop extends LinearOpMode {
 
     private MecanumCommand mecanumCommand;
@@ -170,11 +171,11 @@ public class Pr0teensDecodeTeleop extends LinearOpMode {
 
             if (isOuttakeMotorOn) {
                 if (logitechsub.distance() >= 100) {
-                    outtakeCommand.setMaxRPM(4200);
+                    outtakeCommand.setMaxRPM(3500);
                 } else if (logitechsub.distance() <= 90 && logitechsub.distance() >= 35) {
-                    outtakeCommand.setMaxRPM(3000);
+                    outtakeCommand.setMaxRPM(2800);
                 } else if (logitechsub.distance() <= 35) {
-                    outtakeCommand.setMaxRPM(2500);
+                    outtakeCommand.setMaxRPM(2300);
                 }
             }
 
