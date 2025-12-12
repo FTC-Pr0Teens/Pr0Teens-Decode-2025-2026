@@ -206,7 +206,7 @@ public class Blue extends LinearOpMode {
 
 
 
-                    default:
+                default:
                     updateTelemetry();
                     break;
             }
@@ -659,17 +659,17 @@ public class Blue extends LinearOpMode {
 
 
     }
-private void leave() {
-    switch (stage1) {
-        case 0:
-            mecanumCommand.moveToPos(180, 22, Math.PI / 2);
-            if (mecanumCommand.isPositionReached()) {
-                mecanumCommand.stop();
+    private void leave() {
+        switch (stage1) {
+            case 0:
+                mecanumCommand.moveToPos(180, 22, Math.PI / 2);
+                if (mecanumCommand.isPositionReached()) {
+                    mecanumCommand.stop();
 
-            }
+                }
 
+        }
     }
-}
 
 
 
