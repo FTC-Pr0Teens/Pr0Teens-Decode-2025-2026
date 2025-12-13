@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +19,6 @@ import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
-@Config
 @Autonomous(name = "Blue Auto")
 public class Blue extends LinearOpMode {
     private Hardware hw;
@@ -369,6 +367,7 @@ public class Blue extends LinearOpMode {
             case 0:
                 mecanumCommand.moveToPos(112, 12, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
+                    mecanumCommand.moveToPos(112, 14, Math.PI / 2);
                     stage1++;
 
                 }
@@ -397,6 +396,7 @@ public class Blue extends LinearOpMode {
             case 0:
                 mecanumCommand.moveToPos(112, 6, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
+                    mecanumCommand.moveToPos(112, 8, Math.PI / 2);
                     stage1++;
                 }
 
@@ -424,6 +424,7 @@ public class Blue extends LinearOpMode {
             case 0:
                 mecanumCommand.moveToPos(112, -8, Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
+                    mecanumCommand.moveToPos(112, -6, Math.PI / 2);
                     stage1++;
                 }
                 break;

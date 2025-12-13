@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,8 +49,6 @@ public class Pr0teensTeleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        TelemetryPacket packet = new TelemetryPacket();
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -173,8 +170,6 @@ public class Pr0teensTeleop extends LinearOpMode {
                 outtakeCommand.sorter(false);
             }
 
-            packet.put("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
-            dashboard.sendTelemetryPacket(packet);
 
         }
     }
