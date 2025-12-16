@@ -1,3 +1,7 @@
+/**
+ *thank you kirby for everything
+ */
+
 package org.firstinspires.ftc.teamcode.subsystems.outtake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,8 +21,8 @@ public class OuttakeCommand {
     private double targetRPM;
     private double targetRPM1;
 
-    double DEFAULT_RPM = 3000;
-    double DEFAULT_RPM1 = 4500;
+    double DEFAULT_RPM = 2300;
+    double DEFAULT_RPM1 = 3500;
 
     double PPR_of_6000_motor = 28.0;
 
@@ -108,7 +112,7 @@ public class OuttakeCommand {
     }
 
     public boolean spinupfar() {
-        double targetTPS = targetRPM1 * PPR_of_6000_motor / seconds_In_A_Minute;
+        double targetTPS = 4700 * PPR_of_6000_motor / seconds_In_A_Minute;
         hw.shooter.setVelocity(targetTPS);
         return isRPMReachedFar();
     }
@@ -126,7 +130,7 @@ public class OuttakeCommand {
     public double getShooterRPM(double distance) {
 
         double[] dist = {60, 80, 90, 110, 130, 150};
-        double[] rpm  = {2400, 2500, 2600, 2800, 3000, 5600};
+        double[] rpm  = {2400, 2500, 2600, 2750, 2850, 5650};
 
         // If outside the range
         if (distance <= dist[0]) return rpm[0];

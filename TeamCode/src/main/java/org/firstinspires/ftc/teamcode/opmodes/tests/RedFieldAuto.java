@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.outtake.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.turret.TurretSubsystem;
 
 
-@Config
+
 @Autonomous(name = "Red Auto")
 public class RedFieldAuto extends LinearOpMode {
     private Hardware hw;
@@ -248,12 +247,12 @@ public class RedFieldAuto extends LinearOpMode {
             case 1:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 2:
                 pusher.setPosition(PUSHER_DOWN);
                 pusher1.setPosition(PUSHER_DOWN1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 3:
                 sorter.setPosition(SORTER_SECOND_POS);
@@ -281,7 +280,7 @@ public class RedFieldAuto extends LinearOpMode {
             case 0:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 1:
 
@@ -294,7 +293,7 @@ public class RedFieldAuto extends LinearOpMode {
             case 2:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(400);
                 break;
             case 3:
 
@@ -356,9 +355,10 @@ public class RedFieldAuto extends LinearOpMode {
     private void processIntakeMove() {
         intakeSubsystem.intake();
         stopper.setPosition(0);
+        outtakeCommand.stopShooter();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(113, -37, -Math.PI / 2);
+                mecanumCommand.moveToPos(113, -45, -Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
                     stage1++;
                 }
@@ -377,20 +377,20 @@ public class RedFieldAuto extends LinearOpMode {
         intakeSubsystem.intake();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(113, -10, -Math.PI / 2);
+                mecanumCommand.moveToPos(113, -13, -Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
-                    mecanumCommand.moveToPos(113, -12, -Math.PI / 2);
+                    mecanumCommand.moveToPos(113, -15, -Math.PI / 2);
                     //wait
                     stage1++;
 
                 }
                 break;
             case 1:
-                waitTime(200);
+                waitTime(500);
                 break;
             case 2:
                 sorter.setPosition(SORTER_SECOND_POS);
-                waitTime(700);
+                waitTime(1000);
                 break;
             case 3:
                 autoState = AUTO_STATE.INTAKE_TWO;
@@ -407,15 +407,15 @@ public class RedFieldAuto extends LinearOpMode {
 
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(113, -5, -Math.PI / 2);
+                mecanumCommand.moveToPos(113, -3, -Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
-                    mecanumCommand.moveToPos(113, -7, -Math.PI / 2);
+                    mecanumCommand.moveToPos(113, -5, -Math.PI / 2);
                     stage1++;
                 }
 
                 break;
             case 1:
-                waitTime(200);
+                waitTime(500);
                 break;
             case 2:
                 sorter.setPosition(SORTER_THIRD_POS);
@@ -435,15 +435,16 @@ public class RedFieldAuto extends LinearOpMode {
         intakeSubsystem.intake();
         switch (stage1) {
             case 0:
-                mecanumCommand.moveToPos(113, 8, -Math.PI / 2);
+                waitTime(500);
+                mecanumCommand.moveToPos(113, 10, -Math.PI / 2);
                 if (mecanumCommand.isPositionReached()) {
-                    mecanumCommand.moveToPos(113, 6, -Math.PI / 2);
+                    mecanumCommand.moveToPos(113, 7, -Math.PI / 2);
                     mecanumCommand.stop();
                     stage1++;
                 }
                 break;
             case 1:
-                waitTime(200);
+                waitTime(500);
                 break;
             case 2:
                 stage1 = 0;
@@ -461,9 +462,10 @@ public class RedFieldAuto extends LinearOpMode {
     private void processSixBall() {
         switch (stage1) {
             case 0:
-
+                outtakeCommand.spinup();
                 mecanumCommand.moveToPos(90, -72, -2.27);
                 if (mecanumCommand.isPositionReached()) {
+                    mecanumCommand.moveToPos(90, -72, -2.27);                    mecanumCommand.stop();
                     stage1++;
                 }
 
@@ -476,12 +478,12 @@ public class RedFieldAuto extends LinearOpMode {
             case 2:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 3:
                 pusher.setPosition(PUSHER_DOWN);
                 pusher1.setPosition(PUSHER_DOWN1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 4:
                 sorter.setPosition(SORTER_SECOND_POS);
@@ -491,12 +493,12 @@ public class RedFieldAuto extends LinearOpMode {
             case 5:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 6:
                 pusher.setPosition(PUSHER_DOWN);
                 pusher1.setPosition(PUSHER_DOWN1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 7:
                 sorter.setPosition(SORTER_THIRD_POS);
@@ -505,24 +507,25 @@ public class RedFieldAuto extends LinearOpMode {
             case 8:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 9:
                 pusher.setPosition(PUSHER_DOWN);
                 pusher1.setPosition(PUSHER_DOWN1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 10:
                 pusher.setPosition(PUSHER_UP);
                 pusher1.setPosition(PUSHER_UP1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 11:
                 pusher.setPosition(PUSHER_DOWN);
                 pusher1.setPosition(PUSHER_DOWN1);
-                waitTime(200);
+                waitTime(300);
                 break;
             case 12:
+                mecanumCommand.moveToPos(113, -3, -Math.PI / 2);
                 break;
         }
     }
