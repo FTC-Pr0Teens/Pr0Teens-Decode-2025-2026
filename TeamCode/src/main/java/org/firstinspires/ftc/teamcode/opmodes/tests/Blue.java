@@ -1,6 +1,6 @@
 /**
  * ===============================================================================
- * FIRST TECH CHALLENGE - BLUE ALLIANCE AUTONOMOUS PROGRAM
+ * FIRST TECH CHALLENGE -  BLUE ALLIANCE AUTONOMOUS PROGRAM
  * ===============================================================================
  *
  * FILE: Blue.java
