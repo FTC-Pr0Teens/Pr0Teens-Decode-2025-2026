@@ -1,3 +1,54 @@
+/**
+ * ===============================================================================
+ * FIRST TECH CHALLENGE - LIMELIGHT VISION SUBSYSTEM
+ * ===============================================================================
+ *
+ * FILE: LimelightSubsystem.java
+ * PACKAGE: org.firstinspires.ftc.teamcode.subsystems.cameras
+ * TEAM: Pr0Teens (FTC Team)
+ * SEASON: 2025-2026
+ *
+ * DESCRIPTION:
+ * This subsystem manages the Limelight 3A vision sensor, providing computer vision
+ * capabilities for autonomous targeting and driver assistance. The system supports
+ * two primary vision modes:
+ *   - Neural Network Object Detection (Pipeline 2): Identifies and classifies game
+ *     elements by color for intake operations
+ *   - AprilTag Fiducial Tracking: Locates and measures distance to alliance-specific
+ *     scoring targets for automated shooting
+ *
+ * VISION PIPELINES:
+ * Pipeline 2: Active pipeline used for object detection and AprilTag tracking
+ *
+ * ALLIANCE-AWARE TARGETING:
+ * The subsystem configures target AprilTag IDs based on alliance color:
+ * - Blue Alliance: Targets AprilTag ID 20
+ * - Red Alliance:  Targets AprilTag ID 24
+ *
+ * KEY CAPABILITIES:
+ * - Real-time object detection with color classification
+ * - AprilTag horizontal offset (X) for turret auto-aim
+ * - AprilTag vertical offset (Y) for distance estimation
+ * - Target area measurement for proximity detection
+ * - Telemetry output for driver feedback and debugging
+ *
+ * PID CONTROL FRAMEWORK (LEGACY):
+ * The subsystem includes PID constants for potential closed-loop vision tracking,
+ * though this functionality is currently disabled. The active implementation uses
+ * proportional control in the main TeleOp program.
+ *
+ * DATA FLOW:
+ * Limelight → Result Object → Detection Lists → Filtered Target → Return Value
+ *
+ * PERFORMANCE OPTIMIZATION:
+ * - Telemetry transmission interval set to 11ms for high update rate
+ * - Pipeline switching capability for multi-mode operation
+ * - Efficient list filtering to find alliance-specific targets
+ *
+ * NOTE: Some functionality is commented out, suggesting evolution from earlier
+ * designs that included automatic rotation control and integral/derivative terms.
+ * ===============================================================================
+ */
 package org.firstinspires.ftc.teamcode.subsystems.cameras;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
