@@ -1,3 +1,48 @@
+/**
+ * ===============================================================================
+ * FIRST TECH CHALLENGE - INTAKE SUBSYSTEM
+ * ===============================================================================
+ *
+ * FILE: IntakeSubsystem.java
+ * PACKAGE: org.firstinspires.ftc.teamcode.subsystems.intake
+ * TEAM: Pr0Teens (FTC Team)
+ * SEASON: 2025-2026
+ *
+ * DESCRIPTION:
+ * This subsystem encapsulates control of the robot's intake mechanism, providing
+ * a simplified interface for game element collection and manipulation. The class
+ * manages multiple related mechanisms:
+ *   - Intake motor control for collecting game elements
+ *   - Pusher servo mechanism for specimen scoring
+ *   - Shooter wheel velocity control with custom PIDF tuning
+ *
+ * DESIGN PATTERN:
+ * This class follows the subsystem pattern, abstracting hardware complexity and
+ * providing high-level methods that can be called from autonomous and teleop programs.
+ * The subsystem is initialized with a Hardware instance and maintains references
+ * to all controlled components.
+ *
+ * KEY FEATURES:
+ * - Simplified intake control (on/off via single method calls)
+ * - Pusher actuation for scoring operations
+ * - Velocity-controlled shooter with custom PIDF coefficients
+ * - Stateless design - no internal state tracking required
+ *
+ * HARDWARE COMPONENTS CONTROLLED:
+ * - intake: DC motor for game element collection (reversed direction)
+ * - pusher: Servo for specimen pushing mechanism
+ * - shooter: DC motor with encoder for velocity-controlled shooting
+ *
+ * LEGACY/DISABLED FEATURES:
+ * Several methods related to turret control and rainbow belt intake are
+ * commented out, suggesting evolution of robot design over the season.
+ * These are preserved for reference and potential future use.
+ *
+ * NOTE: This is the correct package location for the intake subsystem.
+ * A duplicate version exists in subsystems.cameras package, likely due to
+ * historical reorganization.
+ * ===============================================================================
+ */
 package org.firstinspires.ftc.teamcode.subsystems.intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
