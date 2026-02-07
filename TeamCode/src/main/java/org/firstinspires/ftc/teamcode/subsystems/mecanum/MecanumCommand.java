@@ -1,3 +1,24 @@
+/**
+ * ===============================================================================
+ * MECANUM DRIVE COMMAND WRAPPER
+ * ===============================================================================
+ * PURPOSE:
+ * High-level command interface for mecanum drivetrain control. Integrates
+ * PID-based position control with Pinpoint odometry for autonomous navigation
+ * and provides field-oriented driving for teleop.
+ *
+ * KEY FEATURES:
+ * - Position-based PID navigation (moveToPos)
+ * - Field-oriented and robot-centric drive modes
+ * - Custom PID tuning per axis (X, Y, Theta)
+ * - Velocity limiting for smooth motion profiles
+ * - Position tolerance checking (2.5" linear, 0.07 rad angular)
+ *
+ * ARCHITECTURE:
+ * MecanumCommand → MecanumSubsystem (motor control)
+ *                → PinPointOdometrySubsystem (position tracking)
+ * ===============================================================================
+ */
 package org.firstinspires.ftc.teamcode.subsystems.mecanum;
 
 import org.firstinspires.ftc.teamcode.Hardware;
