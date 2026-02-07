@@ -3,11 +3,6 @@
  * FIRST TECH CHALLENGE - LIMELIGHT VISION SUBSYSTEM
  * ===============================================================================
  *
- * FILE: LimelightSubsystem.java
- * PACKAGE: org.firstinspires.ftc.teamcode.subsystems.cameras
- * TEAM: Pr0Teens (FTC Team)
- * SEASON: 2025-2026
- *
  * DESCRIPTION:
  * This subsystem manages the Limelight 3A vision sensor, providing computer vision
  * capabilities for autonomous targeting and driver assistance. The system supports

@@ -15,13 +15,6 @@
  *   - Intake motor control for collecting game elements
  *   - Pusher servo mechanism for specimen scoring
  *   - Shooter wheel velocity control with custom PIDF tuning
- *
- * DESIGN PATTERN:
- * This class follows the subsystem pattern, abstracting hardware complexity and
- * providing high-level methods that can be called from autonomous and teleop programs.
- * The subsystem is initialized with a Hardware instance and maintains references
- * to all controlled components.
- *
  * KEY FEATURES:
  * - Simplified intake control (on/off via single method calls)
  * - Pusher actuation for scoring operations

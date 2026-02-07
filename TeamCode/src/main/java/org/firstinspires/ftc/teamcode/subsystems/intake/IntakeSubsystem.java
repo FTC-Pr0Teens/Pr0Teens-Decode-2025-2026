@@ -2,12 +2,6 @@
  * ===============================================================================
  * FIRST TECH CHALLENGE - INTAKE SUBSYSTEM
  * ===============================================================================
- *
- * FILE: IntakeSubsystem.java
- * PACKAGE: org.firstinspires.ftc.teamcode.subsystems.intake
- * TEAM: Pr0Teens (FTC Team)
- * SEASON: 2025-2026
- *
  * DESCRIPTION:
  * This subsystem encapsulates control of the robot's intake mechanism, providing
  * a simplified interface for game element collection and manipulation. The class
