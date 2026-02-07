@@ -1,5 +1,24 @@
 /**
- *thank you kirby for everything
+ * ===============================================================================
+ * OUTTAKE & SHOOTER COMMAND SUBSYSTEM
+ * ===============================================================================
+ * PURPOSE:
+ * High-level control for dual-motor shooter system with automated specimen
+ * transfer sequencing. Manages shooter velocity, pusher mechanism, and sorter
+ * positioning for scoring operations.
+ *
+ * KEY FEATURES:
+ * - Distance-based RPM calculation (interpolates 60-150 pixel range)
+ * - Dual-motor shooter with velocity control (2300-5650 RPM range)
+ * - State machine for automated transfer cycle (push → retract → sort)
+ * - Three-position sorter (0°, 45°, 90°) for sequential shooting
+ * - RPM tolerance checking (±200 RPM for ready state)
+ *
+ * SHOOTER CONFIGURATION:
+ * - Default RPM: 2300 (close), 3500 (far), 4700 (far spinup)
+ * - Custom PIDF: P=75, I=10, D=10, F=0
+ * - Motor: 6000 RPM motor, 28 PPR encoder
+ * ===============================================================================
  */
 
 package org.firstinspires.ftc.teamcode.subsystems.outtake;
