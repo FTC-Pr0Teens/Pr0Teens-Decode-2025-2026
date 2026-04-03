@@ -12,8 +12,6 @@ public class TurretSubsystem {
     public TurretSubsystem(Hardware hw) {
         mecanumCommand = new MecanumCommand(hw);
         pinPointOdoSubsystem = new PinPointOdometrySubsystem(hw);
-
-
     }
 
     public double tanAdjustementBlue(double targetX, double targetY) {

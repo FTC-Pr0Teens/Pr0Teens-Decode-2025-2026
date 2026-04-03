@@ -78,9 +78,9 @@ public class Pr0teensTeleop extends LinearOpMode {
     private boolean isIntakeMotorOn = false;
     private boolean isOuttakeMotorOn = false;
     // Pusher servo position constants
-    private static final double PUSHER_UP = 0.05;
+    private static final double PUSHER_UP = 1;
     private static final double PUSHER_DOWN = 0.0;
-    private static final double PUSHER_UP1 = 0.05;
+    private static final double PUSHER_UP1 = -0.5;
     private static final double PUSHER_DOWN1 = 0;
     private static final long PUSHER_TIME = 750;
 
@@ -91,7 +91,7 @@ public class Pr0teensTeleop extends LinearOpMode {
     private static final double SORTER_THIRD_POS = 0.90;
     // Alliance selection and vision control
     private String ALLIANCE = "blue";
-    private boolean autoAimState = false;
+    private boolean augittoAimState = false;
     private boolean previousAimButton = false;
     private boolean runPusher = false;
     // Vision and control systems
@@ -126,12 +126,12 @@ public class Pr0teensTeleop extends LinearOpMode {
                 ALLIANCE = "blue";   // X button selects BLUE alliance
             }
             // Initialize servos to safe starting positions
-            hw.sorter.setPosition(0);
-            hw.pusher.setPosition(PUSHER_DOWN);
-            hw.pusher1.setPosition(PUSHER_DOWN1);
+//            hw.sorter.setPosition(0);
+//            hw.pusher.setPosition(PUSHER_DOWN);
+//            hw.pusher1.setPosition(PUSHER_DOWN1);
 //          // Alternative pusher starting position (commented out)
-//            // hw.pusher.setPosition(PUSHER_UP);
-//            // hw.pusher1.setPosition(PUSHER_UP1);
+             hw.pusher.setPosition(PUSHER_UP);
+//             hw.pusher1.setPosition(PUSHER_UP1);
 
             // Configure stopper servo
             hw.stopper.setDirection(Servo.Direction.FORWARD);
@@ -139,8 +139,8 @@ public class Pr0teensTeleop extends LinearOpMode {
 //            hw.light.setPosition(0);
 
             // Display alliance selection
-            telemetry.addData("alliance", ALLIANCE);
-            telemetry.update();
+//            telemetry.addData("alliance", ALLIANCE);
+//            telemetry.update();
         }
 
         // Initialize Limelight subsystem with selected alliance
@@ -156,7 +156,7 @@ public class Pr0teensTeleop extends LinearOpMode {
          * Runs continuously during driver-controlled period
          */
         while (opModeIsActive()) {
-            processTelemetry();
+//            processTelemetry();
             /**
              * MECANUM DRIVE CONTROL
              * Field-oriented control using left stick for translation,
@@ -264,6 +264,7 @@ public class Pr0teensTeleop extends LinearOpMode {
              * The outtakeCommand.transfer() method handles the timing
              * and returns false when sequence is complete.
              */
+
             if (gamepad1.y && !lastYState) {
                 runPusher = true;
             }
@@ -284,7 +285,12 @@ public class Pr0teensTeleop extends LinearOpMode {
                 outtakeCommand.sorter(false);
             }
 
-
+            telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
+            telemetry.addData("x", limelightsub.apriltag(telemetry));
+            telemetry.addData("y", limelightsub.distance(telemetry));
+            telemetry.addData("power", power);
+            telemetry.addData("alliance", ALLIANCE);
+            telemetry.update();
         }
     }
 
@@ -296,15 +302,13 @@ public class Pr0teensTeleop extends LinearOpMode {
      * - Turret power output
      * - Selected alliance color
      */
-    public void processTelemetry() {
-        telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
-        telemetry.addData("x", limelightsub.apriltag(telemetry));
-        telemetry.addData("y", limelightsub.distance(telemetry));
-        telemetry.addData("power", power);
-        telemetry.addData("alliance", ALLIANCE);
-
-
-        telemetry.update();
-
-    }
+//    public void processTelemetry() {
+//        telemetry.addData("RPM", hw.shooter.getVelocity() * 60.0 / 28.0);
+//        telemetry.addData("x", limelightsub.apriltag(telemetry));
+//        telemetry.addData("y", limelightsub.distance(telemetry));
+//        telemetry.addData("power", power);
+//        telemetry.addData("alliance", ALLIANCE);
+//        telemetry.update();
+//
+//    }
 }

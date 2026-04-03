@@ -88,7 +88,8 @@ public class LimelightSubsystem {
 
         telemetry.setMsTransmissionInterval(11);
 
-        limelight.pipelineSwitch(2);
+        limelight.pipelineSwitch(6);
+
 
         limelight.start();
 

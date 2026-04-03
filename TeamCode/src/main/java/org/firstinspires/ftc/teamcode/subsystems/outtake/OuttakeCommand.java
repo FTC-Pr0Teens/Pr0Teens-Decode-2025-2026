@@ -76,10 +76,10 @@ public class OuttakeCommand {
 
     private boolean isPusherUp = false;
     private boolean firstRun = true; // ADD THIS
-    private static final double PUSHER_UP = 0.2;
+    private static final double PUSHER_UP = 0;
     private static final double PUSHER_DOWN = 0.0;
-    private static final double PUSHER_UP1 = 0.2;
-    private static final double PUSHER_DOWN1 = 0;
+    private static final double PUSHER_UP1 = 0;
+    private static final double PUSHER_DOWN1 = 0.1;
     private static final long PUSHER_TIME = 400;
     private static final long SORTER_TIME = 400;
 
