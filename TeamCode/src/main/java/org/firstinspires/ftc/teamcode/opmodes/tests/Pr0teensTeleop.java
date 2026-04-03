@@ -105,7 +105,7 @@ public class Pr0teensTeleop extends LinearOpMode {
         mecanumCommand = new MecanumCommand(hw);
         outtakeCommand = new OuttakeCommand(hw);
         // Configure motor directions for correct operation
-        hw.intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        hw.intake.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         hw.shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
         hw.turret.setDirection(DcMotorSimple.Direction.FORWARD);
